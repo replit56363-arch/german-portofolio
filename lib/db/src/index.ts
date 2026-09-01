@@ -425,5 +425,19 @@ if (process.env.DATABASE_URL) {
   db = createMockDb();
 }
 
+export async function seedDevelopmentData() {
+  if (!process.env.DATABASE_URL || process.env.NODE_ENV === "production") return;
+
+  const [existingAdmin] = await db.select({ id: adminsTable.id }).from(adminsTable).limit(1);
+  if (!existingAdmin) {
+    await db.insert(adminsTable).values(initialAdmins);
+  }
+
+  const [existingStudents] = await db.select({ id: studentsTable.id }).from(studentsTable).limit(1);
+  if (!existingStudents) {
+    await db.insert(studentsTable).values(initialStudents);
+  }
+}
+
 export { pool, db };
 export * from "./schema";

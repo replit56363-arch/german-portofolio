@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { and, asc, desc, eq, ilike, or } from "drizzle-orm";
-import { db, studentsTable } from "@workspace/db";
+import { db, studentsTable, type Student } from "@workspace/db";
 import {
   CreateStudentBody,
   GetStudentParams,
@@ -26,7 +26,7 @@ router.get("/students", async (request, response) => {
   if (filters.search) {
     conditions.push(or(ilike(studentsTable.name, `%${filters.search}%`), ilike(studentsTable.email, `%${filters.search}%`)));
   }
-  const rows = await db.select().from(studentsTable).where(conditions.length ? and(...conditions) : undefined).orderBy(desc(studentsTable.updatedAt), asc(studentsTable.name));
+  const rows: Student[] = await db.select().from(studentsTable).where(conditions.length ? and(...conditions) : undefined).orderBy(desc(studentsTable.updatedAt), asc(studentsTable.name));
   response.json(rows.map((row) => serializeStudent(row)));
 });
 

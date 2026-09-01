@@ -1,7 +1,30 @@
-import { ArrowDownRight, ArrowUpRight, BriefcaseBusiness, CheckCircle2, FileText, LogIn, ShieldCheck, UsersRound } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowDownRight, ArrowUpRight, BarChart3, BookOpenCheck, BriefcaseBusiness, CheckCircle2, ClipboardCheck, FileText, GraduationCap, HeartHandshake, LogIn, ShieldCheck, Sparkles, UserRoundCheck, UsersRound } from "lucide-react";
 import { Link } from "wouter";
 import { useGetSiteContent, getGetSiteContentQueryKey } from "@workspace/api-client-react";
 import { SectionEyebrow } from "@/components/portfolio-ui";
+
+type LandingSummary = {
+  totalStudents: number;
+  readyToPlace: number;
+  placedStudents: number;
+  inProgress: number;
+  placementRate: number;
+  byLevel: Array<{ level: string; count: number }>;
+  programs: Array<{ program: string; count: number }>;
+};
+
+function useLandingSummary() {
+  return useQuery<LandingSummary>({
+    queryKey: ["/api/landing-summary"],
+    queryFn: async () => {
+      const response = await fetch("/api/landing-summary");
+      if (!response.ok) throw new Error("Ringkasan portfolio belum tersedia.");
+      return response.json() as Promise<LandingSummary>;
+    },
+    staleTime: 60_000,
+  });
+}
 
 function LandingSkeleton() {
   return (
@@ -29,16 +52,40 @@ function LandingError({ retry }: { retry: () => void }) {
 
 export default function Landing() {
   const contentQuery = useGetSiteContent({ query: { queryKey: getGetSiteContentQueryKey() } });
+  const summaryQuery = useLandingSummary();
 
   if (contentQuery.isLoading) return <LandingSkeleton />;
   if (contentQuery.isError || !contentQuery.data) return <LandingError retry={() => void contentQuery.refetch()} />;
 
   const content = contentQuery.data;
   const contentStats = [
-    { value: content.statOneValue, label: content.statOneLabel, tone: "cyan" },
-    { value: content.statTwoValue, label: content.statTwoLabel, tone: "amber" },
-    { value: content.statThreeValue, label: content.statThreeLabel, tone: "teal" },
-    { value: content.statFourValue, label: content.statFourLabel, tone: "blue" },
+    { value: content.statOneValue, label: content.statOneLabel },
+    { value: content.statTwoValue, label: content.statTwoLabel },
+    { value: content.statThreeValue, label: content.statThreeLabel },
+    { value: content.statFourValue, label: content.statFourLabel },
+  ];
+  const summary = summaryQuery.data;
+  const summaryCards = [
+    { label: "Total portfolio", value: summary?.totalStudents ?? "—", detail: "profil siswa terdata", icon: UsersRound },
+    { label: "Siap ditempatkan", value: summary?.readyToPlace ?? "—", detail: "profil dengan status siap", icon: UserRoundCheck },
+    { label: "Sudah ditempatkan", value: summary?.placedStudents ?? "—", detail: "siswa dengan placement", icon: HeartHandshake },
+    { label: "Placement rate", value: summary ? `${summary.placementRate}%` : "—", detail: "dari seluruh portfolio", icon: BarChart3 },
+  ];
+  const partnerBenefits = [
+    { icon: ClipboardCheck, title: "Bukti terstruktur", text: "Level, sertifikat, riwayat progres, dan catatan kesiapan tersusun dalam satu profil." },
+    { icon: BookOpenCheck, title: "Progress terlihat", text: "Partner dapat memahami perjalanan belajar siswa, bukan hanya melihat hasil akhir." },
+    { icon: BriefcaseBusiness, title: "Siap dicocokkan", text: "Filter cohort, level, dan status membantu tim menemukan kandidat yang relevan." },
+    { icon: ShieldCheck, title: "Akses terkontrol", text: "Data detail hanya tersedia bagi tim dan placement partner yang sudah mendapat akses." },
+  ];
+  const workflowSteps = [
+    { number: "01", title: "Pilih profil", text: "Mulai dari level bahasa, cohort, atau status kesiapan yang sesuai kebutuhan." },
+    { number: "02", title: "Tinjau bukti", text: "Baca bio, cek sertifikat, lihat riwayat level, dan pahami konteks kandidat." },
+    { number: "03", title: "Lanjutkan percakapan", text: "Gunakan profil terverifikasi sebagai dasar pengenalan dan proses placement." },
+  ];
+  const placementPrograms = [
+    { icon: GraduationCap, title: "Ausbildung", text: "Kandidat dengan target karier vokasional dan kesiapan bahasa yang terukur." },
+    { icon: HeartHandshake, title: "FSJ & sosial", text: "Profil untuk program pelayanan sosial dengan dukungan progres yang jelas." },
+    { icon: Sparkles, title: "Studi lanjut", text: "Siswa yang menyiapkan bahasa dan dokumen untuk langkah akademik berikutnya." },
   ];
 
   return (
@@ -63,6 +110,45 @@ export default function Landing() {
               <p className="mt-1 text-[11px] leading-4 text-[#b3c9dc]">{stat.label}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="space-y-5" aria-labelledby="portfolio-summary-title">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+          <div>
+            <SectionEyebrow>Ringkasan portfolio</SectionEyebrow>
+            <h2 id="portfolio-summary-title" className="mt-2 text-2xl font-bold tracking-[-.04em] text-[#29445f]">Data yang membantu partner bergerak lebih cepat.</h2>
+          </div>
+          <span className="font-mono-ui text-[10px] font-bold uppercase tracking-[.14em] text-[#7b95aa]">{summaryQuery.isFetching ? "Memperbarui data" : "Data terbaru"}</span>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {summaryCards.map(({ label, value, detail, icon: Icon }) => (
+            <div key={label} className="rounded-2xl border border-[#dce7ef] bg-white p-5 soft-shadow">
+              <div className="flex items-center justify-between gap-3">
+                <span className="rounded-xl bg-[#eaf7fa] p-2.5 text-[#2d8aa4]"><Icon size={18} /></span>
+                <span className="font-mono-ui text-[10px] font-bold uppercase tracking-[.12em] text-[#98abba]">LIVE</span>
+              </div>
+              <p className="mt-5 font-mono-ui text-3xl font-bold tracking-[-.06em] text-[#214e78]">{value}</p>
+              <p className="mt-2 text-sm font-bold text-[#3b5871]">{label}</p>
+              <p className="mt-1 text-xs text-[#8295a6]">{detail}</p>
+            </div>
+          ))}
+        </div>
+        <div className="grid gap-5 rounded-2xl border border-[#dce7ef] bg-[#f8fbfd] p-5 sm:p-7 lg:grid-cols-[.8fr_1.2fr]">
+          <div>
+            <SectionEyebrow>Komposisi level</SectionEyebrow>
+            <h3 className="mt-2 text-xl font-bold tracking-[-.03em] text-[#29445f]">Kesiapan bahasa dalam satu pandangan.</h3>
+            <p className="mt-3 text-sm leading-6 text-[#71869a]">Distribusi level membantu partner melihat kedalaman talent pool sebelum membuka profil secara detail.</p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {(summary?.byLevel ?? ["A1", "A2", "B1", "B2"].map((level) => ({ level, count: 0 }))).map(({ level, count }) => (
+              <div key={level} className="rounded-xl border border-[#e0ebf0] bg-white p-4">
+                <p className="font-mono-ui text-xl font-bold text-[#246b91]">{count}</p>
+                <p className="mt-1 text-xs font-bold text-[#58748b]">Level {level}</p>
+                <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#e5f0f3]"><div className="h-full rounded-full bg-[#6bd2df]" style={{ width: `${summary?.totalStudents ? Math.max(8, (count / summary.totalStudents) * 100) : 8}%` }} /></div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -91,6 +177,57 @@ export default function Landing() {
           </div>
           <div className="mt-7 rounded-xl bg-[#f5f8fb] p-4 text-sm leading-6 text-[#5e748a]">Data kandidat dan rekam jejak hanya tersedia untuk partner yang telah mendapatkan akses. Masuk ke portal untuk melihat katalog siswa dan bukti kemampuan secara lengkap.</div>
           <Link href="/login" className="mt-7 inline-flex items-center gap-2 text-xs font-bold text-[#2464a0] hover:text-[#124d8c]" data-testid="link-landing-catalog">Masuk ke portal partner <LogIn size={14} /></Link>
+        </div>
+      </section>
+
+      <section className="space-y-5" aria-labelledby="partner-benefits-title">
+        <div>
+          <SectionEyebrow>Yang partner dapat</SectionEyebrow>
+          <h2 id="partner-benefits-title" className="mt-2 text-2xl font-bold tracking-[-.04em] text-[#29445f]">Bukan sekadar daftar nama.</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[#71869a]">Setiap data dirancang untuk menjawab pertanyaan penting partner: siapa kandidatnya, sudah sejauh apa progresnya, dan apa langkah berikutnya.</p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {partnerBenefits.map(({ icon: Icon, title, text }) => (
+            <div key={title} className="rounded-2xl border border-[#dce7ef] bg-white p-5 soft-shadow">
+              <Icon size={20} className="text-[#2b86a5]" />
+              <h3 className="mt-5 text-base font-bold text-[#31506b]">{title}</h3>
+              <p className="mt-2 text-sm leading-6 text-[#7890a4]">{text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="grid gap-6 lg:grid-cols-[.9fr_1.1fr]">
+        <div className="rounded-2xl bg-[#173b65] p-6 text-[#f4f8fc] shadow-[0_18px_40px_rgba(23,59,101,.14)] sm:p-8">
+          <SectionEyebrow>Alur kerja partner</SectionEyebrow>
+          <h2 className="mt-2 text-2xl font-bold tracking-[-.04em]">Dari pencarian sampai pengenalan.</h2>
+          <div className="mt-7 space-y-5">
+            {workflowSteps.map(({ number, title, text }) => (
+              <div key={number} className="flex gap-4 border-t border-[#456889] pt-5 first:border-t-0 first:pt-0">
+                <span className="font-mono-ui text-xs font-bold text-[#f5c36f]">{number}</span>
+                <div><h3 className="text-sm font-bold">{title}</h3><p className="mt-1 text-sm leading-6 text-[#b7cde0]">{text}</p></div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="rounded-2xl border border-[#dce7ef] bg-white p-6 soft-shadow sm:p-8">
+          <SectionEyebrow>Fokus penempatan</SectionEyebrow>
+          <h2 className="mt-2 text-2xl font-bold tracking-[-.04em] text-[#29445f]">Konteks program yang lebih jelas.</h2>
+          <div className="mt-7 grid gap-4 sm:grid-cols-3">
+            {placementPrograms.map(({ icon: Icon, title, text }) => (
+              <div key={title} className="rounded-xl bg-[#eef7fa] p-4">
+                <Icon size={19} className="text-[#2b86a5]" />
+                <h3 className="mt-4 text-sm font-bold text-[#31506b]">{title}</h3>
+                <p className="mt-2 text-xs leading-5 text-[#7890a4]">{text}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 border-t border-[#e6eef2] pt-5">
+            <p className="font-mono-ui text-[10px] font-bold uppercase tracking-[.14em] text-[#8ca1b1]">Program yang sudah tercatat</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {(summary?.programs ?? []).length ? summary?.programs.map(({ program, count }) => <span key={program} className="rounded-full bg-[#f2f7fa] px-3 py-2 text-xs font-semibold text-[#4b6c84]">{program} · {count}</span>) : <span className="text-sm text-[#7d93a4]">Data program akan muncul setelah portfolio tersedia.</span>}
+            </div>
+          </div>
         </div>
       </section>
 

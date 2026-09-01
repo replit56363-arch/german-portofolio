@@ -26,6 +26,8 @@ import type {
   HealthStatus,
   ListStudentsParams,
   LoginInput,
+  SiteContent,
+  SiteContentUpdate,
   Student,
   StudentInput,
   StudentUpdate
@@ -806,4 +808,152 @@ export function useGetDashboardSummary<TData = Awaited<ReturnType<typeof getDash
 
 
 
+
+export const getGetSiteContentUrl = () => {
+
+
+
+
+  return `/api/site-content`
+}
+
+/**
+ * @summary Get editable landing page content
+ */
+export const getSiteContent = async ( options?: Parameters<typeof customFetch>[1]): Promise<SiteContent> => {
+
+  return customFetch<SiteContent>(getGetSiteContentUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetSiteContentQueryKey = () => {
+    return [
+    `/api/site-content`
+    ] as const;
+    }
+
+
+export const getGetSiteContentQueryOptions = <TData = Awaited<ReturnType<typeof getSiteContent>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSiteContent>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSiteContentQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSiteContent>>> = ({ signal }) => getSiteContent({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSiteContent>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetSiteContentQueryResult = NonNullable<Awaited<ReturnType<typeof getSiteContent>>>
+export type GetSiteContentQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get editable landing page content
+ */
+
+export function useGetSiteContent<TData = Awaited<ReturnType<typeof getSiteContent>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSiteContent>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetSiteContentQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateSiteContentUrl = () => {
+
+
+
+
+  return `/api/site-content`
+}
+
+/**
+ * @summary Update editable landing page content
+ */
+export const updateSiteContent = async (siteContentUpdate: SiteContentUpdate, options?: Parameters<typeof customFetch>[1]): Promise<SiteContent> => {
+
+  return customFetch<SiteContent>(getUpdateSiteContentUrl(),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(siteContentUpdate)
+  }
+);}
+
+
+
+
+
+export const getUpdateSiteContentMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateSiteContent>>, TError,{data: BodyType<SiteContentUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateSiteContent>>, TError,{data: BodyType<SiteContentUpdate>}, TContext> => {
+
+const mutationKey = ['updateSiteContent'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateSiteContent>>, {data: BodyType<SiteContentUpdate>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateSiteContent(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateSiteContentMutationResult = NonNullable<Awaited<ReturnType<typeof updateSiteContent>>>
+    export type UpdateSiteContentMutationBody = BodyType<SiteContentUpdate>
+    export type UpdateSiteContentMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Update editable landing page content
+ */
+export const useUpdateSiteContent = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateSiteContent>>, TError,{data: BodyType<SiteContentUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateSiteContent>>,
+        TError,
+        {data: BodyType<SiteContentUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateSiteContentMutationOptions(options));
+    }
 

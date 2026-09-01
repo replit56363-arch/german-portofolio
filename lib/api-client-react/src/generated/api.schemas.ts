@@ -205,6 +205,65 @@ export interface DashboardSummary {
   recentStudents: Student[];
 }
 
+export interface SiteContent {
+  id: number;
+  eyebrow: string;
+  title: string;
+  description: string;
+  primaryCta: string;
+  secondaryCta: string;
+  introLabel: string;
+  introText: string;
+  statOneValue: string;
+  statOneLabel: string;
+  statTwoValue: string;
+  statTwoLabel: string;
+  statThreeValue: string;
+  statThreeLabel: string;
+  statFourValue: string;
+  statFourLabel: string;
+  trustTitle: string;
+  trustText: string;
+  updatedAt: string;
+}
+
+export interface SiteContentUpdate {
+  /** @minLength 1 */
+  eyebrow?: string;
+  /** @minLength 1 */
+  title?: string;
+  /** @minLength 1 */
+  description?: string;
+  /** @minLength 1 */
+  primaryCta?: string;
+  /** @minLength 1 */
+  secondaryCta?: string;
+  /** @minLength 1 */
+  introLabel?: string;
+  /** @minLength 1 */
+  introText?: string;
+  /** @minLength 1 */
+  statOneValue?: string;
+  /** @minLength 1 */
+  statOneLabel?: string;
+  /** @minLength 1 */
+  statTwoValue?: string;
+  /** @minLength 1 */
+  statTwoLabel?: string;
+  /** @minLength 1 */
+  statThreeValue?: string;
+  /** @minLength 1 */
+  statThreeLabel?: string;
+  /** @minLength 1 */
+  statFourValue?: string;
+  /** @minLength 1 */
+  statFourLabel?: string;
+  /** @minLength 1 */
+  trustTitle?: string;
+  /** @minLength 1 */
+  trustText?: string;
+}
+
 export type ListStudentsParams = {
 level?: ListStudentsLevel;
 status?: ListStudentsStatus;

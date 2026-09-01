@@ -23,7 +23,7 @@ Private B2B portfolio and track-record workspace for a German language institute
 ## Where things live
 
 - `artifacts/german-student-portfolio/src/` — React pages, shared shell, forms, and theme.
-- `artifacts/api-server/src/routes/` — Express auth, student CRUD, and dashboard summary routes.
+- `artifacts/api-server/src/routes/` — Express auth, student CRUD, dashboard summary, and editable landing content routes.
 - `lib/api-spec/openapi.yaml` — source of truth for generated API client and validation schemas.
 - `lib/db/src/schema/portfolio.ts` — PostgreSQL/Drizzle tables for admins, sessions, and students.
 
@@ -37,10 +37,12 @@ Private B2B portfolio and track-record workspace for a German language institute
 ## Product
 
 - Private admin login for the course team.
+- Internal landing page with database-backed copy and calls to action managed by admins.
 - Overview of total learners, German level composition, placement readiness, and cohort success.
 - Searchable student catalog with level/status/cohort filters.
 - Detailed student evidence pages for speaking video, certificates, level history, and placement details.
 - Admin create/edit/delete workflows for student records.
+- Admin content editor for the internal landing page.
 
 ## User preferences
 

@@ -4,7 +4,8 @@ import { ErrorBoundary } from "@/components/error-boundary";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppShell } from "@/components/app-shell";
-import Dashboard from "@/pages/dashboard";
+import Landing from "@/pages/landing";
+import ContentEditor from "@/pages/content-editor";
 import Login from "@/pages/login";
 import NotFound from "@/pages/not-found";
 import Students from "@/pages/students";
@@ -21,7 +22,10 @@ function Router() {
       <Switch>
         <Route path="/login" component={Login} />
         <Route path="/">
-          <AppShell><Dashboard /></AppShell>
+          <AppShell><Landing /></AppShell>
+        </Route>
+        <Route path="/admin/content">
+          <AppShell><ContentEditor /></AppShell>
         </Route>
         <Route path="/students">
           <AppShell><Students /></AppShell>

@@ -16,6 +16,8 @@ tags:
     description: Student portfolio records
   - name: dashboard
     description: Portfolio summary metrics
+  - name: site-content
+    description: Editable internal landing page content
 paths:
   /healthz:
     get:
@@ -190,6 +192,35 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DashboardSummary"
+  /site-content:
+    get:
+      operationId: getSiteContent
+      tags: [site-content]
+      summary: Get editable landing page content
+      responses:
+        "200":
+          description: Landing page content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteContent"
+    patch:
+      operationId: updateSiteContent
+      tags: [site-content]
+      summary: Update editable landing page content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SiteContentUpdate"
+      responses:
+        "200":
+          description: Updated landing page content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteContent"
 components:
   schemas:
     HealthStatus:
@@ -407,4 +438,102 @@ components:
           items:
             $ref: "#/components/schemas/Student"
       required: [totalStudents, readyToPlace, placedStudents, placementRate, byLevel, byPeriod, recentStudents]
+    SiteContent:
+      type: object
+      properties:
+        id:
+          type: integer
+        eyebrow:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        primaryCta:
+          type: string
+        secondaryCta:
+          type: string
+        introLabel:
+          type: string
+        introText:
+          type: string
+        statOneValue:
+          type: string
+        statOneLabel:
+          type: string
+        statTwoValue:
+          type: string
+        statTwoLabel:
+          type: string
+        statThreeValue:
+          type: string
+        statThreeLabel:
+          type: string
+        statFourValue:
+          type: string
+        statFourLabel:
+          type: string
+        trustTitle:
+          type: string
+        trustText:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        [id, eyebrow, title, description, primaryCta, secondaryCta, introLabel, introText, statOneValue, statOneLabel, statTwoValue, statTwoLabel, statThreeValue, statThreeLabel, statFourValue, statFourLabel, trustTitle, trustText, updatedAt]
+    SiteContentUpdate:
+      type: object
+      properties:
+        eyebrow:
+          type: string
+          minLength: 1
+        title:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          minLength: 1
+        primaryCta:
+          type: string
+          minLength: 1
+        secondaryCta:
+          type: string
+          minLength: 1
+        introLabel:
+          type: string
+          minLength: 1
+        introText:
+          type: string
+          minLength: 1
+        statOneValue:
+          type: string
+          minLength: 1
+        statOneLabel:
+          type: string
+          minLength: 1
+        statTwoValue:
+          type: string
+          minLength: 1
+        statTwoLabel:
+          type: string
+          minLength: 1
+        statThreeValue:
+          type: string
+          minLength: 1
+        statThreeLabel:
+          type: string
+          minLength: 1
+        statFourValue:
+          type: string
+          minLength: 1
+        statFourLabel:
+          type: string
+          minLength: 1
+        trustTitle:
+          type: string
+          minLength: 1
+        trustText:
+          type: string
+          minLength: 1
 

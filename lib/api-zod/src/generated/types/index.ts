@@ -21,6 +21,8 @@ export * from './loginInput';
 export * from './periodStat';
 export * from './placement';
 export * from './placementProgram';
+export * from './siteContent';
+export * from './siteContentUpdate';
 export * from './student';
 export * from './studentInput';
 export * from './studentInputLevel';

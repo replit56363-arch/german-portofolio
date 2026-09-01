@@ -304,3 +304,94 @@ export const GetDashboardSummaryResponse = zod.object({
 })
 
 
+/**
+ * @summary Get editable landing page content
+ */
+export const GetSiteContentResponse = zod.object({
+  "id": zod.int(),
+  "eyebrow": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "primaryCta": zod.string(),
+  "secondaryCta": zod.string(),
+  "introLabel": zod.string(),
+  "introText": zod.string(),
+  "statOneValue": zod.string(),
+  "statOneLabel": zod.string(),
+  "statTwoValue": zod.string(),
+  "statTwoLabel": zod.string(),
+  "statThreeValue": zod.string(),
+  "statThreeLabel": zod.string(),
+  "statFourValue": zod.string(),
+  "statFourLabel": zod.string(),
+  "trustTitle": zod.string(),
+  "trustText": zod.string(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Update editable landing page content
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const UpdateSiteContentBody = zod.object({
+  "eyebrow": zod.string().min(1).optional(),
+  "title": zod.string().min(1).optional(),
+  "description": zod.string().min(1).optional(),
+  "primaryCta": zod.string().min(1).optional(),
+  "secondaryCta": zod.string().min(1).optional(),
+  "introLabel": zod.string().min(1).optional(),
+  "introText": zod.string().min(1).optional(),
+  "statOneValue": zod.string().min(1).optional(),
+  "statOneLabel": zod.string().min(1).optional(),
+  "statTwoValue": zod.string().min(1).optional(),
+  "statTwoLabel": zod.string().min(1).optional(),
+  "statThreeValue": zod.string().min(1).optional(),
+  "statThreeLabel": zod.string().min(1).optional(),
+  "statFourValue": zod.string().min(1).optional(),
+  "statFourLabel": zod.string().min(1).optional(),
+  "trustTitle": zod.string().min(1).optional(),
+  "trustText": zod.string().min(1).optional()
+})
+
+export const UpdateSiteContentResponse = zod.object({
+  "id": zod.int(),
+  "eyebrow": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "primaryCta": zod.string(),
+  "secondaryCta": zod.string(),
+  "introLabel": zod.string(),
+  "introText": zod.string(),
+  "statOneValue": zod.string(),
+  "statOneLabel": zod.string(),
+  "statTwoValue": zod.string(),
+  "statTwoLabel": zod.string(),
+  "statThreeValue": zod.string(),
+  "statThreeLabel": zod.string(),
+  "statFourValue": zod.string(),
+  "statFourLabel": zod.string(),
+  "trustTitle": zod.string(),
+  "trustText": zod.string(),
+  "updatedAt": zod.coerce.date()
+})
+
+

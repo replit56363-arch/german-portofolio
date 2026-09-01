@@ -1,11 +1,12 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { useGetCurrentAdmin, useLogout, getGetCurrentAdminQueryKey } from "@workspace/api-client-react";
-import { LayoutDashboard, LogOut, Menu, Plus, Search, Settings2, Users, X } from "lucide-react";
+import { FilePenLine, LayoutDashboard, LogOut, Menu, Plus, Search, Settings2, Users, X } from "lucide-react";
 
 const navigation = [
   { href: "/", label: "Übersicht", icon: LayoutDashboard },
   { href: "/students", label: "Studierende", icon: Users },
+  { href: "/admin/content", label: "Konten landing", icon: FilePenLine },
 ];
 
 export function AppMark({ compact = false }: { compact?: boolean }) {
@@ -87,7 +88,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
           <div className="flex items-center gap-3">
             <Link href="/students" className="hidden items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-[#536a84] hover:bg-white sm:flex" data-testid="link-search-students"><Search size={16} /> Cari student</Link>
-            <button type="button" className="rounded-xl border border-[#d8e4ef] bg-white p-2.5 text-[#536a84] hover:border-[#b8cadc]" aria-label="Pengaturan" data-testid="button-settings"><Settings2 size={17} /></button>
+            <Link href="/admin/content" className="rounded-xl border border-[#d8e4ef] bg-white p-2.5 text-[#536a84] hover:border-[#b8cadc]" aria-label="Pengaturan konten" data-testid="button-settings"><Settings2 size={17} /></Link>
           </div>
         </header>
         <div className="mx-auto max-w-[1500px] px-5 py-7 sm:px-8 lg:px-10 lg:py-9">{children}</div>

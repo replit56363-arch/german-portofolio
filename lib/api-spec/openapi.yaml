@@ -10,6 +10,12 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Admin authentication
+  - name: students
+    description: Student portfolio records
+  - name: dashboard
+    description: Portfolio summary metrics
 paths:
   /healthz:
     get:
@@ -24,6 +30,166 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Sign in as an admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSession"
+        "401":
+          description: Invalid credentials
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Sign out the current admin
+      responses:
+        "204":
+          description: Signed out
+  /auth/me:
+    get:
+      operationId: getCurrentAdmin
+      tags: [auth]
+      summary: Get the current admin session
+      responses:
+        "200":
+          description: Current admin
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Admin"
+        "401":
+          description: Not authenticated
+  /students:
+    get:
+      operationId: listStudents
+      tags: [students]
+      summary: List student portfolios
+      parameters:
+        - in: query
+          name: level
+          schema:
+            type: string
+            enum: [A1, A2, B1, B2]
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [training, ready, placed]
+        - in: query
+          name: cohort
+          schema:
+            type: string
+        - in: query
+          name: search
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Student list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Student"
+    post:
+      operationId: createStudent
+      tags: [students]
+      summary: Create a student portfolio
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentInput"
+      responses:
+        "201":
+          description: Created student
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+  /students/{id}:
+    get:
+      operationId: getStudent
+      tags: [students]
+      summary: Get a student portfolio
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Student portfolio
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+        "404":
+          description: Student not found
+    patch:
+      operationId: updateStudent
+      tags: [students]
+      summary: Update a student portfolio
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentUpdate"
+      responses:
+        "200":
+          description: Updated student
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+    delete:
+      operationId: deleteStudent
+      tags: [students]
+      summary: Delete a student portfolio
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get portfolio summary metrics
+      responses:
+        "200":
+          description: Portfolio dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +199,212 @@ components:
           type: string
       required:
         - status
+    Admin:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+      required: [id, email, name]
+    LoginInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 1
+      required: [email, password]
+    AuthSession:
+      type: object
+      properties:
+        admin:
+          $ref: "#/components/schemas/Admin"
+      required: [admin]
+    Student:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        initials:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        photoUrl:
+          type: ["string", "null"]
+        level:
+          type: string
+          enum: [A1, A2, B1, B2]
+        status:
+          type: string
+          enum: [training, ready, placed]
+        cohort:
+          type: string
+        joinedAt:
+          type: string
+          format: date
+        bio:
+          type: ["string", "null"]
+        speakingVideoUrl:
+          type: ["string", "null"]
+        certificateName:
+          type: ["string", "null"]
+        certificateUrl:
+          type: ["string", "null"]
+        levelHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/LevelHistory"
+        placement:
+          oneOf:
+            - $ref: "#/components/schemas/Placement"
+            - type: "null"
+      required:
+        [id, name, initials, email, photoUrl, level, status, cohort, joinedAt, levelHistory]
+    StudentInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 2
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        photoUrl:
+          type: string
+        level:
+          type: string
+          enum: [A1, A2, B1, B2]
+        status:
+          type: string
+          enum: [training, ready, placed]
+        cohort:
+          type: string
+        joinedAt:
+          type: string
+          format: date
+        bio:
+          type: string
+        speakingVideoUrl:
+          type: string
+        certificateName:
+          type: string
+        certificateUrl:
+          type: string
+        placement:
+          $ref: "#/components/schemas/Placement"
+      required: [name, email, level, status, cohort, joinedAt]
+    StudentUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 2
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        photoUrl:
+          type: string
+        level:
+          type: string
+          enum: [A1, A2, B1, B2]
+        status:
+          type: string
+          enum: [training, ready, placed]
+        cohort:
+          type: string
+        joinedAt:
+          type: string
+          format: date
+        bio:
+          type: string
+        speakingVideoUrl:
+          type: string
+        certificateName:
+          type: string
+        certificateUrl:
+          type: string
+        placement:
+          $ref: "#/components/schemas/Placement"
+    LevelHistory:
+      type: object
+      properties:
+        level:
+          type: string
+          enum: [A1, A2, B1, B2]
+        completedAt:
+          type: string
+          format: date
+        score:
+          type: ["integer", "null"]
+      required: [level, completedAt]
+    Placement:
+      type: object
+      properties:
+        country:
+          type: string
+        program:
+          type: string
+          enum: [Ausbildung, Arbeit, Praktikum]
+        company:
+          type: string
+        placedAt:
+          type: string
+          format: date
+      required: [country, program, placedAt]
+    LevelCount:
+      type: object
+      properties:
+        level:
+          type: string
+          enum: [A1, A2, B1, B2]
+        count:
+          type: integer
+      required: [level, count]
+    PeriodStat:
+      type: object
+      properties:
+        period:
+          type: string
+        total:
+          type: integer
+        placed:
+          type: integer
+      required: [period, total, placed]
+    DashboardSummary:
+      type: object
+      properties:
+        totalStudents:
+          type: integer
+        readyToPlace:
+          type: integer
+        placedStudents:
+          type: integer
+        placementRate:
+          type: number
+        byLevel:
+          type: array
+          items:
+            $ref: "#/components/schemas/LevelCount"
+        byPeriod:
+          type: array
+          items:
+            $ref: "#/components/schemas/PeriodStat"
+        recentStudents:
+          type: array
+          items:
+            $ref: "#/components/schemas/Student"
+      required: [totalStudents, readyToPlace, placedStudents, placementRate, byLevel, byPeriod, recentStudents]
 

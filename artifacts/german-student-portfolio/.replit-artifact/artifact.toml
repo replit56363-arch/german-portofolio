@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "German Student Portfolio"
+description = "A private B2B portfolio and track-record application for a German language institute to share student language evidence with placement agencies, German employers, and Ausbildung partners."
+version = "1.0.0"
+id = "artifacts/german-student-portfolio"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 20533
+
+[services.development]
+run = "pnpm --filter @workspace/german-student-portfolio run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/german-student-portfolio", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/german-student-portfolio/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20533"
+BASE_PATH = "/"

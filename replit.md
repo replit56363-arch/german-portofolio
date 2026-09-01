@@ -1,6 +1,6 @@
-# [Project name]
+# German Student Portfolio
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Private B2B portfolio and track-record workspace for a German language institute to share verified student readiness with placement partners.
 
 ## Run & Operate
 
@@ -22,23 +22,35 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/german-student-portfolio/src/` — React pages, shared shell, forms, and theme.
+- `artifacts/api-server/src/routes/` — Express auth, student CRUD, and dashboard summary routes.
+- `lib/api-spec/openapi.yaml` — source of truth for generated API client and validation schemas.
+- `lib/db/src/schema/portfolio.ts` — PostgreSQL/Drizzle tables for admins, sessions, and students.
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Admin access uses email/password with server-side scrypt password hashes and database-backed, httpOnly sessions.
+- Student evidence stores profile/media/certificate references as URLs so large media files do not enter PostgreSQL.
+- Student level progress is retained as a JSON history and automatically appends a milestone when the level changes.
+- Dashboard metrics are calculated from the same student records used by the catalog to keep the overview consistent.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Private admin login for the course team.
+- Overview of total learners, German level composition, placement readiness, and cohort success.
+- Searchable student catalog with level/status/cohort filters.
+- Detailed student evidence pages for speaking video, certificates, level history, and placement details.
+- Admin create/edit/delete workflows for student records.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- The user requested ReactJS + ExpressJS + PostgreSQL, with admin email/password login only and no Clerk or Google login.
+- The visual direction is clean, modern, elegant, and centered on white and blue.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- The demo admin is `admin@sprachraum.de` with password `Demo1234!`; replace it before production use.
+- The web artifact and API server are separate managed workflows and both must be running for the preview to work.
 
 ## Pointers
 

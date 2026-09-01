@@ -4,12 +4,14 @@ Private B2B portfolio and track-record workspace for a German language institute
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm install` — install all workspace dependencies
+- `pnpm --filter @workspace/german-student-portfolio run dev` — run the web preview (workflow port 20533)
+- `pnpm --filter @workspace/api-server run dev` — run the API server (workflow port 8080)
 - `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
+- `pnpm --filter @workspace/german-student-portfolio run build` — build the web artifact
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- `DATABASE_URL` — Postgres connection string for the database-backed run; the app can fall back to its in-memory demo store when it is absent
 
 ## Stack
 
@@ -52,7 +54,8 @@ Private B2B portfolio and track-record workspace for a German language institute
 ## Gotchas
 
 - The demo admin is `admin@sprachraum.de` with password `Demo1234!`; replace it before production use.
-- The web artifact and API server are separate managed workflows and both must be running for the preview to work.
+- The web artifact and API server are separate managed workflows and both must be running for the preview to load dynamic content.
+- The web workflow proxies `/api` requests to the API workflow on port 8080 during development.
 
 ## Pointers
 

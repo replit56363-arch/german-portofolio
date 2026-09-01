@@ -1,1 +1,2 @@
 - [Orval/Zod compatibility](orval-zod-compatibility.md) — keep generated validation syntax aligned with the workspace Zod major version.
+- [pnpm workspace resolution](pnpm-workspace-resolution.md) — imported pnpm monorepos need explicit workspace metadata and internal workspace ranges.

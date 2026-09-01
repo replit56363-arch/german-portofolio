@@ -1,0 +1,6 @@
+{
+  "name": "German Student Portfolio",
+  "description": "Private B2B portfolio and track-record workspace for a German language institute to share verified student readiness with placement partners.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -45,7 +45,11 @@ export async function requireAdmin(request: Request, response: Response, next: N
     response.locals.admin = admin;
     next();
   } catch (error) {
-    request.log.error({ error }, "Unable to resolve admin session");
+    if ((request as any).log?.error) {
+      (request as any).log.error({ error }, "Unable to resolve admin session");
+    } else {
+      console.error("Unable to resolve admin session", error);
+    }
     response.status(500).json({ error: "Unable to check authentication" });
   }
 }

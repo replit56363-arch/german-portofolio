@@ -5,7 +5,6 @@ import { UpdateSiteContentBody } from "@workspace/api-zod";
 import { requireAdmin } from "./portfolio-utils";
 
 const router: IRouter = Router();
-router.use(requireAdmin);
 
 const defaultContent = {
   eyebrow: "Lernpfad · Partner portfolio",
@@ -35,7 +34,7 @@ router.get("/site-content", async (_request, response) => {
   response.json(content);
 });
 
-router.patch("/site-content", async (request, response) => {
+router.patch("/site-content", requireAdmin, async (request, response) => {
   const parsed = UpdateSiteContentBody.safeParse(request.body);
   if (!parsed.success) {
     response.status(400).json({ error: "Konten belum lengkap.", details: parsed.error.flatten() });

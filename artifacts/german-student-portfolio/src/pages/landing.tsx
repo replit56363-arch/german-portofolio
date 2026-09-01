@@ -1,7 +1,7 @@
-import { ArrowDownRight, ArrowUpRight, BriefcaseBusiness, CheckCircle2, FileText, ShieldCheck, UsersRound } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, BriefcaseBusiness, CheckCircle2, FileText, LogIn, ShieldCheck, UsersRound } from "lucide-react";
 import { Link } from "wouter";
-import { useGetDashboardSummary, getGetDashboardSummaryQueryKey, useGetSiteContent, getGetSiteContentQueryKey } from "@workspace/api-client-react";
-import { SectionEyebrow, StatusPill, StudentAvatar } from "@/components/portfolio-ui";
+import { useGetSiteContent, getGetSiteContentQueryKey } from "@workspace/api-client-react";
+import { SectionEyebrow } from "@/components/portfolio-ui";
 
 function LandingSkeleton() {
   return (
@@ -29,13 +29,11 @@ function LandingError({ retry }: { retry: () => void }) {
 
 export default function Landing() {
   const contentQuery = useGetSiteContent({ query: { queryKey: getGetSiteContentQueryKey() } });
-  const summaryQuery = useGetDashboardSummary({ query: { queryKey: getGetDashboardSummaryQueryKey() } });
 
   if (contentQuery.isLoading) return <LandingSkeleton />;
   if (contentQuery.isError || !contentQuery.data) return <LandingError retry={() => void contentQuery.refetch()} />;
 
   const content = contentQuery.data;
-  const summary = summaryQuery.data;
   const contentStats = [
     { value: content.statOneValue, label: content.statOneLabel, tone: "cyan" },
     { value: content.statTwoValue, label: content.statTwoLabel, tone: "amber" },
@@ -54,8 +52,8 @@ export default function Landing() {
           <h1 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.05] tracking-[-.06em] text-[#fbfdff] sm:text-5xl lg:text-[4.2rem]" data-testid="text-landing-title">{content.title}</h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-[#bad0e3] sm:text-lg" data-testid="text-landing-description">{content.description}</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/students" className="inline-flex w-fit items-center justify-center gap-2 rounded-xl bg-[#f5c36f] px-5 py-3.5 text-sm font-bold text-[#253d5a] transition-transform hover:-translate-y-0.5" data-testid="link-landing-primary-cta">{content.primaryCta}<ArrowUpRight size={17} /></Link>
-            <Link href="/admin/content" className="inline-flex w-fit items-center justify-center gap-2 rounded-xl border border-[#6283a0] px-5 py-3.5 text-sm font-bold text-[#e6f1f8] transition-colors hover:bg-[#234d77]" data-testid="link-landing-secondary-cta">{content.secondaryCta}<ArrowDownRight size={16} /></Link>
+            <Link href="/login" className="inline-flex w-fit items-center justify-center gap-2 rounded-xl bg-[#f5c36f] px-5 py-3.5 text-sm font-bold text-[#253d5a] transition-transform hover:-translate-y-0.5" data-testid="link-landing-primary-cta">{content.primaryCta}<ArrowUpRight size={17} /></Link>
+            <Link href="/login" className="inline-flex w-fit items-center justify-center gap-2 rounded-xl border border-[#6283a0] px-5 py-3.5 text-sm font-bold text-[#e6f1f8] transition-colors hover:bg-[#234d77]" data-testid="link-landing-secondary-cta">{content.secondaryCta}<ArrowDownRight size={16} /></Link>
           </div>
         </div>
         <div className="relative mt-9 grid max-w-2xl grid-cols-2 gap-2 border-t border-[#507496] pt-5 sm:grid-cols-4 sm:gap-5 rise-in rise-in-delay-1">
@@ -89,20 +87,10 @@ export default function Landing() {
         <div className="rounded-2xl border border-[#dce7ef] bg-white p-6 soft-shadow sm:p-8 rise-in rise-in-delay-2">
           <div className="flex items-start justify-between gap-4">
             <div><SectionEyebrow>Snapshot saat ini</SectionEyebrow><h2 className="mt-1 text-xl font-bold tracking-[-.03em] text-[#29445f]">Sinyal placement</h2></div>
-            <span className="rounded-full bg-[#e5f7f2] px-2.5 py-1 font-mono-ui text-[9px] font-bold tracking-[.12em] text-[#21765f]">LIVE</span>
+            <span className="rounded-full bg-[#e8f2fd] px-2.5 py-1 font-mono-ui text-[9px] font-bold tracking-[.12em] text-[#28629c]">PRIVATE</span>
           </div>
-          {summaryQuery.isLoading ? (
-            <div className="mt-7 space-y-4"><div className="h-10 rounded-xl shimmer" /><div className="h-10 rounded-xl shimmer" /><div className="h-10 rounded-xl shimmer" /></div>
-          ) : summary ? (
-            <div className="mt-7 space-y-5">
-              <div><div className="mb-2 flex justify-between text-xs"><span className="font-semibold text-[#647c92]">Total profil aktif</span><strong className="font-mono-ui text-[#24527b]" data-testid="metric-landing-total">{summary.totalStudents}</strong></div><div className="h-2 overflow-hidden rounded-full bg-[#edf2f5]"><div className="h-full rounded-full bg-[#56b8d0]" style={{ width: `${Math.min(summary.totalStudents * 5, 100)}%` }} /></div></div>
-              <div><div className="mb-2 flex justify-between text-xs"><span className="font-semibold text-[#647c92]">Siap dikenalkan</span><strong className="font-mono-ui text-[#217760]" data-testid="metric-landing-ready">{summary.readyToPlace}</strong></div><div className="h-2 overflow-hidden rounded-full bg-[#edf2f5]"><div className="h-full rounded-full bg-[#55b997]" style={{ width: `${summary.totalStudents ? Math.min((summary.readyToPlace / summary.totalStudents) * 100, 100) : 0}%` }} /></div></div>
-              <div className="flex items-center justify-between border-t border-[#e7eef3] pt-4"><span className="text-xs font-semibold text-[#647c92]">Placement rate</span><span className="font-mono-ui text-lg font-bold text-[#d08c35]" data-testid="metric-landing-placement-rate">{summary.placementRate}%</span></div>
-            </div>
-          ) : (
-            <div className="mt-7 rounded-xl bg-[#fff8ec] p-4 text-xs leading-5 text-[#8d723f]" data-testid="status-landing-summary-unavailable">Ringkasan live sedang tidak tersedia. Konten landing tetap dapat digunakan.</div>
-          )}
-          <Link href="/students" className="mt-7 inline-flex items-center gap-2 text-xs font-bold text-[#2464a0] hover:text-[#124d8c]" data-testid="link-landing-catalog">Buka katalog siswa <ArrowUpRight size={14} /></Link>
+          <div className="mt-7 rounded-xl bg-[#f5f8fb] p-4 text-sm leading-6 text-[#5e748a]">Data kandidat dan rekam jejak hanya tersedia untuk partner yang telah mendapatkan akses. Masuk ke portal untuk melihat katalog siswa dan bukti kemampuan secara lengkap.</div>
+          <Link href="/login" className="mt-7 inline-flex items-center gap-2 text-xs font-bold text-[#2464a0] hover:text-[#124d8c]" data-testid="link-landing-catalog">Masuk ke portal partner <LogIn size={14} /></Link>
         </div>
       </section>
 
@@ -114,20 +102,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {summary && summary.recentStudents.length > 0 && (
-        <section className="rounded-2xl border border-[#dce7ef] bg-white p-6 soft-shadow sm:p-8">
-          <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-end"><div><SectionEyebrow>Profil terbaru</SectionEyebrow><h2 className="mt-1 text-xl font-bold tracking-[-.03em] text-[#29445f]">Kenali kandidat berikutnya</h2></div><Link href="/students" className="inline-flex items-center gap-1 text-xs font-bold text-[#2464a0]" data-testid="link-landing-recent-view">Lihat seluruh katalog <ArrowUpRight size={14} /></Link></div>
-          <div className="mt-6 grid gap-3 md:grid-cols-3">
-            {summary.recentStudents.slice(0, 3).map((student) => (
-              <Link key={student.id} href={`/students/${student.id}`} className="group flex items-center gap-3 rounded-xl border border-[#e7eef3] p-3 transition-colors hover:border-[#b8dce5] hover:bg-[#f6fcfd]" data-testid={`card-landing-student-${student.id}`}>
-                <StudentAvatar student={student} size="sm" />
-                <div className="min-w-0 flex-1"><p className="truncate text-sm font-bold text-[#2e4863] group-hover:text-[#1458a7]">{student.name}</p><div className="mt-1 flex items-center gap-2"><span className="font-mono-ui text-[10px] text-[#68839a]">{student.level}</span><StatusPill status={student.status} /></div></div>
-                <ArrowUpRight size={15} className="shrink-0 text-[#a5b8c7]" />
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 }

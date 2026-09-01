@@ -17,7 +17,7 @@ export default function Login() {
     login.mutate({ data: { email, password } }, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: getGetCurrentAdminQueryKey() });
-        setLocation("/");
+         setLocation("/dashboard");
       },
     });
   };

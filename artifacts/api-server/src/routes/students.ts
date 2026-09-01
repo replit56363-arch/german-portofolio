@@ -11,7 +11,7 @@ import {
 import { requireAdmin, serializeStudent } from "./portfolio-utils";
 
 const router: IRouter = Router();
-router.use(requireAdmin);
+router.use("/students", requireAdmin);
 function normalizePlacement(placement: typeof CreateStudentBody._output["placement"] | typeof UpdateStudentBody._output["placement"]) {
   if (placement === undefined || placement === null) return placement;
   return { ...placement, placedAt: placement.placedAt.toISOString().slice(0, 10) };

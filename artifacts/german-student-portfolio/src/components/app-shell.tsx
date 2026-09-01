@@ -4,7 +4,7 @@ import { useGetCurrentAdmin, useLogout, getGetCurrentAdminQueryKey } from "@work
 import { FilePenLine, LayoutDashboard, LogOut, Menu, Plus, Search, Settings2, Users, X } from "lucide-react";
 
 const navigation = [
-  { href: "/", label: "Übersicht", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Übersicht", icon: LayoutDashboard },
   { href: "/students", label: "Studierende", icon: Users },
   { href: "/admin/content", label: "Konten landing", icon: FilePenLine },
 ];

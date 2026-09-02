@@ -1,4 +1,5 @@
 import { drizzle } from "drizzle-orm/node-postgres";
+import { eq } from "drizzle-orm";
 import pg from "pg";
 import { scryptSync, randomBytes } from "node:crypto";
 import * as schema from "./schema";
@@ -26,23 +27,23 @@ const initialAdmins = [
 const initialSiteContent = [
   {
     id: 1,
-    eyebrow: "Lernpfad · Partner portfolio",
-    title: "Bukti kesiapan, lebih dekat.",
-    description: "Ruang kerja untuk mengelola portofolio bahasa siswa dan menghubungkan talenta siap kerja dengan partner Jerman.",
-    primaryCta: "Lihat katalog siswa",
-    secondaryCta: "Kelola konten halaman",
-    introLabel: "Satu profil. Lebih banyak peluang.",
-    introText: "Kami mendampingi siswa dari fondasi A1 hingga kesiapan profesional B2, dengan bukti kemampuan yang mudah dipahami partner.",
+    eyebrow: "Lernpfad · Talent bridging Indonesia — Jerman",
+    title: "Orang yang tepat, jalan yang jelas.",
+    description: "Lernpfad membantu perusahaan di Jerman menemukan peserta Ausbildung dan tenaga layanan yang siap tumbuh — lalu mendampingi mereka dari Indonesia sampai merasa di rumah.",
+    primaryCta: "Cari talenta untuk tim Anda",
+    secondaryCta: "Kenali pendekatan kami",
+    introLabel: "Lebih dari penempatan",
+    introText: "Kami merawat perjalanan, bukan hanya keberangkatan. Setiap tahap dipahami, dibicarakan, dan dipersiapkan bersama.",
     statOneValue: "A1–B2",
-    statOneLabel: "Level terukur",
-    statTwoValue: "100%",
-    statTwoLabel: "Profil terdokumentasi",
-    statThreeValue: "1:1",
-    statThreeLabel: "Pendampingan karier",
-    statFourValue: "DE",
-    statFourLabel: "Fokus penempatan",
-    trustTitle: "Portofolio yang siap dibagikan.",
-    trustText: "Gunakan data ini sebagai dasar percakapan yang lebih cepat, terarah, dan percaya diri bersama partner penempatan.",
+    statOneLabel: "Pelatihan terarah",
+    statTwoValue: "1:1",
+    statTwoLabel: "Pendampingan dekat",
+    statThreeValue: "ID × DE",
+    statThreeLabel: "Satu arah lintas negara",
+    statFourValue: "6",
+    statFourLabel: "Profil dalam portfolio",
+    trustTitle: "Membuka jalan yang lebih manusiawi.",
+    trustText: "Gunakan portfolio dan proses yang transparan untuk memulai percakapan kerja yang lebih percaya diri bersama kandidat Indonesia.",
     updatedAt: new Date(),
   },
 ];
@@ -436,6 +437,13 @@ export async function seedDevelopmentData() {
   const [existingStudents] = await db.select({ id: studentsTable.id }).from(studentsTable).limit(1);
   if (!existingStudents) {
     await db.insert(studentsTable).values(initialStudents);
+  }
+
+  const [existingContent] = await db.select({ id: siteContentTable.id, title: siteContentTable.title }).from(siteContentTable).limit(1);
+  if (!existingContent) {
+    await db.insert(siteContentTable).values(initialSiteContent);
+  } else if (existingContent.title === "Bukti kesiapan, lebih dekat.") {
+    await db.update(siteContentTable).set({ ...initialSiteContent[0], updatedAt: new Date() }).where(eq(siteContentTable.id, existingContent.id));
   }
 }
 

@@ -11,6 +11,7 @@ import Media from "@/pages/media";
 import Jakarta from "@/pages/jakarta";
 import Services from "@/pages/services";
 import EmployerInquiry from "@/pages/employer-inquiry";
+import References from "@/pages/references";
 import ContentEditor from "@/pages/content-editor";
 import Login from "@/pages/login";
 import NotFound from "@/pages/not-found";
@@ -35,6 +36,7 @@ function Router() {
         <Route path="/jakarta" component={Jakarta} />
         <Route path="/layanan" component={Services} />
         <Route path="/ag-anfrage" component={EmployerInquiry} />
+        <Route path="/referensi" component={References} />
         <Route path="/dashboard">
           <AppShell><Dashboard /></AppShell>
         </Route>

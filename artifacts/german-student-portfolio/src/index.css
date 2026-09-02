@@ -363,6 +363,181 @@
   }
 }
 
+/*
+ * Lernpfad visual theme
+ * The public pages were originally authored with warm editorial colors.
+ * Keep their layout and interactions intact while normalizing every page to
+ * the requested white-and-blue palette, including the existing portal UI.
+ */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 213 60% 21%;
+  --border: 214 44% 89%;
+  --card: 0 0% 100%;
+  --card-foreground: 213 60% 21%;
+  --card-border: 214 44% 89%;
+  --primary: 213 77% 45%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 214 75% 96%;
+  --secondary-foreground: 213 64% 30%;
+  --muted: 214 44% 96%;
+  --muted-foreground: 213 20% 47%;
+  --accent: 213 75% 94%;
+  --accent-foreground: 213 64% 28%;
+  --input: 214 44% 82%;
+  --ring: 213 77% 56%;
+  --chart-1: 213 77% 45%;
+  --chart-2: 213 77% 56%;
+  --chart-3: 205 64% 48%;
+  --chart-4: 222 70% 65%;
+  --chart-5: 199 55% 62%;
+}
+
+/* Warm public-page colors → white and blue equivalents. */
+[class*="bg-[#f5eee3]"],
+[class*="bg-[#fffaf2]"],
+[class*="bg-[#fff8ee]"],
+[class*="bg-[#fff8f5]"],
+[class*="bg-[#fff7f5]"],
+[class*="bg-[#fff6f4]"],
+[class*="bg-[#fff5f3]"],
+[class*="bg-[#fff5df]"],
+[class*="bg-[#fff1ec]"] {
+  background-color: #ffffff !important;
+}
+
+[class*="text-[#f5eee3]"],
+[class*="text-[#fffaf2]"],
+[class*="text-[#fff8ee]"],
+[class*="text-[#fff8f5]"] {
+  color: #ffffff !important;
+}
+
+[class*="bg-[#173d3a]"] { background-color: #123f73 !important; }
+[class*="text-[#173d3a]"] { color: #123f73 !important; }
+[class*="border-[#173d3a]"] { border-color: #123f73 !important; }
+[class*="bg-[#244f4a]"] { background-color: #174f86 !important; }
+[class*="text-[#244f4a]"] { color: #174f86 !important; }
+
+[class*="bg-[#d35f46]"],
+[class*="bg-[#d86d50]"],
+[class*="bg-[#df8b67]"],
+[class*="bg-[#e57c61]"] {
+  background-color: #1e73d8 !important;
+}
+[class*="text-[#d35f46]"],
+[class*="text-[#d86d50]"],
+[class*="text-[#df8b67]"],
+[class*="text-[#e57c61]"] {
+  color: #1e73d8 !important;
+}
+[class*="border-[#d35f46]"],
+[class*="border-[#d86d50]"],
+[class*="border-[#df8b67]"],
+[class*="border-[#e57c61]"] {
+  border-color: #1e73d8 !important;
+}
+
+[class*="bg-[#f4c76b]"],
+[class*="bg-[#f6c774]"],
+[class*="bg-[#f4bf68]"],
+[class*="bg-[#f5be65]"],
+[class*="bg-[#f5c36f]"],
+[class*="bg-[#f6c774]"],
+[class*="bg-[#f7d5b0]"] {
+  background-color: #dbeafe !important;
+}
+[class*="text-[#f4c76b]"],
+[class*="text-[#f6c774]"],
+[class*="text-[#f4bf68]"],
+[class*="text-[#f5be65]"],
+[class*="text-[#f5c36f]"] {
+  color: #1e73d8 !important;
+}
+[class*="border-[#f4c76b]"],
+[class*="border-[#f7d5b0]"] {
+  border-color: #9ec4ed !important;
+}
+
+[class*="bg-[#9ccabc]"],
+[class*="bg-[#c6c8dc]"],
+[class*="bg-[#e7d1bd]"],
+[class*="bg-[#b87957]"],
+[class*="bg-[#e7b094]"] {
+  background-color: #b9d8f5 !important;
+}
+[class*="border-[#9ccabc]"],
+[class*="border-[#c6c8dc]"],
+[class*="border-[#e7d1bd]"] {
+  border-color: #9ec4ed !important;
+}
+
+[class*="bg-[#e7f0e9]"],
+[class*="bg-[#e1f7f2]"],
+[class*="bg-[#e5effd]"],
+[class*="bg-[#e9f7fa]"],
+[class*="bg-[#eff7fa]"] {
+  background-color: #eff6ff !important;
+}
+[class*="text-[#486961]"],
+[class*="text-[#4f6b64]"],
+[class*="text-[#55736b]"],
+[class*="text-[#66817a]"],
+[class*="text-[#77918b]"],
+[class*="text-[#829891]"],
+[class*="text-[#8293a8]"],
+[class*="text-[#8093a8]"],
+[class*="text-[#71869c]"],
+[class*="text-[#7d8794]"],
+[class*="text-[#92601c]"],
+[class*="text-[#19725e]"],
+[class*="text-[#245793]"],
+[class*="text-[#7e4b3e]"],
+[class*="text-[#a9584d]"],
+[class*="text-[#ae5b51]"],
+[class*="text-[#b56158]"],
+[class*="text-[#bd6a5d]"] {
+  color: #54779f !important;
+}
+
+[class*="text-[#315c54]"] { color: #315f8f !important; }
+[class*="text-[#a9c5bb]"],
+[class*="text-[#a9d5c8]"],
+[class*="text-[#b7cde0]"],
+[class*="text-[#b5cae0]"],
+[class*="text-[#d5e4de]"],
+[class*="text-[#f7d5c5]"],
+[class*="text-[#f9d6c9]"] {
+  color: #a9c5df !important;
+}
+[class*="border-[#f1d0cb]"],
+[class*="border-[#f0cbc6]"],
+[class*="border-[#fff1ec]"] {
+  border-color: #b9d8f5 !important;
+}
+[class*="border-[#e7f0e9]"],
+[class*="border-[#d5e4de]"] {
+  border-color: #b9d8f5 !important;
+}
+
+/* Replace all decorative legacy grids with a blue grid. */
+[class*="background-image:linear-gradient"] {
+  background-image:
+    linear-gradient(#6aa4df 1px, transparent 1px),
+    linear-gradient(90deg, #6aa4df 1px, transparent 1px) !important;
+}
+
+/* Keep editorial offset shadows, but make them blue instead of green. */
+[class*="shadow-[5px_5px_0_#173d3a]"] {
+  box-shadow: 5px 5px 0 #123f73 !important;
+}
+[class*="shadow-[5px_6px_0_#173d3a]"] {
+  box-shadow: 5px 6px 0 #123f73 !important;
+}
+[class*="shadow-[7px_8px_0_#173d3a]"] {
+  box-shadow: 7px 8px 0 #123f73 !important;
+}
+
 @keyframes rise-in {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }

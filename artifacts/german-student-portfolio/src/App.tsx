@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppShell } from "@/components/app-shell";
 import Dashboard from "@/pages/dashboard";
 import Landing from "@/pages/landing";
+import News from "@/pages/news";
 import ContentEditor from "@/pages/content-editor";
 import Login from "@/pages/login";
 import NotFound from "@/pages/not-found";
@@ -25,6 +26,7 @@ function Router() {
         <Route path="/">
           <Landing />
         </Route>
+        <Route path="/berita" component={News} />
         <Route path="/dashboard">
           <AppShell><Dashboard /></AppShell>
         </Route>

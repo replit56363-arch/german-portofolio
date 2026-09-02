@@ -15,9 +15,17 @@ export default function Login() {
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     login.mutate({ data: { email, password } }, {
-      onSuccess: () => {
+      onSuccess: (result: any) => {
+        const token = result?.token || result?.sessionId;
+        if (token) {
+          try {
+            localStorage.setItem("admin_session_token", token);
+          } catch (err) {
+            console.error("Storage error:", err);
+          }
+        }
         queryClient.invalidateQueries({ queryKey: getGetCurrentAdminQueryKey() });
-         setLocation("/dashboard");
+        setLocation("/dashboard");
       },
     });
   };
@@ -40,13 +48,13 @@ export default function Login() {
           <div className="w-full max-w-[400px] rise-in">
             <div className="mb-9"><div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-[#e3f3f8] text-[#1a6990]"><ShieldCheck size={23} /></div><p className="font-mono-ui text-[10px] font-bold uppercase tracking-[.18em] text-[#5f87a4]">Admin access</p><h2 className="mt-2 text-3xl font-bold tracking-[-.04em] text-[#1f3551]">Selamat datang kembali.</h2><p className="mt-2 text-sm text-[#7b8ea6]">Masuk untuk melanjutkan pekerjaan Anda.</p></div>
             <form className="space-y-5" onSubmit={submit}>
-              <label className="block"><span className="mb-2 block text-xs font-bold text-[#4c6581]">Email admin</span><div className="relative"><Mail size={17} className="absolute left-3.5 top-3.5 text-[#8ca2b9]" /><input required autoComplete="username" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="nama@institut.de" className="h-12 w-full rounded-xl border border-[#ccdce9] bg-[#fbfdff] pl-11 pr-4 text-sm outline-none transition-colors placeholder:text-[#aab8c6] focus:border-[#3283b1] focus:ring-4 focus:ring-[#6fd5ee]/15" data-testid="input-email" /></div></label>
+              <label className="block"><span className="mb-2 block text-xs font-bold text-[#4c6581]">Email admin</span><div className="relative"><Mail size={17} className="absolute left-3.5 top-3.5 text-[#8ca2b9]" /><input required autoComplete="username" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="admin@co.id" className="h-12 w-full rounded-xl border border-[#ccdce9] bg-[#fbfdff] pl-11 pr-4 text-sm outline-none transition-colors placeholder:text-[#aab8c6] focus:border-[#3283b1] focus:ring-4 focus:ring-[#6fd5ee]/15" data-testid="input-email" /></div></label>
               <label className="block"><span className="mb-2 block text-xs font-bold text-[#4c6581]">Kata sandi</span><div className="relative"><LockKeyhole size={17} className="absolute left-3.5 top-3.5 text-[#8ca2b9]" /><input required autoComplete="current-password" minLength={1} type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Masukkan kata sandi" className="h-12 w-full rounded-xl border border-[#ccdce9] bg-[#fbfdff] pl-11 pr-4 text-sm outline-none transition-colors placeholder:text-[#aab8c6] focus:border-[#3283b1] focus:ring-4 focus:ring-[#6fd5ee]/15" data-testid="input-password" /></div></label>
               {login.isError && <div className="rounded-xl border border-[#f2c8c4] bg-[#fff2f0] px-4 py-3 text-sm font-medium text-[#aa4e46]" data-testid="status-login-error">Email atau kata sandi tidak sesuai. Coba lagi.</div>}
               <button type="submit" disabled={login.isPending} className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#1b5a9f] text-sm font-bold text-white shadow-[0_8px_18px_rgba(27,90,159,.18)] transition-all hover:bg-[#154d8b] active:scale-[.99] disabled:cursor-wait disabled:opacity-70" data-testid="button-login">{login.isPending ? "Memeriksa akses…" : "Masuk ke portfolio"}<ArrowRight size={17} /></button>
             </form>
             <p className="mt-8 text-center text-[11px] leading-5 text-[#8a9caf]">Akses ini bersifat privat untuk tim Lernpfad<br />dan partner penempatan terverifikasi.</p>
-            <Link href="/login" className="mt-6 block text-center text-xs font-semibold text-[#5d7994] hover:text-[#1b5a9f]" data-testid="link-login-home">Kembali ke halaman masuk</Link>
+            <Link href="/" className="mt-6 block text-center text-xs font-semibold text-[#5d7994] hover:text-[#1b5a9f]" data-testid="link-login-home">Kembali ke beranda publik</Link>
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import studentsRouter from "./students";
 import dashboardRouter from "./dashboard";
 import siteContentRouter from "./site-content";
 import landingSummaryRouter from "./landing-summary";
+import cmsRouter from "./cms";
 
 const router: IRouter = Router();
 
@@ -14,5 +15,6 @@ router.use(studentsRouter);
 router.use(dashboardRouter);
 router.use(siteContentRouter);
 router.use(landingSummaryRouter);
+router.use(cmsRouter);
 
 export default router;

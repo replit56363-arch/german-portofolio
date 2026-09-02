@@ -19,3 +19,4 @@
 
 export * from "./portfolio";
 export * from "./site-content";
+export * from "./cms-sections";

@@ -1,7 +1,7 @@
 import { createHash, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import type { NextFunction, Request, Response } from "express";
 import { and, eq, gt } from "drizzle-orm";
-import { db, adminsTable, sessionsTable } from "@workspace/db";
+import { db, adminsTable, sessionsTable, getEnvAdminCredentials } from "@workspace/db";
 
 export const SESSION_COOKIE = "sprachraum_session";
 
@@ -24,15 +24,36 @@ export function createSessionId() {
 }
 
 export async function currentAdmin(request: Request) {
-  const sessionId = request.cookies?.[SESSION_COOKIE] as string | undefined;
+  let sessionId = request.cookies?.[SESSION_COOKIE] as string | undefined;
+
+  if (!sessionId) {
+    const authHeader = request.headers.authorization;
+    if (authHeader && typeof authHeader === "string" && authHeader.toLowerCase().startsWith("bearer ")) {
+      sessionId = authHeader.slice(7).trim();
+    }
+  }
+
+  if (!sessionId) {
+    sessionId = (request.headers["x-session-id"] || request.headers["x-auth-token"]) as string | undefined;
+  }
+
   if (!sessionId) return null;
+
   const [result] = await db
     .select({ admin: adminsTable, session: sessionsTable })
     .from(sessionsTable)
     .innerJoin(adminsTable, eq(sessionsTable.adminId, adminsTable.id))
     .where(and(eq(sessionsTable.id, sessionId), gt(sessionsTable.expiresAt, new Date())))
     .limit(1);
-  return result?.admin ?? null;
+
+  if (!result?.admin) return null;
+
+  const { email: expectedEmail } = getEnvAdminCredentials();
+  if (result.admin.email.toLowerCase() !== expectedEmail) {
+    return null;
+  }
+
+  return result.admin;
 }
 
 export async function requireAdmin(request: Request, response: Response, next: NextFunction) {

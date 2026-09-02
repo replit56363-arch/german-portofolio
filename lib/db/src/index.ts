@@ -1,25 +1,63 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { eq } from "drizzle-orm";
 import pg from "pg";
+import fs from "node:fs";
+import path from "node:path";
 import { scryptSync, randomBytes } from "node:crypto";
 import * as schema from "./schema";
-import { adminsTable, sessionsTable, studentsTable, siteContentTable } from "./schema";
+import { adminsTable, sessionsTable, studentsTable, siteContentTable, cmsSectionsTable } from "./schema";
+import { defaultCmsData } from "./default-cms";
 
 const { Pool } = pg;
 
-function hashPassword(password: string) {
+export function hashPassword(password: string) {
   const salt = randomBytes(16).toString("hex");
   const hash = scryptSync(password, salt, 64).toString("hex");
   return `${salt}:${hash}`;
 }
 
-// In-Memory store for offline/demo operation without external Postgres
+export function getEnvAdminCredentials() {
+  let emailRaw = process.env.ADMIN_EMAIL;
+  let passRaw = process.env.ADMIN_PASSWORD;
+
+  if (!emailRaw || !passRaw) {
+    try {
+      const envPath = path.resolve(process.cwd(), ".env");
+      if (fs.existsSync(envPath)) {
+        const content = fs.readFileSync(envPath, "utf-8");
+        for (const line of content.split("\n")) {
+          const trimmed = line.trim();
+          if (!trimmed || trimmed.startsWith("#")) continue;
+          const eqIdx = trimmed.indexOf("=");
+          if (eqIdx !== -1) {
+            const key = trimmed.slice(0, eqIdx).trim();
+            const val = trimmed.slice(eqIdx + 1).trim();
+            if (key === "ADMIN_EMAIL" && !emailRaw) emailRaw = val;
+            if (key === "ADMIN_PASSWORD" && !passRaw) passRaw = val;
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("[DB] Note on .env reading:", err);
+    }
+  }
+
+  emailRaw = emailRaw || "admin@co.id";
+  passRaw = passRaw || "password123";
+
+  const email = emailRaw.replace(/^["']|["']$/g, "").trim().toLowerCase();
+  const password = passRaw.replace(/^["']|["']$/g, "").trim();
+  return { email, password };
+}
+
+const { email: envAdminEmail, password: envAdminPassword } = getEnvAdminCredentials();
+
 const initialAdmins = [
   {
     id: 1,
-    email: "admin@sprachraum.de",
-    name: "Admin Sprachraum",
-    passwordHash: hashPassword("Demo1234!"),
+    email: envAdminEmail,
+    name: "Admin Utama",
+    passwordHash: hashPassword(envAdminPassword),
     createdAt: new Date("2024-01-01"),
   },
 ];
@@ -198,16 +236,25 @@ const initialStudents = [
   },
 ];
 
-const memoryStore = {
+const initialCmsSections = Object.entries(defaultCmsData).map(([key, value], idx) => ({
+  id: idx + 1,
+  sectionKey: key,
+  content: value,
+  updatedAt: new Date(),
+}));
+
+export const memoryStore = {
   admins: [...initialAdmins],
   sessions: [] as Array<{ id: string; adminId: number; expiresAt: Date; createdAt: Date }>,
   students: [...initialStudents],
   siteContent: [...initialSiteContent],
+  cmsSections: [...initialCmsSections],
 };
 
 let studentAutoId = 7;
 let siteContentAutoId = 2;
-let adminAutoId = 2;
+let adminAutoId = 3;
+let cmsSectionAutoId = 11;
 
 function createMockDb() {
   return {
@@ -218,6 +265,7 @@ function createMockDb() {
           if (table === sessionsTable || table?._?.name === "admin_sessions") return "sessions";
           if (table === studentsTable || table?._?.name === "students") return "students";
           if (table === siteContentTable || table?._?.name === "site_content") return "siteContent";
+          if (table === cmsSectionsTable || table?._?.name === "cms_sections") return "cmsSections";
           return "students";
         };
 
@@ -299,7 +347,6 @@ function createMockDb() {
           },
         };
 
-        // Make it an awaitable thenable directly
         return queryState;
       },
     }),
@@ -329,6 +376,14 @@ function createMockDb() {
               };
               memoryStore.siteContent.unshift(newRow);
               results.push(newRow);
+            } else if (table === cmsSectionsTable || table?._?.name === "cms_sections") {
+              const newRow = {
+                id: cmsSectionAutoId++,
+                updatedAt: new Date(),
+                ...item,
+              };
+              memoryStore.cmsSections.unshift(newRow);
+              results.push(newRow);
             } else if (table === sessionsTable || table?._?.name === "admin_sessions") {
               const newRow = {
                 createdAt: new Date(),
@@ -357,6 +412,8 @@ function createMockDb() {
               memoryStore.students.unshift({ id: studentAutoId++, createdAt: new Date(), updatedAt: new Date(), ...item });
             } else if (table === siteContentTable || table?._?.name === "site_content") {
               memoryStore.siteContent.unshift({ id: siteContentAutoId++, updatedAt: new Date(), ...item });
+            } else if (table === cmsSectionsTable || table?._?.name === "cms_sections") {
+              memoryStore.cmsSections.unshift({ id: cmsSectionAutoId++, updatedAt: new Date(), ...item });
             } else if (table === adminsTable || table?._?.name === "admins") {
               memoryStore.admins.unshift({ id: adminAutoId++, createdAt: new Date(), ...item });
             }
@@ -391,6 +448,16 @@ function createMockDb() {
                 }
                 return content;
               });
+            } else if (table === cmsSectionsTable || table?._?.name === "cms_sections") {
+              memoryStore.cmsSections = memoryStore.cmsSections.map((section) => {
+                const isMatch = condition?.__test ? condition.__test(section) : true;
+                if (isMatch) {
+                  const updated = { ...section, ...updateData, updatedAt: new Date() };
+                  results.push(updated);
+                  return updated;
+                }
+                return section;
+              });
             }
             return results.length ? results : [updateData];
           },
@@ -404,6 +471,8 @@ function createMockDb() {
           memoryStore.sessions = memoryStore.sessions.filter((sess) => !(condition?.__test ? condition.__test(sess) : true));
         } else if (table === studentsTable || table?._?.name === "students") {
           memoryStore.students = memoryStore.students.filter((stud) => !(condition?.__test ? condition.__test(stud) : true));
+        } else if (table === cmsSectionsTable || table?._?.name === "cms_sections") {
+          memoryStore.cmsSections = memoryStore.cmsSections.filter((sec) => !(condition?.__test ? condition.__test(sec) : true));
         }
         return [];
       },
@@ -416,7 +485,10 @@ let db: any = null;
 
 if (process.env.DATABASE_URL) {
   try {
-    pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      connectionTimeoutMillis: 4000,
+    });
     db = drizzle(pool, { schema });
   } catch (e) {
     console.warn("[DB] Could not initialize PostgreSQL connection, using in-memory store", e);
@@ -426,26 +498,162 @@ if (process.env.DATABASE_URL) {
   db = createMockDb();
 }
 
+async function ensurePostgresTables() {
+  if (!pool) return;
+  try {
+    const client = await pool.connect();
+    try {
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS admins (
+          id SERIAL PRIMARY KEY,
+          email TEXT NOT NULL UNIQUE,
+          name TEXT NOT NULL,
+          password_hash TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+        CREATE TABLE IF NOT EXISTS admin_sessions (
+          id TEXT PRIMARY KEY,
+          admin_id INTEGER NOT NULL REFERENCES admins(id) ON DELETE CASCADE,
+          expires_at TIMESTAMPTZ NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+        CREATE TABLE IF NOT EXISTS students (
+          id SERIAL PRIMARY KEY,
+          name TEXT NOT NULL,
+          email TEXT NOT NULL,
+          phone TEXT,
+          photo_url TEXT,
+          level TEXT NOT NULL,
+          status TEXT NOT NULL,
+          cohort TEXT NOT NULL,
+          joined_at DATE NOT NULL,
+          bio TEXT,
+          speaking_video_url TEXT,
+          certificate_name TEXT,
+          certificate_url TEXT,
+          level_history JSONB NOT NULL DEFAULT '[]'::jsonb,
+          placement JSONB,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+        CREATE TABLE IF NOT EXISTS site_content (
+          id SERIAL PRIMARY KEY,
+          eyebrow TEXT NOT NULL,
+          title TEXT NOT NULL,
+          description TEXT NOT NULL,
+          primary_cta TEXT NOT NULL,
+          secondary_cta TEXT NOT NULL,
+          intro_label TEXT NOT NULL,
+          intro_text TEXT NOT NULL,
+          stat_one_value TEXT NOT NULL,
+          stat_one_label TEXT NOT NULL,
+          stat_two_value TEXT NOT NULL,
+          stat_two_label TEXT NOT NULL,
+          stat_three_value TEXT NOT NULL,
+          stat_three_label TEXT NOT NULL,
+          stat_four_value TEXT NOT NULL,
+          stat_four_label TEXT NOT NULL,
+          trust_title TEXT NOT NULL,
+          trust_text TEXT NOT NULL,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+        CREATE TABLE IF NOT EXISTS cms_sections (
+          id SERIAL PRIMARY KEY,
+          section_key TEXT NOT NULL UNIQUE,
+          content JSONB NOT NULL,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+      `);
+      console.log("[DB] PostgreSQL tables checked/created successfully.");
+    } finally {
+      client.release();
+    }
+  } catch (err) {
+    console.warn("[DB] Note on table check (non-fatal, fallback to memory if offline):", err);
+  }
+}
+
 export async function seedDevelopmentData() {
-  if (!process.env.DATABASE_URL || process.env.NODE_ENV === "production") return;
+  try {
+    await ensurePostgresTables();
 
-  const [existingAdmin] = await db.select({ id: adminsTable.id }).from(adminsTable).limit(1);
-  if (!existingAdmin) {
-    await db.insert(adminsTable).values(initialAdmins);
-  }
+    // 1. Seed or Synchronize Admin credentials from .env
+    const { email: envAdminEmail, password: envAdminPass } = getEnvAdminCredentials();
+    const envAdminHash = hashPassword(envAdminPass);
 
-  const [existingStudents] = await db.select({ id: studentsTable.id }).from(studentsTable).limit(1);
-  if (!existingStudents) {
-    await db.insert(studentsTable).values(initialStudents);
-  }
+    const [existingEnvAdmin] = await db
+      .select({ id: adminsTable.id, email: adminsTable.email })
+      .from(adminsTable)
+      .where(eq(adminsTable.email, envAdminEmail))
+      .limit(1);
 
-  const [existingContent] = await db.select({ id: siteContentTable.id, title: siteContentTable.title }).from(siteContentTable).limit(1);
-  if (!existingContent) {
-    await db.insert(siteContentTable).values(initialSiteContent);
-  } else if (existingContent.title === "Bukti kesiapan, lebih dekat.") {
-    await db.update(siteContentTable).set({ ...initialSiteContent[0], updatedAt: new Date() }).where(eq(siteContentTable.id, existingContent.id));
+    if (!existingEnvAdmin) {
+      await db.insert(adminsTable).values({
+        email: envAdminEmail,
+        name: "Admin Utama",
+        passwordHash: envAdminHash,
+        createdAt: new Date(),
+      });
+    } else {
+      // Always update passwordHash and name to guarantee synchronization with .env
+      await db.update(adminsTable).set({
+        passwordHash: envAdminHash,
+        name: "Admin Utama",
+      }).where(eq(adminsTable.id, existingEnvAdmin.id));
+    }
+
+    // Purge any other admins not matching .env so only the .env configured admin can login
+    try {
+      if (pool) {
+        const client = await pool.connect();
+        try {
+          await client.query("DELETE FROM admins WHERE LOWER(email) != $1", [envAdminEmail]);
+        } finally {
+          client.release();
+        }
+      } else {
+        memoryStore.admins = memoryStore.admins.filter(
+          (a) => a.email.toLowerCase() === envAdminEmail
+        );
+      }
+    } catch (cleanErr) {
+      console.warn("[DB] Note on admin isolation:", cleanErr);
+    }
+
+    // 2. Seed Students
+    const [existingStudents] = await db.select({ id: studentsTable.id }).from(studentsTable).limit(1);
+    if (!existingStudents) {
+      await db.insert(studentsTable).values(initialStudents);
+    }
+
+    // 3. Seed SiteContent
+    const [existingContent] = await db.select({ id: siteContentTable.id }).from(siteContentTable).limit(1);
+    if (!existingContent) {
+      await db.insert(siteContentTable).values(initialSiteContent);
+    }
+
+    // 4. Seed all CMS sections
+    for (const [key, val] of Object.entries(defaultCmsData)) {
+      const [existingSection] = await db
+        .select({ id: cmsSectionsTable.id })
+        .from(cmsSectionsTable)
+        .where(eq(cmsSectionsTable.sectionKey, key))
+        .limit(1);
+
+      if (!existingSection) {
+        await db.insert(cmsSectionsTable).values({
+          sectionKey: key,
+          content: val,
+          updatedAt: new Date(),
+        });
+      }
+    }
+    console.log("[DB] PostgreSQL / in-memory database initialized and seeded successfully.");
+  } catch (err) {
+    console.warn("[DB] Error seeding data (non-fatal):", err);
   }
 }
 
 export { pool, db };
 export * from "./schema";
+export * from "./default-cms";

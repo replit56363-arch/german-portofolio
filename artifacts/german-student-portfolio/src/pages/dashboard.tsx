@@ -26,5 +26,50 @@ export default function Dashboard() {
       <section className="overflow-hidden rounded-2xl border border-[#dfe8f0] bg-white soft-shadow"><div className="flex items-center justify-between border-b border-[#e7edf3] px-6 py-5"><div><SectionEyebrow>Pipeline terbaru</SectionEyebrow><h2 className="mt-1 text-lg font-bold tracking-[-.02em] text-[#243b57]">Aktivitas siswa</h2></div><Link href="/students" className="flex items-center gap-1 text-xs font-bold text-[#2464a0] hover:text-[#124d8c]" data-testid="link-view-all-students">Lihat semua <ArrowUpRight size={14} /></Link></div>{data.recentStudents.length ? data.recentStudents.slice(0, 5).map((student) => <StudentRow key={student.id} student={student} />) : <p className="px-6 py-12 text-center text-sm text-[#8193a7]">Belum ada aktivitas siswa.</p>}</section>
       <section className="rounded-2xl border border-[#dfe8f0] bg-white p-6 soft-shadow"><div className="flex items-center justify-between"><div><SectionEyebrow>Komposisi kemampuan</SectionEyebrow><h2 className="mt-1 text-lg font-bold tracking-[-.02em] text-[#243b57]">Level bahasa</h2></div><span className="font-mono-ui text-[10px] text-[#8da0b4]">TOTAL {data.totalStudents}</span></div><div className="mt-7 space-y-5">{data.byLevel.map((item) => <div key={item.level}><div className="mb-2 flex items-center justify-between text-xs"><span className="font-mono-ui font-bold text-[#37627f]">{item.level}</span><span className="font-bold text-[#6e8298]">{item.count} siswa</span></div><div className="h-2 overflow-hidden rounded-full bg-[#edf2f6]"><div className="h-full rounded-full bg-[#318db0] transition-all duration-700" style={{ width: `${(item.count / maxLevel) * 100}%` }} /></div></div>)}</div><div className="mt-8 border-t border-[#e7edf3] pt-5"><div className="mb-3 flex items-center gap-2 text-xs font-bold text-[#73869b]"><BarChart3 size={14} /> Perkembangan cohort</div><div className="flex h-24 items-end gap-2">{data.byPeriod.slice(-6).map((item) => <div key={item.period} className="flex flex-1 flex-col items-center gap-1"><div className="w-full rounded-t-md bg-[#b9e8f1] transition-all hover:bg-[#70d6eb]" style={{ height: `${Math.max(8, (item.total / maxPeriod) * 72)}px` }} title={`${item.period}: ${item.total} siswa`} /><span className="font-mono-ui text-[8px] text-[#94a5b6]">{item.period.slice(-2)}</span></div>)}</div></div></section>
     </div>
+
+    {/* QUICK CMS SHORTCUTS SECTION */}
+    <section className="rounded-2xl border border-[#dce7ef] bg-white p-6 shadow-sm">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-[#eef4f8] pb-4">
+        <div>
+          <SectionEyebrow>Pusat Pengelolaan Konten</SectionEyebrow>
+          <h2 className="text-lg font-bold text-[#233d59]">CMS Halaman Publik</h2>
+        </div>
+        <Link
+          href="/admin/cms"
+          className="inline-flex items-center gap-1 text-xs font-bold text-[#1b5a9f] hover:text-[#124d8c]"
+        >
+          Buka Semua CMS ({10} Halaman) <ArrowUpRight size={14} />
+        </Link>
+      </div>
+
+      <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          { label: "Halaman Utama", desc: "Hero, statistik, 4 alur", href: "/admin/cms/home", tone: "bg-[#eaf3fa] text-[#1b5a9f]" },
+          { label: "Halaman Berita", desc: "Kabar & artikel terkini", href: "/admin/cms/news", tone: "bg-[#feece8] text-[#c04b34]" },
+          { label: "Halaman Media", desc: "Liputan TV & dokumenter", href: "/admin/cms/media", tone: "bg-[#e2f7f3] text-[#1c7866]" },
+          { label: "Halaman Layanan", desc: "Alur kerja 7 tahap", href: "/admin/cms/services", tone: "bg-[#fdf4db] text-[#936b0d]" },
+          { label: "Halaman Jakarta", desc: "Kantor & jam operasional", href: "/admin/cms/jakarta", tone: "bg-[#fbeee6] text-[#b4532c]" },
+          { label: "Referensi Prestasi", desc: "Kisah sukses & juara", href: "/admin/cms/references", tone: "bg-[#fbf4d9] text-[#8e6810]" },
+          { label: "Navbar Header", desc: "Link menu & CTA", href: "/admin/cms/navbar", tone: "bg-[#eaf2f9] text-[#1f568c]" },
+          { label: "Footer Publik", desc: "Medsos & copyright", href: "/admin/cms/footer", tone: "bg-[#edf1f5] text-[#37526d]" },
+        ].map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="group flex flex-col justify-between rounded-xl border border-[#e1ebf4] bg-[#f9fbfd] p-3.5 transition-all hover:bg-white hover:shadow-sm"
+          >
+            <div>
+              <span className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold ${item.tone}`}>
+                {item.label}
+              </span>
+              <p className="mt-2 text-xs text-[#5f7a95]">{item.desc}</p>
+            </div>
+            <div className="mt-3 flex items-center justify-end text-xs font-bold text-[#1b5a9f] group-hover:translate-x-0.5 transition-transform">
+              Edit Konten &rarr;
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
   </div>;
 }

@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer as createViteServer } from "vite";
+import { seedDevelopmentData } from "@workspace/db";
 import apiRouter from "./artifacts/api-server/src/routes/index";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", apiRouter);
 
 async function startServer() {
+  await seedDevelopmentData();
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       configFile: path.resolve(__dirname, "artifacts/german-student-portfolio/vite.config.ts"),

@@ -346,6 +346,8 @@
 
 @layer utilities {
   .font-mono-ui { font-family: var(--app-font-mono); }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   .page-grid {
     background-image: linear-gradient(hsl(214 27% 88% / 0.34) 1px, transparent 1px),
       linear-gradient(90deg, hsl(214 27% 88% / 0.34) 1px, transparent 1px);

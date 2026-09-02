@@ -25,9 +25,26 @@ export function StudentAvatar({ student, size = "md" }: { student: Pick<Student,
 
 export function StudentRow({ student }: { student: Student }) {
   return (
-    <Link href={`/students/${student.id}`} className="group grid grid-cols-[minmax(200px,1.6fr)_100px_150px_115px_28px] items-center gap-4 border-b border-[#e8eef4] px-5 py-4 transition-colors last:border-0 hover:bg-[#f7fbfd] sm:px-6" data-testid={`row-student-${student.id}`}>
-      <div className="flex min-w-0 items-center gap-3"><StudentAvatar student={student} size="sm" /><div className="min-w-0"><p className="truncate text-sm font-bold text-[#263b57] group-hover:text-[#1458a7]" data-testid={`text-student-name-${student.id}`}>{student.name}</p><p className="truncate text-xs text-[#8597ac]">{student.email}</p></div></div>
-      <LevelBadge level={student.level} /><div className="text-xs font-medium text-[#5c7088]">{student.cohort}</div><StatusPill status={student.status} /><ArrowUpRight size={17} className="text-[#a4b7c9] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#1463b3]" />
+    <Link href={`/students/${student.id}`} className="group flex flex-col gap-2 sm:grid sm:grid-cols-[minmax(200px,1.6fr)_100px_150px_115px_28px] items-start sm:items-center sm:gap-4 border-b border-[#e8eef4] px-4 py-3.5 sm:px-6 transition-colors last:border-0 hover:bg-[#f7fbfd]" data-testid={`row-student-${student.id}`}>
+      <div className="flex w-full items-center justify-between gap-3 sm:w-auto">
+        <div className="flex min-w-0 items-center gap-3">
+          <StudentAvatar student={student} size="sm" />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-bold text-[#263b57] group-hover:text-[#1458a7]" data-testid={`text-student-name-${student.id}`}>{student.name}</p>
+            <p className="truncate text-xs text-[#8597ac]">{student.email}</p>
+          </div>
+        </div>
+        <ArrowUpRight size={17} className="text-[#a4b7c9] shrink-0 sm:hidden group-hover:text-[#1463b3]" />
+      </div>
+      <div className="flex flex-wrap items-center gap-2 sm:hidden">
+        <LevelBadge level={student.level} />
+        <StatusPill status={student.status} />
+        <span className="text-xs font-medium text-[#788ca2]">· {student.cohort}</span>
+      </div>
+      <div className="hidden sm:block"><LevelBadge level={student.level} /></div>
+      <div className="hidden text-xs font-medium text-[#5c7088] sm:block">{student.cohort}</div>
+      <div className="hidden sm:block"><StatusPill status={student.status} /></div>
+      <ArrowUpRight size={17} className="hidden text-[#a4b7c9] transition-transform sm:block group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#1463b3]" />
     </Link>
   );
 }

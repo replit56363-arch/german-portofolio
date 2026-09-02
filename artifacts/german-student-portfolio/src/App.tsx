@@ -7,6 +7,7 @@ import { AppShell } from "@/components/app-shell";
 import Dashboard from "@/pages/dashboard";
 import Landing from "@/pages/landing";
 import News from "@/pages/news";
+import NewsDetail from "@/pages/news-detail";
 import Media from "@/pages/media";
 import Jakarta from "@/pages/jakarta";
 import Services from "@/pages/services";
@@ -14,6 +15,17 @@ import EmployerInquiry from "@/pages/employer-inquiry";
 import References from "@/pages/references";
 import Placements from "@/pages/placements";
 import ContentEditor from "@/pages/content-editor";
+import CmsOverviewPage from "@/pages/admin-cms/index";
+import HomeCms from "@/pages/admin-cms/home-cms";
+import NewsCms from "@/pages/admin-cms/news-cms";
+import MediaCms from "@/pages/admin-cms/media-cms";
+import ServicesCms from "@/pages/admin-cms/services-cms";
+import JakartaCms from "@/pages/admin-cms/jakarta-cms";
+import ReferencesCms from "@/pages/admin-cms/references-cms";
+import PlacementsCms from "@/pages/admin-cms/placements-cms";
+import PartnerCms from "@/pages/admin-cms/partner-cms";
+import NavbarCms from "@/pages/admin-cms/navbar-cms";
+import FooterCms from "@/pages/admin-cms/footer-cms";
 import Login from "@/pages/login";
 import NotFound from "@/pages/not-found";
 import Students from "@/pages/students";
@@ -33,6 +45,7 @@ function Router() {
           <Landing />
         </Route>
         <Route path="/berita" component={News} />
+        <Route path="/berita/:id" component={NewsDetail} />
         <Route path="/media" component={Media} />
         <Route path="/jakarta" component={Jakarta} />
         <Route path="/layanan" component={Services} />
@@ -43,7 +56,40 @@ function Router() {
           <AppShell><Dashboard /></AppShell>
         </Route>
         <Route path="/admin/content">
-          <AppShell><ContentEditor /></AppShell>
+          <AppShell><HomeCms /></AppShell>
+        </Route>
+        <Route path="/admin/cms">
+          <AppShell><CmsOverviewPage /></AppShell>
+        </Route>
+        <Route path="/admin/cms/home">
+          <AppShell><HomeCms /></AppShell>
+        </Route>
+        <Route path="/admin/cms/news">
+          <AppShell><NewsCms /></AppShell>
+        </Route>
+        <Route path="/admin/cms/media">
+          <AppShell><MediaCms /></AppShell>
+        </Route>
+        <Route path="/admin/cms/services">
+          <AppShell><ServicesCms /></AppShell>
+        </Route>
+        <Route path="/admin/cms/jakarta">
+          <AppShell><JakartaCms /></AppShell>
+        </Route>
+        <Route path="/admin/cms/references">
+          <AppShell><ReferencesCms /></AppShell>
+        </Route>
+        <Route path="/admin/cms/placements">
+          <AppShell><PlacementsCms /></AppShell>
+        </Route>
+        <Route path="/admin/cms/partner">
+          <AppShell><PartnerCms /></AppShell>
+        </Route>
+        <Route path="/admin/cms/navbar">
+          <AppShell><NavbarCms /></AppShell>
+        </Route>
+        <Route path="/admin/cms/footer">
+          <AppShell><FooterCms /></AppShell>
         </Route>
         <Route path="/students">
           <AppShell><Students /></AppShell>

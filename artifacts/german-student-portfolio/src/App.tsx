@@ -8,6 +8,7 @@ import Dashboard from "@/pages/dashboard";
 import Landing from "@/pages/landing";
 import News from "@/pages/news";
 import Media from "@/pages/media";
+import Jakarta from "@/pages/jakarta";
 import ContentEditor from "@/pages/content-editor";
 import Login from "@/pages/login";
 import NotFound from "@/pages/not-found";
@@ -29,6 +30,7 @@ function Router() {
         </Route>
         <Route path="/berita" component={News} />
         <Route path="/media" component={Media} />
+        <Route path="/jakarta" component={Jakarta} />
         <Route path="/dashboard">
           <AppShell><Dashboard /></AppShell>
         </Route>

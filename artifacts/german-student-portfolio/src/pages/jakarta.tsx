@@ -126,8 +126,13 @@ export default function Jakarta() {
               {t("about.description", "Kami adalah lembaga kursus bahasa Jerman terdaftar di Medan yang membantu mempersiapkan kemampuan bahasa & kemandirian hidup di Jerman. Didirikan tahun 2024 oleh alumni UNIMED dengan 6 tahun pengalaman hidup di Jerman.")}
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <a href="https://wa.me/6282127324453" target="_blank" rel="noreferrer" className="inline-flex w-fit items-center gap-3 rounded-full bg-[#d35f46] px-5 py-3.5 font-mono-ui text-[11px] font-bold uppercase tracking-[0.12em] text-[#fff8ee] shadow-[5px_5px_0_#173d3a] transition-all hover:-translate-y-1 hover:shadow-[7px_8px_0_#173d3a]">
-                <Phone size={16} /> {t("common.whatsapp_consult", "Konsultasi WhatsApp")}
+              <a
+                href="https://wa.me/6282127324453?text=Halo%20ICH%20LIEBE%20DEUTSCH%20MEDAN,%20saya%20ingin%20konsultasi%20program%20kursus%20bahasa%20Jerman"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex w-fit items-center gap-3 rounded-full bg-[#d35f46] px-5 py-3.5 font-mono-ui text-[11px] font-bold uppercase tracking-[0.12em] text-[#fff8ee] shadow-[5px_5px_0_#173d3a] transition-all hover:-translate-y-1 hover:shadow-[7px_8px_0_#173d3a]"
+              >
+                <MessageCircle size={16} /> WhatsApp: 082127324453
               </a>
               <a href="#formulir" className="inline-flex w-fit items-center gap-2 px-3 py-3 font-mono-ui text-[11px] font-bold uppercase tracking-[0.12em] text-[#486961] hover:text-[#d35f46]">
                 {t("about.form_submit", "Kirim Pesan Sekarang")} <ArrowUpRight size={16} />

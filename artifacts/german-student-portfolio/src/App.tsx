@@ -34,6 +34,7 @@ import StudentEdit from "@/pages/student-edit";
 import StudentNew from "@/pages/student-new";
 import { LanguageProvider } from "@/lib/language-context";
 import { Route, Switch, useLocation, Router as WouterRouter } from "wouter";
+import { FloatingWhatsApp } from "@/components/floating-whatsapp";
 
 const queryClient = new QueryClient();
 
@@ -122,6 +123,7 @@ function App() {
         <TooltipProvider>
           <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
             <Router />
+            <FloatingWhatsApp />
           </WouterRouter>
           <Toaster />
         </TooltipProvider>

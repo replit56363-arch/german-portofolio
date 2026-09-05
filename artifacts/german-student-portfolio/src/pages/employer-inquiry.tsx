@@ -5,6 +5,7 @@ import {
   Building2,
   Check,
   Mail,
+  MessageCircle,
   MessageSquareText,
   Phone,
   Send,
@@ -104,12 +105,20 @@ export default function EmployerInquiry() {
             <p className="mt-7 max-w-xl text-[17px] leading-8 text-[#55736b]">
               {t("employer.description", "Mari mulai dengan percakapan informasi. Tim kami akan menjelaskan cara kerja, standar kemampuan bahasa, dan langkah bimbingan peserta Ausbildung, Au Pair, atau tenaga profesional.")}
             </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="mt-9 flex flex-wrap items-center gap-3">
+              <a
+                href="https://wa.me/6282127324453?text=Halo%20ICH%20LIEBE%20DEUTSCH%20MEDAN,%20saya%20tertarik%20konsultasi%20kemitraan%20partner"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex w-fit items-center gap-2.5 rounded-full bg-[#d35f46] px-5 py-3.5 font-mono-ui text-[11px] font-bold uppercase tracking-[0.12em] text-[#fff8ee] shadow-[5px_5px_0_#173d3a] transition-all hover:-translate-y-1 hover:shadow-[7px_8px_0_#173d3a]"
+              >
+                <MessageCircle size={16} /> WhatsApp: 082127324453
+              </a>
               <a
                 href={`tel:${targetPhone.replace(/\s+/g, "")}`}
-                className="inline-flex w-fit items-center gap-3 rounded-full bg-[#d35f46] px-5 py-3.5 font-mono-ui text-[11px] font-bold uppercase tracking-[0.12em] text-[#fff8ee] shadow-[5px_5px_0_#173d3a] transition-all hover:-translate-y-1 hover:shadow-[7px_8px_0_#173d3a]"
+                className="inline-flex w-fit items-center gap-2.5 rounded-full border border-[#173d3a]/20 bg-white px-4 py-3.5 font-mono-ui text-[11px] font-bold uppercase tracking-[0.12em] text-[#173d3a] hover:border-[#d35f46] hover:text-[#d35f46]"
               >
-                <Phone size={16} /> {targetPhone}
+                <Phone size={15} /> Telepon
               </a>
               <a href="#formulir-partner" className="inline-flex w-fit items-center gap-2 px-3 py-3 font-mono-ui text-[11px] font-bold uppercase tracking-[0.12em] text-[#486961] hover:text-[#d35f46]">
                 {t("employer.fill_form", "Isi formulir")} <ArrowUpRight size={16} />
@@ -218,9 +227,20 @@ export default function EmployerInquiry() {
             <h2 className="relative mt-6 font-['Fraunces'] text-4xl sm:text-6xl font-medium leading-[.94] tracking-[-0.065em]">
               {t("employer.banner_title", "Mari mulai dengan percakapan yang tepat.")}
             </h2>
-            <a href="#formulir-partner" className="relative mt-8 inline-flex items-center gap-3 rounded-full bg-[#f5eee3] px-5 py-3.5 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#173d3a] transition-transform hover:-translate-y-1">
-              {t("employer.fill_form", "Isi formulir partner")} <ArrowUpRight size={16} />
-            </a>
+            <div className="relative mt-8 flex flex-wrap items-center gap-3">
+              <a
+                href="https://wa.me/6282127324453?text=Halo%20ICH%20LIEBE%20DEUTSCH%20MEDAN,%20saya%20ingin%20konsultasi%20kemitraan%20partner"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-3 rounded-full bg-[#f5eee3] px-5 py-3.5 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#173d3a] transition-transform hover:-translate-y-1"
+              >
+                <MessageCircle size={15} className="text-[#25d366]" />
+                WhatsApp: 082127324453 <ArrowUpRight size={16} />
+              </a>
+              <a href="#formulir-partner" className="inline-flex items-center gap-2 rounded-full border border-white/30 px-4 py-3 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#f5eee3] hover:bg-white/10">
+                {t("employer.fill_form", "Isi formulir partner")} <ArrowUpRight size={15} />
+              </a>
+            </div>
           </div>
         </section>
       </main>

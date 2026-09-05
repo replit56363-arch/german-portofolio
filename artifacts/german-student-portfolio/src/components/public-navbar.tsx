@@ -389,16 +389,31 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
 
           {/* CTA Button */}
           {navConfig.ctaEnabled !== false && (
-            <Link
-              href={navConfig.ctaHref || "/login"}
-              className="group inline-flex items-center gap-2 rounded-full bg-[#173d3a] px-4 py-2.5 font-mono-ui text-[10px] font-bold uppercase tracking-[0.12em] text-[#f5eee3] shadow-sm transition-transform hover:-translate-y-0.5"
-            >
-              <span>{ctaText}</span>
-              <ArrowUpRight
-                size={14}
-                className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-              />
-            </Link>
+            (navConfig.ctaHref || "").startsWith("http") || (navConfig.ctaHref || "").startsWith("mailto:") || (navConfig.ctaHref || "").startsWith("tel:") ? (
+              <a
+                href={navConfig.ctaHref || "https://wa.me/6282127324453"}
+                target="_blank"
+                rel="noreferrer"
+                className="group inline-flex items-center gap-2 rounded-full bg-[#173d3a] px-4 py-2.5 font-mono-ui text-[10px] font-bold uppercase tracking-[0.12em] text-[#f5eee3] shadow-sm transition-transform hover:-translate-y-0.5"
+              >
+                <span>{ctaText}</span>
+                <ArrowUpRight
+                  size={14}
+                  className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                />
+              </a>
+            ) : (
+              <Link
+                href={navConfig.ctaHref || "/login"}
+                className="group inline-flex items-center gap-2 rounded-full bg-[#173d3a] px-4 py-2.5 font-mono-ui text-[10px] font-bold uppercase tracking-[0.12em] text-[#f5eee3] shadow-sm transition-transform hover:-translate-y-0.5"
+              >
+                <span>{ctaText}</span>
+                <ArrowUpRight
+                  size={14}
+                  className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                />
+              </Link>
+            )
           )}
         </nav>
 
@@ -539,14 +554,27 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
 
           {/* CTA Mobile */}
           {navConfig.ctaEnabled !== false && (
-            <Link
-              href={navConfig.ctaHref || "/login"}
-              onClick={() => setMobileMenuOpen(false)}
-              className="mt-2 flex items-center justify-center gap-2 rounded-xl bg-[#173d3a] px-4 py-3 font-mono-ui text-[11px] font-bold uppercase tracking-[0.14em] text-[#f5eee3]"
-            >
-              <span>{ctaText}</span>
-              <ArrowUpRight size={15} />
-            </Link>
+            (navConfig.ctaHref || "").startsWith("http") || (navConfig.ctaHref || "").startsWith("mailto:") || (navConfig.ctaHref || "").startsWith("tel:") ? (
+              <a
+                href={navConfig.ctaHref || "https://wa.me/6282127324453"}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="mt-2 flex items-center justify-center gap-2 rounded-xl bg-[#173d3a] px-4 py-3 font-mono-ui text-[11px] font-bold uppercase tracking-[0.14em] text-[#f5eee3]"
+              >
+                <span>{ctaText}</span>
+                <ArrowUpRight size={15} />
+              </a>
+            ) : (
+              <Link
+                href={navConfig.ctaHref || "/login"}
+                onClick={() => setMobileMenuOpen(false)}
+                className="mt-2 flex items-center justify-center gap-2 rounded-xl bg-[#173d3a] px-4 py-3 font-mono-ui text-[11px] font-bold uppercase tracking-[0.14em] text-[#f5eee3]"
+              >
+                <span>{ctaText}</span>
+                <ArrowUpRight size={15} />
+              </Link>
+            )
           )}
         </nav>
       )}

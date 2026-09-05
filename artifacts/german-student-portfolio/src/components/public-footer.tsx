@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { useCmsSection } from "@/lib/use-cms";
 import { useLanguage } from "@/lib/language-context";
-import { Globe2, Mail, Phone, MapPin, ArrowUpRight, ArrowRight } from "lucide-react";
+import { Globe2, Mail, Phone, MapPin, ArrowUpRight, ArrowRight, MessageCircle } from "lucide-react";
 
 function FooterLogo({ name, subtitle }: { name?: string; subtitle?: string }) {
   return (
@@ -58,12 +58,12 @@ export function PublicFooter() {
   const brandSubtitle = language !== "id" ? t("nav.brand_subtitle", footer.brandSubtitle) : footer.brandSubtitle;
   const tagline = language !== "id" ? t("footer.tagline", footer.tagline) : (footer.tagline || defaultFooterData.tagline);
 
-  const categories = ["Navigasi", "Layanan", "Informasi"];
+  const categories = ["Navigasi", "Layanan", "Informasi", "Kontak"];
 
   return (
     <footer className="border-t border-[#173d3a]/15 bg-[#eef4f0] text-[#173d3a]">
       <div className="mx-auto max-w-[1240px] px-5 py-14 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[1.4fr_2fr]">
+        <div className="grid gap-10 lg:grid-cols-[1.3fr_2.1fr]">
           {/* Brand Col */}
           <div>
             <Link href="/">
@@ -73,7 +73,7 @@ export function PublicFooter() {
               {tagline}
             </p>
 
-            <div className="mt-6 space-y-2 text-xs text-[#526f68]">
+            <div className="mt-6 space-y-2.5 text-xs text-[#526f68]">
               {footer.addressJakarta && (
                 <div className="flex items-start gap-2">
                   <MapPin size={14} className="mt-0.5 text-[#d35f46] shrink-0" />
@@ -89,7 +89,7 @@ export function PublicFooter() {
               {footer.contactEmail && (
                 <div className="flex items-center gap-2">
                   <Mail size={14} className="text-[#d35f46] shrink-0" />
-                  <a href={`mailto:${footer.contactEmail}`} className="hover:text-[#d35f46] transition-colors">
+                  <a href={`mailto:${footer.contactEmail}`} className="hover:text-[#d35f46] transition-colors font-medium">
                     {footer.contactEmail}
                   </a>
                 </div>
@@ -97,16 +97,30 @@ export function PublicFooter() {
               {footer.contactPhone && (
                 <div className="flex items-center gap-2">
                   <Phone size={14} className="text-[#3a8b79] shrink-0" />
-                  <a href={`tel:${footer.contactPhone}`} className="hover:text-[#d35f46] transition-colors">
+                  <a href={`tel:${footer.contactPhone}`} className="hover:text-[#d35f46] transition-colors font-medium">
                     {footer.contactPhone}
                   </a>
                 </div>
               )}
             </div>
+
+            {/* Quick WhatsApp direct link button */}
+            <div className="mt-5">
+              <a
+                href="https://wa.me/6282127324453?text=Halo%20ICH%20LIEBE%20DEUTSCH%20MEDAN,%20saya%20ingin%20konsultasi%20kursus%20bahasa%20Jerman"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-[#173d3a] px-3.5 py-2 font-mono-ui text-[10px] font-bold uppercase tracking-[0.1em] text-[#fff8ee] shadow-sm transition-all hover:bg-[#d35f46] hover:-translate-y-0.5"
+              >
+                <MessageCircle size={13} className="text-[#f4c76b]" />
+                <span>WhatsApp: 082127324453</span>
+                <ArrowUpRight size={12} />
+              </a>
+            </div>
           </div>
 
           {/* Links Grid */}
-          <div className="grid gap-8 sm:grid-cols-3">
+          <div className="grid gap-6 grid-cols-2 sm:grid-cols-4">
             {categories.map((cat) => {
               const catLinks = (footer.links || defaultFooterData.links).filter(
                 (l: any) => (l.category || "Navigasi") === cat
@@ -117,16 +131,34 @@ export function PublicFooter() {
                     {cat}
                   </p>
                   <ul className="mt-3.5 space-y-2.5">
-                    {catLinks.map((link: any) => (
-                      <li key={link.id || link.label}>
-                        <Link
-                          href={link.href}
-                          className="font-mono-ui text-[11px] font-bold uppercase tracking-[0.08em] text-[#3d5d56] transition-colors hover:text-[#d35f46]"
-                        >
-                          {link.label}
-                        </Link>
-                      </li>
-                    ))}
+                    {catLinks.map((link: any) => {
+                      const isExternal =
+                        link.href.startsWith("http") ||
+                        link.href.startsWith("mailto:") ||
+                        link.href.startsWith("tel:");
+                      return (
+                        <li key={link.id || link.label}>
+                          {isExternal ? (
+                            <a
+                              href={link.href}
+                              target={link.href.startsWith("http") ? "_blank" : undefined}
+                              rel={link.href.startsWith("http") ? "noreferrer" : undefined}
+                              className="font-mono-ui text-[11px] font-bold uppercase tracking-[0.08em] text-[#3d5d56] transition-colors hover:text-[#d35f46] inline-flex items-center gap-1"
+                            >
+                              <span>{link.label}</span>
+                              {link.href.startsWith("http") && <ArrowUpRight size={11} className="text-[#89a39b]" />}
+                            </a>
+                          ) : (
+                            <Link
+                              href={link.href}
+                              className="font-mono-ui text-[11px] font-bold uppercase tracking-[0.08em] text-[#3d5d56] transition-colors hover:text-[#d35f46]"
+                            >
+                              {link.label}
+                            </Link>
+                          )}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               );

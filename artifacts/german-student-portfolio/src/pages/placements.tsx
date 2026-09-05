@@ -290,9 +290,14 @@ export default function Placements() {
             <p className="relative mt-6 max-w-lg text-[15px] leading-7 text-[#f9d6c9]">
               {cmsData?.ctaSubtitle || "Ceritakan kebutuhan perusahaan Anda. Kami akan membantu menemukan langkah yang paling masuk akal untuk memulainya."}
             </p>
-            <Link href={cmsData?.ctaHref || "/ag-anfrage"} className="relative mt-8 inline-flex items-center gap-3 rounded-full bg-[#f5eee3] px-5 py-3.5 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#173d3a] transition-transform hover:-translate-y-1">
-              {cmsData?.ctaText || "Hubungi tim Lernpfad"} <ArrowUpRight size={16} />
-            </Link>
+            <a
+              href={cmsData?.ctaHref || "https://wa.me/6282127324453?text=Halo%20ICH%20LIEBE%20DEUTSCH%20MEDAN,%20saya%20ingin%20konsultasi%20program%20penempatan"}
+              target="_blank"
+              rel="noreferrer"
+              className="relative mt-8 inline-flex items-center gap-3 rounded-full bg-[#f5eee3] px-5 py-3.5 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#173d3a] transition-transform hover:-translate-y-1"
+            >
+              {cmsData?.ctaText || "Hubungi WhatsApp: 082127324453"} <ArrowUpRight size={16} />
+            </a>
           </div>
         </section>
       </main>

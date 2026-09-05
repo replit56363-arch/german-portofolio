@@ -3,13 +3,9 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { createServer as createViteServer } from "vite";
 import { seedDevelopmentData } from "@workspace/db";
 import apiRouter from "./artifacts/api-server/src/routes/index";
-
-const __filename = typeof fileURLToPath !== "undefined" && import.meta?.url ? fileURLToPath(import.meta.url) : "";
-const __dirname = typeof __filename === "string" && __filename ? path.dirname(__filename) : process.cwd();
 
 const app: Express = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
@@ -34,10 +30,8 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const candidatePaths = [
-      path.resolve(process.cwd(), "artifacts/german-student-portfolio/dist/public"),
-      path.resolve(__dirname, "artifacts/german-student-portfolio/dist/public"),
-      path.resolve(__dirname, "../artifacts/german-student-portfolio/dist/public"),
       path.resolve(process.cwd(), "dist/public"),
+      path.resolve(process.cwd(), "artifacts/german-student-portfolio/dist/public"),
     ];
     const distPath = candidatePaths.find((p) => fs.existsSync(path.join(p, "index.html"))) || candidatePaths[0];
 

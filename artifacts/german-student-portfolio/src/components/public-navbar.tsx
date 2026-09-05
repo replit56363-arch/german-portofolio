@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import {
   ChevronDown,
@@ -7,8 +7,12 @@ import {
   X,
   ExternalLink,
   Sparkles,
+  Languages,
+  Check,
+  Globe,
 } from "lucide-react";
 import { useCmsSection } from "@/lib/use-cms";
+import { useLanguage } from "@/lib/language-context";
 
 export type NavChild = {
   id: number | string;
@@ -32,11 +36,11 @@ export type NavItem = {
 };
 
 const defaultNavbarData = {
-  brandName: "Lernpfad",
-  brandSubtitle: "Indonesia · Deutschland",
-  brandBadge: "LP",
-  ctaText: "Masuk portal",
-  ctaHref: "/login",
+  brandName: "ICH LIEBE DEUTSCH MEDAN",
+  brandSubtitle: "Lembaga Kursus Bahasa Jerman Terdaftar",
+  brandBadge: "ILD",
+  ctaText: "Hubungi Kami",
+  ctaHref: "https://wa.me/6282127324453",
   ctaEnabled: true,
   links: [
     {
@@ -48,40 +52,42 @@ const defaultNavbarData = {
     },
     {
       id: 2,
-      label: "Aktuelles",
-      sublabel: "Kabar & Media",
-      href: "/berita",
+      label: "Program Kursus",
+      sublabel: "5 Jalur Ke Jerman",
+      href: "/layanan",
       order: 2,
       isVisible: true,
       children: [
-        { id: 21, label: "News", sublabel: "Berita & Pengumuman Program", href: "/berita", isVisible: true },
-        { id: 22, label: "Presse", sublabel: "Liputan Media & Wawancara", href: "/media", isVisible: true },
-        { id: 23, label: "Medien", sublabel: "Video & Dokumenter TV Jerman", href: "/media", isVisible: true },
+        { id: 21, label: "1. Ausbildung", sublabel: "Sekolah Kejuruan & Praktik Bergaji", href: "/layanan", isVisible: true },
+        { id: 22, label: "2. Au Pair", sublabel: "Tinggal Bersama Host Family", href: "/layanan", isVisible: true },
+        { id: 23, label: "3. FSJ / BFD", sublabel: "Program Sukarelawan Sosial 1 Tahun", href: "/layanan", isVisible: true },
+        { id: 24, label: "4. G to G", sublabel: "Penempatan Perawat Resmi Pemerintah", href: "/layanan", isVisible: true },
+        { id: 25, label: "5. Kuliah / Studium", sublabel: "Persiapan Kuliah Universitas Jerman", href: "/layanan", isVisible: true },
       ],
     },
     {
       id: 3,
-      label: "Über AuLiD",
-      sublabel: "Tentang Program",
-      href: "/layanan",
+      label: "Tentang Kami",
+      sublabel: "Profil & Lokasi",
+      href: "/jakarta",
       order: 3,
       isVisible: true,
       children: [
-        { id: 31, label: "Layanan & Alur", sublabel: "7 Tahapan Persiapan hingga Tiba", href: "/layanan", isVisible: true },
-        { id: 32, label: "Kantor Jakarta", sublabel: "Pusat Koordinasi & Pelatihan", href: "/jakarta", isVisible: true },
-        { id: 33, label: "Untuk Partner", sublabel: "Kemitraan Perusahaan Jerman (AG-Anfrage)", href: "/ag-anfrage", isVisible: true },
+        { id: 31, label: "Profil Lembaga", sublabel: "Lembaga Terdaftar & Berizin Operasional", href: "/jakarta", isVisible: true },
+        { id: 32, label: "Alamat & Kontak", sublabel: "Jl. Ternak II No. 39, Medan Polonia", href: "/jakarta", isVisible: true },
+        { id: 33, label: "Konsultasi Partner", sublabel: "Kemitraan & Informasi Program", href: "/ag-anfrage", isVisible: true },
       ],
     },
     {
       id: 4,
-      label: "Referenzen",
-      sublabel: "Referensi & Prestasi",
-      href: "/referensi",
+      label: "Kabar & Referensi",
+      sublabel: "Informasi & Prestasi",
+      href: "/berita",
       order: 4,
       isVisible: true,
       children: [
-        { id: 41, label: "Kisah Referensi", sublabel: "Kisah Sukses & Juara Alumni", href: "/referensi", isVisible: true },
-        { id: 42, label: "Penempatan Berhasil", sublabel: "Bukti Keberangkatan & Karier", href: "/penempatan-berhasil", isVisible: true },
+        { id: 41, label: "Kabar & Berita", sublabel: "Artikel & Pengumuman Terbaru", href: "/berita", isVisible: true },
+        { id: 42, label: "Kisah Referensi", sublabel: "Kisah Sukses Alumni di Jerman", href: "/referensi", isVisible: true },
       ],
     },
   ],
@@ -90,10 +96,12 @@ const defaultNavbarData = {
 function BrandLogo({ name, subtitle }: { name?: string; subtitle?: string }) {
   return (
     <div className="flex items-center gap-3 text-[#173d3a] group">
-      <div className="relative grid h-9 w-9 place-items-center rounded-full border-2 border-[#173d3a] bg-[#f5eee3] transition-transform group-hover:scale-105">
-        <span className="absolute h-5 w-px rotate-45 bg-[#d35f46]" />
-        <span className="absolute h-5 w-px -rotate-45 bg-[#d35f46]" />
-        <span className="relative h-1.5 w-1.5 rounded-full bg-[#d35f46]" />
+      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border-2 border-[#173d3a] bg-[#f5eee3] shadow-sm transition-transform group-hover:scale-105 flex items-center justify-center p-0.5">
+        <img
+          src="/logo.png"
+          alt={name || "Lernpfad Logo"}
+          className="h-full w-full object-contain rounded-lg"
+        />
       </div>
       <div>
         <div className="font-['Fraunces'] text-[20px] font-semibold leading-none tracking-[-0.04em] text-[#173d3a]">
@@ -111,22 +119,67 @@ interface PublicNavbarProps {
   activeRoute?: string;
 }
 
+const navTranslationKeys: Record<string | number, { labelKey: string; subKey?: string }> = {
+  1: { labelKey: "nav.home" },
+  2: { labelKey: "nav.programs", subKey: "nav.programs_sub" },
+  21: { labelKey: "nav.ausbildung", subKey: "nav.ausbildung_sub" },
+  22: { labelKey: "nav.aupair", subKey: "nav.aupair_sub" },
+  23: { labelKey: "nav.fsj", subKey: "nav.fsj_sub" },
+  24: { labelKey: "nav.gtog", subKey: "nav.gtog_sub" },
+  25: { labelKey: "nav.studium", subKey: "nav.studium_sub" },
+  3: { labelKey: "nav.about", subKey: "nav.about_sub" },
+  31: { labelKey: "nav.about_profile", subKey: "nav.about_profile_sub" },
+  32: { labelKey: "nav.about_contact", subKey: "nav.about_contact_sub" },
+  33: { labelKey: "nav.about_partner", subKey: "nav.about_partner_sub" },
+  4: { labelKey: "nav.news_ref", subKey: "nav.news_ref_sub" },
+  41: { labelKey: "nav.news", subKey: "nav.news_sub" },
+  42: { labelKey: "nav.references", subKey: "nav.references_sub" },
+};
+
 export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
   const [currentLocation] = useLocation();
   const activePath = activeRoute || currentLocation;
   const { data: cmsData } = useCmsSection("navbar");
+  const { language, setLanguage, t, currentOption, availableLanguages } = useLanguage();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const langDropdownRef = useRef<HTMLDivElement | null>(null);
+
   const [expandedMobileMenus, setExpandedMobileMenus] = useState<Record<string, boolean>>({
     2: true, // open first submenu by default on mobile for easy discovery
   });
   const [activeHoverMenu, setActiveHoverMenu] = useState<string | number | null>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (langDropdownRef.current && !langDropdownRef.current.contains(event.target as Node)) {
+        setLangDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const navConfig = cmsData || defaultNavbarData;
   const links: NavItem[] = (navConfig.links || defaultNavbarData.links)
     .filter((l: NavItem) => l.isVisible !== false)
     .sort((a: NavItem, b: NavItem) => (Number(a.order) || 0) - (Number(b.order) || 0));
+
+  const getNavText = (id: string | number, defaultLabel: string, defaultSublabel?: string) => {
+    const itemKey = navTranslationKeys[id];
+    if (!itemKey) return { label: defaultLabel, sublabel: defaultSublabel };
+    return {
+      label: t(itemKey.labelKey, defaultLabel),
+      sublabel: itemKey.subKey ? t(itemKey.subKey, defaultSublabel || "") : defaultSublabel,
+    };
+  };
+
+  const brandSubtitle = language !== "id" ? t("nav.brand_subtitle", navConfig.brandSubtitle) : navConfig.brandSubtitle;
+  const ctaText = language !== "id" ? t("nav.cta", navConfig.ctaText) : navConfig.ctaText;
 
   const handleMouseEnter = (itemId: string | number) => {
     if (hoverTimeoutRef.current) {
@@ -161,15 +214,16 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
       <div className="mx-auto flex max-w-[1240px] items-center justify-between px-5 py-3.5 lg:px-8">
         {/* Brand Logo */}
         <Link href="/" aria-label="Kembali ke halaman utama">
-          <BrandLogo name={navConfig.brandName} subtitle={navConfig.brandSubtitle} />
+          <BrandLogo name={navConfig.brandName} subtitle={brandSubtitle} />
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-7 md:flex" aria-label="Navigasi Utama">
+        <nav className="hidden items-center gap-6 lg:gap-7 md:flex" aria-label="Navigasi Utama">
           {links.map((item) => {
             const hasChildren = Array.isArray(item.children) && item.children.length > 0;
             const active = isItemActive(item);
             const isOpen = activeHoverMenu === item.id;
+            const itemText = getNavText(item.id, item.label, item.sublabel);
 
             if (!hasChildren) {
               return (
@@ -180,7 +234,7 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
                     active ? "text-[#d35f46]" : "text-[#486961] hover:text-[#d35f46]"
                   }`}
                 >
-                  {item.label}
+                  {itemText.label}
                   {active && (
                     <span className="absolute -bottom-1 left-0 right-0 h-[2px] rounded-full bg-[#d35f46]" />
                   )}
@@ -188,7 +242,7 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
               );
             }
 
-            // Dropdown Menu Item (e.g. Aktuelles, Über AuLiD, Referenzen)
+            // Dropdown Menu Item (e.g. Program Kursus, Tentang Kami, Kabar & Referensi)
             return (
               <div
                 key={item.id}
@@ -205,7 +259,7 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
                     active || isOpen ? "text-[#d35f46]" : "text-[#486961] hover:text-[#d35f46]"
                   }`}
                 >
-                  <span>{item.label}</span>
+                  <span>{itemText.label}</span>
                   <ChevronDown
                     size={14}
                     className={`transition-transform duration-200 ${
@@ -220,17 +274,18 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
                 {/* Dropdown Card */}
                 {isOpen && (
                   <div
-                    className="absolute left-0 top-full pt-2 z-50 min-w-[250px] animate-in fade-in zoom-in-95 duration-150"
+                    className="absolute left-0 top-full pt-2 z-50 min-w-[260px] animate-in fade-in zoom-in-95 duration-150"
                     onMouseEnter={() => handleMouseEnter(item.id)}
                     onMouseLeave={handleMouseLeave}
                   >
                     <div className="overflow-hidden rounded-2xl border border-[#173d3a]/15 bg-white p-2 shadow-[0_18px_38px_rgba(23,61,58,0.14)] ring-1 ring-black/5">
                       <div className="mb-1.5 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.18em] text-[#8ea49e] border-b border-[#f0f4f2]">
-                        {item.sublabel || item.label}
+                        {itemText.sublabel || itemText.label}
                       </div>
                       <div className="space-y-0.5">
                         {item.children?.map((child) => {
                           const isChildActive = activePath === child.href;
+                          const childText = getNavText(child.id, child.label, child.sublabel);
                           return (
                             <Link
                               key={child.id}
@@ -244,14 +299,14 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
                             >
                               <div>
                                 <div className="font-mono-ui text-[11px] font-bold uppercase tracking-[0.08em] flex items-center gap-1.5">
-                                  {child.label}
+                                  {childText.label}
                                   {isChildActive && (
                                     <span className="h-1.5 w-1.5 rounded-full bg-[#d35f46]" />
                                   )}
                                 </div>
-                                {child.sublabel && (
+                                {childText.sublabel && (
                                   <div className="mt-0.5 text-[10px] text-[#718b84] group-hover/item:text-[#526d66] line-clamp-1">
-                                    {child.sublabel}
+                                    {childText.sublabel}
                                   </div>
                                 )}
                               </div>
@@ -274,6 +329,61 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
             );
           })}
 
+          {/* Language Selector Dropdown (Desktop) */}
+          <div className="relative" ref={langDropdownRef}>
+            <button
+              type="button"
+              onClick={() => setLangDropdownOpen((v) => !v)}
+              aria-expanded={langDropdownOpen}
+              aria-label="Pilih Bahasa / Language / Sprache"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#173d3a]/20 bg-white/80 px-2.5 py-1.5 font-mono-ui text-[11px] font-bold text-[#173d3a] shadow-xs transition-all hover:border-[#d35f46] hover:bg-[#fffdf9] focus:outline-none"
+            >
+              <span className="text-sm leading-none">{currentOption.flag}</span>
+              <span className="tracking-[0.08em]">{currentOption.short}</span>
+              <ChevronDown
+                size={12}
+                className={`text-[#77918b] transition-transform duration-200 ${
+                  langDropdownOpen ? "rotate-180 text-[#d35f46]" : ""
+                }`}
+              />
+            </button>
+
+            {langDropdownOpen && (
+              <div className="absolute right-0 top-full mt-2 w-52 rounded-2xl border border-[#173d3a]/15 bg-white p-1.5 shadow-[0_14px_34px_rgba(23,61,58,0.12)] ring-1 ring-black/5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="flex items-center gap-1.5 border-b border-[#f0f4f2] px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.18em] text-[#8ea49e]">
+                  <Languages size={12} className="text-[#d35f46]" />
+                  <span>Pilih Bahasa / Language</span>
+                </div>
+                <div className="mt-1 space-y-0.5">
+                  {availableLanguages.map((opt) => {
+                    const isSelected = opt.code === language;
+                    return (
+                      <button
+                        key={opt.code}
+                        type="button"
+                        onClick={() => {
+                          setLanguage(opt.code);
+                          setLangDropdownOpen(false);
+                        }}
+                        className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left font-mono-ui text-[11px] font-bold tracking-[0.04em] transition-colors ${
+                          isSelected
+                            ? "bg-[#f5eee3] text-[#d35f46]"
+                            : "text-[#173d3a] hover:bg-[#fbf7f0] hover:text-[#d35f46]"
+                        }`}
+                      >
+                        <span className="flex items-center gap-2">
+                          <span className="text-base">{opt.flag}</span>
+                          <span>{opt.label}</span>
+                        </span>
+                        {isSelected && <Check size={14} className="text-[#d35f46]" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Divider */}
           <span className="h-5 w-px bg-[#173d3a]/20" />
 
@@ -283,7 +393,7 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
               href={navConfig.ctaHref || "/login"}
               className="group inline-flex items-center gap-2 rounded-full bg-[#173d3a] px-4 py-2.5 font-mono-ui text-[10px] font-bold uppercase tracking-[0.12em] text-[#f5eee3] shadow-sm transition-transform hover:-translate-y-0.5"
             >
-              <span>{navConfig.ctaText || "Masuk portal"}</span>
+              <span>{ctaText}</span>
               <ArrowUpRight
                 size={14}
                 className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
@@ -292,27 +402,77 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
           )}
         </nav>
 
-        {/* Mobile Toggle Button */}
-        <button
-          type="button"
-          aria-label={mobileMenuOpen ? "Tutup menu" : "Buka menu"}
-          onClick={() => setMobileMenuOpen((v) => !v)}
-          className="rounded-full border border-[#173d3a]/20 p-2 text-[#173d3a] hover:bg-[#e8f0e9] md:hidden"
-        >
-          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        {/* Mobile Header Controls */}
+        <div className="flex items-center gap-2 md:hidden">
+          {/* Quick Mobile Language Switcher Button */}
+          <button
+            type="button"
+            onClick={() => {
+              const nextLang = language === "id" ? "de" : language === "de" ? "en" : "id";
+              setLanguage(nextLang);
+            }}
+            aria-label="Ganti Bahasa (Indonesia / Jerman / Inggris)"
+            className="flex items-center gap-1.5 rounded-full border border-[#173d3a]/20 bg-white/80 px-2.5 py-1.5 font-mono-ui text-[10px] font-bold text-[#173d3a] shadow-xs active:scale-95 transition-transform"
+          >
+            <span className="text-sm leading-none">{currentOption.flag}</span>
+            <span>{currentOption.short}</span>
+            <Languages size={12} className="text-[#77918b]" />
+          </button>
+
+          {/* Mobile Toggle Button */}
+          <button
+            type="button"
+            aria-label={mobileMenuOpen ? "Tutup menu" : "Buka menu"}
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            className="rounded-full border border-[#173d3a]/20 p-2 text-[#173d3a] hover:bg-[#e8f0e9]"
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <nav
-          className="mx-4 mb-4 flex flex-col gap-1 rounded-2xl border border-[#173d3a]/15 bg-[#fffaf2] p-3 shadow-lg md:hidden"
+          className="mx-4 mb-4 flex flex-col gap-1.5 rounded-2xl border border-[#173d3a]/15 bg-[#fffaf2] p-3 shadow-lg md:hidden animate-in fade-in slide-in-from-top-2 duration-150"
           aria-label="Menu mobile"
         >
+          {/* Mobile Language Switcher Segmented Control */}
+          <div className="mb-2 rounded-xl bg-[#f5eee3] p-2.5 border border-[#173d3a]/10">
+            <div className="mb-1.5 flex items-center justify-between px-1 text-[9px] font-mono-ui font-bold uppercase tracking-[0.14em] text-[#638079]">
+              <span className="flex items-center gap-1.5">
+                <Languages size={12} className="text-[#d35f46]" />
+                {language === "de" ? "Sprache wählen" : language === "en" ? "Select Language" : "Pilihan Bahasa"}
+              </span>
+              <span className="text-[9px] font-extrabold text-[#d35f46]">{currentOption.label}</span>
+            </div>
+            <div className="grid grid-cols-3 gap-1">
+              {availableLanguages.map((opt) => {
+                const isSelected = opt.code === language;
+                return (
+                  <button
+                    key={opt.code}
+                    type="button"
+                    onClick={() => setLanguage(opt.code)}
+                    className={`flex items-center justify-center gap-1.5 rounded-lg py-2 text-center font-mono-ui text-[11px] font-bold tracking-[0.06em] transition-all ${
+                      isSelected
+                        ? "bg-[#173d3a] text-[#fff8ee] shadow-xs"
+                        : "bg-white/80 text-[#173d3a] hover:bg-white"
+                    }`}
+                  >
+                    <span>{opt.flag}</span>
+                    <span>{opt.short}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {links.map((item) => {
             const hasChildren = Array.isArray(item.children) && item.children.length > 0;
             const isExpanded = !!expandedMobileMenus[item.id];
             const active = isItemActive(item);
+            const itemText = getNavText(item.id, item.label, item.sublabel);
 
             if (!hasChildren) {
               return (
@@ -324,7 +484,7 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
                     active ? "bg-[#f5eee3] text-[#d35f46]" : "text-[#34524c] hover:bg-[#f1ede3]"
                   }`}
                 >
-                  {item.label}
+                  {itemText.label}
                 </Link>
               );
             }
@@ -336,7 +496,7 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
                   onClick={() => toggleMobileSubmenu(item.id)}
                   className="flex w-full items-center justify-between px-3 py-2 text-left font-mono-ui text-[11px] font-bold uppercase tracking-[0.12em] text-[#173d3a]"
                 >
-                  <span className={active ? "text-[#d35f46]" : ""}>{item.label}</span>
+                  <span className={active ? "text-[#d35f46]" : ""}>{itemText.label}</span>
                   <ChevronDown
                     size={16}
                     className={`text-[#77918b] transition-transform ${isExpanded ? "rotate-180 text-[#d35f46]" : ""}`}
@@ -347,6 +507,7 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
                   <div className="mt-1 space-y-1 border-t border-[#173d3a]/10 pt-1.5 pl-2">
                     {item.children?.map((child) => {
                       const isChildActive = activePath === child.href;
+                      const childText = getNavText(child.id, child.label, child.sublabel);
                       return (
                         <Link
                           key={child.id}
@@ -360,10 +521,10 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
                         >
                           <div>
                             <div className="font-mono-ui text-[10px] font-bold uppercase tracking-[0.08em]">
-                              {child.label}
+                              {childText.label}
                             </div>
-                            {child.sublabel && (
-                              <div className="text-[9px] text-[#718b84]">{child.sublabel}</div>
+                            {childText.sublabel && (
+                              <div className="text-[9px] text-[#718b84]">{childText.sublabel}</div>
                             )}
                           </div>
                           <ArrowUpRight size={13} className="text-[#d35f46]" />
@@ -383,7 +544,7 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
               onClick={() => setMobileMenuOpen(false)}
               className="mt-2 flex items-center justify-center gap-2 rounded-xl bg-[#173d3a] px-4 py-3 font-mono-ui text-[11px] font-bold uppercase tracking-[0.14em] text-[#f5eee3]"
             >
-              <span>{navConfig.ctaText || "Masuk portal"}</span>
+              <span>{ctaText}</span>
               <ArrowUpRight size={15} />
             </Link>
           )}

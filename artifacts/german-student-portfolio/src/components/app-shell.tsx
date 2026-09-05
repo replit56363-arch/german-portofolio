@@ -48,9 +48,12 @@ const cmsNavigation = [
 export function AppMark({ compact = false }: { compact?: boolean }) {
   return (
     <div className={`flex items-center gap-3 ${compact ? "justify-center" : ""}`}>
-      <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#6fd5ee] text-[#10294c] shadow-[0_8px_20px_rgba(111,213,238,.18)]">
-        <span className="font-mono-ui text-[15px] font-bold tracking-[-.12em]">LP</span>
-        <span className="absolute -bottom-1 -right-1 h-2.5 w-2.5 rounded-full border-2 border-[#142b4e] bg-[#f5be65]" />
+      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-[#3f6388] bg-[#ffffff] p-0.5 shadow-md">
+        <img
+          src="/logo.png"
+          alt="Lernpfad Logo"
+          className="h-full w-full object-contain rounded-lg"
+        />
       </div>
       {!compact && (
         <div>

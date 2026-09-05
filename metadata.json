@@ -1,6 +1,6 @@
 {
-  "name": "German Student Portfolio",
-  "description": "Private B2B portfolio and track-record workspace for a German language institute to share verified student readiness with placement partners.",
+  "name": "ICH LIEBE DEUTSCH MEDAN",
+  "description": "Lembaga Kursus Bahasa Jerman Terdaftar di Medan untuk Persiapan 5 Program Ke Jerman (Ausbildung, Au Pair, FSJ/BFD, G to G, Kuliah).",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

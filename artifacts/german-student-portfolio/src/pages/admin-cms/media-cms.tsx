@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useCmsSection, useUpdateCmsSection, useResetCms } from "@/lib/use-cms";
 import { CmsLayout } from "./cms-layout";
 import { SectionEyebrow } from "@/components/portfolio-ui";
-import { Plus, Trash2, Edit2, Play, Tv, Sparkles, X } from "lucide-react";
+import { Plus, Trash2, Edit2, Play, Tv, Sparkles, X, Image as ImageIcon } from "lucide-react";
+import { ImageUploader } from "@/components/image-uploader";
 
 export default function MediaCms() {
   const { data, isLoading, isError } = useCmsSection("media");
@@ -22,6 +23,7 @@ export default function MediaCms() {
     date: "",
     excerpt: "",
     videoUrl: "",
+    imageUrl: "",
     tone: "coral",
     featured: false,
     published: true,
@@ -66,6 +68,7 @@ export default function MediaCms() {
       date: formattedDate,
       excerpt: "",
       videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      imageUrl: "",
       tone: "coral",
       featured: false,
       published: true,
@@ -199,6 +202,16 @@ export default function MediaCms() {
                 key={item.id}
                 className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-[#e1ebf4] bg-[#f9fbfd] p-4 transition-all hover:bg-white hover:shadow-sm"
               >
+                {item.imageUrl && (
+                  <div className="h-20 w-32 shrink-0 overflow-hidden rounded-lg border border-[#cfdce7] bg-[#eef4f9]">
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                )}
+
                 <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="flex items-center gap-1 rounded bg-[#dff0fa] px-2 py-0.5 font-mono text-[10px] font-bold text-[#1e5888]">
@@ -331,6 +344,20 @@ export default function MediaCms() {
                   onChange={(e) => setMediaForm({ ...mediaForm, videoUrl: e.target.value })}
                   placeholder="https://www.youtube.com/watch?v=..."
                   className="field-input mt-1.5 font-mono"
+                />
+              </div>
+
+              {/* UPLOAD GAMBAR THUMBNAIL */}
+              <div className="rounded-xl border border-[#dce8f2] bg-[#f8fbfe] p-4">
+                <ImageUploader
+                  id="media-thumbnail-uploader"
+                  label="Thumbnail / Poster Tayangan (Upload dari Perangkat)"
+                  value={mediaForm.imageUrl || ""}
+                  onChange={(url) => setMediaForm({ ...mediaForm, imageUrl: url })}
+                  aspectRatio="video"
+                  maxDimension={1200}
+                  helpText="Unggah gambar screenshot atau poster tayangan media dari komputer/ponsel Anda."
+                  placeholder="https://images.unsplash.com/..."
                 />
               </div>
 

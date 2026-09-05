@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useCmsSection } from "@/lib/use-cms";
+import { useLanguage } from "@/lib/language-context";
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -24,6 +25,8 @@ type MediaItem = {
   channel: string;
   title: string;
   excerpt: string;
+  videoUrl?: string;
+  imageUrl?: string;
   featured?: boolean;
   tone: "coral" | "sea" | "butter" | "ink" | "lavender" | string;
 };
@@ -160,34 +163,59 @@ function MediaArtwork({ item, featured = false }: { item: MediaItem; featured?: 
   };
 
   return (
-    <div className={`relative overflow-hidden ${featured ? "aspect-[1.4] rounded-[1.6rem]" : "aspect-[1.25] rounded-[1.2rem]"} ${tones[item.tone]}`}>
-      <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(135deg,transparent_45%,#173d3a_46%,#173d3a_49%,transparent_50%)] [background-size:30px_30px]" />
-      <div className="absolute -right-12 -top-16 h-52 w-52 rounded-full border-[25px] border-[#f5eee3]/70" />
-      <div className="absolute -bottom-14 -left-10 h-40 w-40 rounded-full border-[20px] border-[#173d3a]/20" />
-      <div className="absolute left-6 top-6 grid h-11 w-11 place-items-center rounded-full bg-[#f5eee3]/85 text-[#173d3a]"><Play size={17} fill="currentColor" /></div>
-      <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between text-[#173d3a]">
-        <span className="rounded-full bg-[#f5eee3]/85 px-3 py-1.5 font-mono-ui text-[9px] font-bold uppercase tracking-[0.12em]">{item.channel}</span>
-        {featured ? <span className="font-mono-ui text-[9px] font-bold uppercase tracking-[0.12em]">Sorotan</span> : <ArrowUpRight size={24} />}
+    <div className={`relative overflow-hidden ${featured ? "aspect-[1.4] rounded-[1.6rem]" : "aspect-[1.25] rounded-[1.2rem]"} ${tones[item.tone] || tones.coral}`}>
+      {item.imageUrl ? (
+        <img
+          src={item.imageUrl}
+          alt={item.title}
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      ) : (
+        <>
+          <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(135deg,transparent_45%,#173d3a_46%,#173d3a_49%,transparent_50%)] [background-size:30px_30px]" />
+          <div className="absolute -right-12 -top-16 h-52 w-52 rounded-full border-[25px] border-[#f5eee3]/70" />
+          <div className="absolute -bottom-14 -left-10 h-40 w-40 rounded-full border-[20px] border-[#173d3a]/20" />
+        </>
+      )}
+      {item.imageUrl && (
+        <div className="absolute inset-0 bg-gradient-to-t from-[#173d3a]/75 via-transparent to-black/20" />
+      )}
+      <div className="absolute left-6 top-6 grid h-11 w-11 place-items-center rounded-full bg-[#f5eee3]/90 text-[#173d3a] shadow-sm backdrop-blur-xs">
+        <Play size={17} fill="currentColor" />
+      </div>
+      <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between text-[#f5eee3]">
+        <span className="rounded-full bg-[#173d3a]/80 px-3 py-1.5 font-mono-ui text-[9px] font-bold uppercase tracking-[0.12em] text-[#f5eee3] backdrop-blur-xs">
+          {item.channel}
+        </span>
+        {featured ? (
+          <span className="font-mono-ui text-[9px] font-bold uppercase tracking-[0.12em]">Sorotan</span>
+        ) : (
+          <ArrowUpRight size={24} className="text-[#f5eee3]" />
+        )}
       </div>
     </div>
   );
 }
 
 export default function Media() {
+  const { language, t } = useLanguage();
   const { data: cmsData } = useCmsSection("media");
   const mediaItems = useMemo(() => cmsData?.items || initialMediaItems, [cmsData?.items]);
 
-  const [activeCategory, setActiveCategory] = useState<MediaCategory>("Semua");
+  const categoryKeys: { key: string; label: string }[] = [
+    { key: "Semua", label: t("media.filter_all", "Semua") },
+    { key: "Televisi", label: t("media.filter_tv", "Televisi") },
+    { key: "Dokumenter", label: t("media.filter_doc", "Dokumenter") },
+  ];
+
+  const [activeCategory, setActiveCategory] = useState<string>("Semua");
   const [visibleCount, setVisibleCount] = useState(6);
   const [searchOpen, setSearchOpen] = useState(false);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    document.title = `${cmsData?.pageTitle || "Media"} — Lernpfad`;
-    return () => {
-      document.title = "Lernpfad — Talent Indonesia untuk Jerman";
-    };
-  }, [cmsData?.pageTitle]);
+    document.title = `${t("media.eyebrow", "Ruang Media & Liputan")} — ICH LIEBE DEUTSCH MEDAN`;
+  }, [language, t]);
 
   const filteredItems = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -202,7 +230,7 @@ export default function Media() {
   const archiveItems = filteredItems.filter((item) => !item.featured);
   const visibleItems = archiveItems.slice(0, visibleCount);
 
-  const selectCategory = (category: MediaCategory) => {
+  const selectCategory = (category: string) => {
     setActiveCategory(category);
     setVisibleCount(6);
   };
@@ -214,22 +242,24 @@ export default function Media() {
       <main>
         <section className="mx-auto grid max-w-[1240px] gap-10 px-5 pb-20 pt-16 lg:grid-cols-[.9fr_1.1fr] lg:items-end lg:px-8 lg:pb-28 lg:pt-24">
           <div>
-            <Link href="/berita" className="mb-10 inline-flex items-center gap-2 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#77918b] hover:text-[#d35f46]"><ArrowLeft size={14} /> Kembali ke kabar</Link>
-            <MediaLabel>{cmsData?.eyebrow || "Ruang media Lernpfad"}</MediaLabel>
+            <Link href="/berita" className="mb-10 inline-flex items-center gap-2 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#77918b] hover:text-[#d35f46]">
+              <ArrowLeft size={14} /> {t("media.back_news", "Kembali ke kabar & publikasi")}
+            </Link>
+            <MediaLabel>{t("media.eyebrow", "Ruang Media & Liputan")}</MediaLabel>
             <h1 className="mt-6 max-w-xl font-['Fraunces'] text-6xl font-medium leading-[.9] tracking-[-0.07em] text-[#173d3a] sm:text-8xl">
-              {cmsData?.title || "Dari layar ke percakapan."}
+              {t("media.title", "Dari layar ke percakapan nyata.")}
             </h1>
           </div>
           <div className="lg:pb-2">
             <p className="max-w-xl text-[17px] leading-8 text-[#66817a]">
-              {cmsData?.description || "Liputan televisi dan dokumenter tentang talenta Indonesia, Ausbildung, dan cara dunia kerja Jerman membuka peluang baru."}
+              {t("media.description", "Liputan televisi dan dokumenter tentang talenta Indonesia, program ke Jerman, dan persiapan menuju dunia kerja di Jerman.")}
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3 text-xs font-semibold text-[#486961]">
               <span className="inline-flex items-center gap-2 rounded-full bg-[#e7f0e9] px-3 py-2">
-                <Clapperboard size={14} className="text-[#d35f46]" /> {mediaItems.length} tayangan pilihan
+                <Clapperboard size={14} className="text-[#d35f46]" /> {mediaItems.length} {t("media.items_count", "tayangan pilihan")}
               </span>
               <span className="inline-flex items-center gap-2 rounded-full bg-[#e7f0e9] px-3 py-2">
-                <Tv size={14} className="text-[#d35f46]" /> Video dan dokumenter
+                <Tv size={14} className="text-[#d35f46]" /> {t("media.video_doc", "Video & Dokumenter")}
               </span>
             </div>
           </div>
@@ -239,16 +269,16 @@ export default function Media() {
           <div className="mx-auto flex max-w-[1240px] flex-col gap-4 px-5 py-4 lg:flex-row lg:items-center lg:justify-between lg:px-8">
             <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filter kategori media">
               <Filter size={15} className="mr-1 text-[#d35f46]" />
-              {categories.map((category) => (
+              {categoryKeys.map(({ key, label }) => (
                 <button
-                  key={category}
+                  key={key}
                   type="button"
-                  onClick={() => selectCategory(category)}
+                  onClick={() => selectCategory(key)}
                   className={`rounded-full px-3 py-2 font-mono-ui text-[9px] font-bold uppercase tracking-[0.12em] transition-colors ${
-                    activeCategory === category ? "bg-[#173d3a] text-[#f5eee3]" : "text-[#66817a] hover:bg-[#f5eee3] hover:text-[#173d3a]"
+                    activeCategory === key ? "bg-[#173d3a] text-[#f5eee3]" : "text-[#66817a] hover:bg-[#f5eee3] hover:text-[#173d3a]"
                   }`}
                 >
-                  {category}
+                  {label}
                 </button>
               ))}
             </div>
@@ -258,8 +288,8 @@ export default function Media() {
                   autoFocus
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Cari tayangan..."
-                  aria-label="Cari tayangan"
+                  placeholder={t("media.search_placeholder", "Cari tayangan...")}
+                  aria-label={t("media.search_label", "Cari tayangan")}
                   className="w-44 rounded-full border border-[#173d3a]/20 bg-[#f5eee3] px-4 py-2 font-sans text-xs text-[#173d3a] outline-none focus:border-[#d35f46] sm:w-56"
                 />
               )}
@@ -269,7 +299,7 @@ export default function Media() {
                   setSearchOpen((open) => !open);
                   if (searchOpen) setSearch("");
                 }}
-                aria-label={searchOpen ? "Tutup pencarian" : "Cari tayangan"}
+                aria-label={searchOpen ? t("media.close_search", "Tutup pencarian") : t("media.search_label", "Cari tayangan")}
                 className="grid h-9 w-9 place-items-center rounded-full border border-[#173d3a]/20 text-[#486961] hover:bg-[#f5eee3]"
               >
                 {searchOpen ? <X size={15} /> : <Search size={15} />}
@@ -297,17 +327,19 @@ export default function Media() {
               ))}
             </div>
             <div className="rounded-[1.5rem] bg-[#173d3a] p-7 text-[#f5eee3] sm:p-9">
-              <MediaLabel>{cmsData?.infoTitle || "Kenapa media penting"}</MediaLabel>
+              <MediaLabel>{t("media.why_eyebrow", "Kenapa Media Penting")}</MediaLabel>
               <h2 className="mt-6 font-['Fraunces'] text-4xl font-medium leading-[.95] tracking-[-0.055em]">
-                {cmsData?.infoHeading || "Yang terlihat membantu orang memahami."}
+                {t("media.why_title", "Yang terlihat membantu orang memahami.")}
               </h2>
               <p className="mt-5 text-sm leading-7 text-[#a9c5bb]">
-                {cmsData?.infoDescription || "Liputan media membuka percakapan yang lebih luas tentang talenta internasional, kebutuhan industri, dan proses membangun masa depan bersama."}
+                {t("media.why_desc", "Liputan media membuka percakapan yang lebih luas tentang talenta internasional, kebutuhan industri, dan proses membangun masa depan bersama.")}
               </p>
               <div className="mt-8 border-t border-[#47726b] pt-5">
-                <p className="font-mono-ui text-[9px] font-bold uppercase tracking-[0.14em] text-[#a9c5bb]">Yang kami bawa ke layar</p>
+                <p className="font-mono-ui text-[9px] font-bold uppercase tracking-[0.14em] text-[#a9c5bb]">
+                  {t("media.topics_title", "Yang kami bawa ke layar")}
+                </p>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {(cmsData?.infoTopics || ["Konteks", "Kesiapan", "Budaya kerja", "Perjalanan manusia"]).map((topic: string) => (
+                  {(["Konteks & Peluang", "Kesiapan Bahasa", "Budaya Kerja Jerman", "Perjalanan Nyata"]).map((topic: string) => (
                     <span key={topic} className="rounded-full border border-[#47726b] px-3 py-1.5 text-xs text-[#d5e4de]">
                       {topic}
                     </span>
@@ -322,12 +354,14 @@ export default function Media() {
           <div className="mx-auto max-w-[1240px] px-5 py-20 lg:px-8 lg:py-28">
             <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
               <div>
-                <MediaLabel>Arsip tayangan</MediaLabel>
+                <MediaLabel>{t("media.archive_eyebrow", "Arsip Tayangan")}</MediaLabel>
                 <h2 className="mt-5 font-['Fraunces'] text-5xl font-medium leading-none tracking-[-0.06em] text-[#173d3a]">
-                  {cmsData?.archiveTitle || "Yang pernah kami bagi."}
+                  {t("media.archive_title", "Yang pernah kami bagi.")}
                 </h2>
               </div>
-              <p className="max-w-xs text-sm leading-6 text-[#66817a]">{filteredItems.length} tayangan cocok dengan pilihan Anda.</p>
+              <p className="max-w-xs text-sm leading-6 text-[#66817a]">
+                {filteredItems.length} {t("media.matched", "tayangan cocok dengan pilihan Anda.")}
+              </p>
             </div>
             {visibleItems.length ? (
               <div className="mt-12 grid gap-x-5 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
@@ -351,8 +385,8 @@ export default function Media() {
             ) : (
               <div className="mt-12 rounded-[1.3rem] border border-[#173d3a]/15 bg-[#f5eee3] p-10 text-center">
                 <Tv className="mx-auto text-[#d35f46]" size={24} />
-                <h3 className="mt-4 font-['Fraunces'] text-3xl font-semibold">Tayangan tidak ditemukan.</h3>
-                <p className="mt-2 text-sm text-[#66817a]">Coba kata kunci atau kategori lain.</p>
+                <h3 className="mt-4 font-['Fraunces'] text-3xl font-semibold">{t("news_detail.not_found_title", "Tayangan tidak ditemukan.")}</h3>
+                <p className="mt-2 text-sm text-[#66817a]">{t("media.try_other", "Coba kata kunci atau kategori lain.")}</p>
               </div>
             )}
             {visibleItems.length < archiveItems.length && (
@@ -361,7 +395,7 @@ export default function Media() {
                 onClick={() => setVisibleCount((count) => count + 3)}
                 className="mx-auto mt-16 flex items-center gap-2 rounded-full border border-[#173d3a] px-5 py-3 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#173d3a] transition-colors hover:bg-[#173d3a] hover:text-[#f5eee3]"
               >
-                Muat lebih banyak <ArrowUpRight size={15} />
+                {t("media.load_more", "Muat lebih banyak")} <ArrowUpRight size={15} />
               </button>
             )}
           </div>
@@ -370,16 +404,16 @@ export default function Media() {
         <section className="mx-5 mb-10 mt-20 overflow-hidden rounded-[1.8rem] bg-[#d35f46] px-6 py-16 text-[#fff8ee] sm:px-12 lg:mx-auto lg:max-w-[1240px] lg:px-20 lg:py-20">
           <div className="relative max-w-2xl">
             <div className="absolute -right-56 -top-32 h-80 w-80 rounded-full border-[44px] border-[#f4c76b]/70" />
-            <MediaLabel light>Langkah berikutnya</MediaLabel>
+            <MediaLabel light>{t("hero.badge", "Pilihan Resmi")}</MediaLabel>
             <h2 className="relative mt-6 font-['Fraunces'] text-5xl font-medium leading-[.94] tracking-[-0.065em] sm:text-7xl">
-              {cmsData?.ctaTitle || "Punya cerita yang siap dilihat lebih jauh?"}
+              {t("ref.cta_title", "Cerita sukses berikutnya bisa dimulai dari Anda.")}
             </h2>
             <p className="relative mt-6 max-w-lg text-[15px] leading-7 text-[#f9d6c9]">
-              {cmsData?.ctaSubtitle || "Masuk ke portal partner untuk mengenal portfolio kandidat dan proses yang membuat setiap perjalanan lebih mudah dipahami."}
+              {t("ref.cta_subtitle", "Mulai persiapan bahasa Jerman dan bimbingan 5 program resmi bersama ICH LIEBE DEUTSCH MEDAN.")}
             </p>
-            <Link href={cmsData?.ctaHref || "/login"} className="relative mt-8 inline-flex items-center gap-3 rounded-full bg-[#f5eee3] px-5 py-3.5 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#173d3a] transition-transform hover:-translate-y-1">
-              {cmsData?.ctaText || "Masuk ke portal"} <ArrowUpRight size={16} />
-            </Link>
+            <a href="https://wa.me/6282127324453" target="_blank" rel="noreferrer" className="relative mt-8 inline-flex items-center gap-3 rounded-full bg-[#f5eee3] px-5 py-3.5 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#173d3a] transition-transform hover:-translate-y-1">
+              {t("hero.cta_wa", "Konsultasi WhatsApp")} <ArrowUpRight size={16} />
+            </a>
           </div>
         </section>
       </main>

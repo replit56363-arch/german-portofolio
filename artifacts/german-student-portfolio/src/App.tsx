@@ -32,6 +32,7 @@ import Students from "@/pages/students";
 import StudentDetail from "@/pages/student-detail";
 import StudentEdit from "@/pages/student-edit";
 import StudentNew from "@/pages/student-new";
+import { LanguageProvider } from "@/lib/language-context";
 import { Route, Switch, useLocation, Router as WouterRouter } from "wouter";
 
 const queryClient = new QueryClient();
@@ -117,12 +118,14 @@ function RoutedErrorBoundary({ children }: { children: ReactNode }) {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-          <Router />
-        </WouterRouter>
-        <Toaster />
-      </TooltipProvider>
+      <LanguageProvider>
+        <TooltipProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+            <Router />
+          </WouterRouter>
+          <Toaster />
+        </TooltipProvider>
+      </LanguageProvider>
     </QueryClientProvider>
   );
 }

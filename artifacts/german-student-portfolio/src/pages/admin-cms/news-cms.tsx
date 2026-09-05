@@ -21,6 +21,7 @@ import {
   User,
 } from "lucide-react";
 import { Link } from "wouter";
+import { ImageUploader } from "@/components/image-uploader";
 
 export default function NewsCms() {
   const { data, isLoading } = useCmsSection("news");
@@ -481,54 +482,17 @@ export default function NewsCms() {
               </div>
 
               {/* IMAGE UPLOAD SECTION */}
-              <div className="rounded-xl border border-[#dce8f2] bg-[#f8fbfe] p-4 space-y-3">
-                <label className="block text-xs font-bold text-[#234567]">
-                  Gambar / Sampul Artikel (Upload dari Perangkat)
-                </label>
-
-                {articleForm.imageUrl ? (
-                  <div className="relative rounded-lg overflow-hidden border border-[#b2d1e8] max-h-56 bg-slate-100 flex items-center justify-center">
-                    <img
-                      src={articleForm.imageUrl}
-                      alt="Preview"
-                      className="max-h-52 w-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleRemoveImage}
-                      className="absolute top-2 right-2 rounded-lg bg-red-600/90 text-white p-1.5 text-xs font-bold shadow hover:bg-red-700 flex items-center gap-1"
-                    >
-                      <Trash2 size={13} /> Hapus Gambar
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center border-2 border-dashed border-[#b8d2e8] rounded-xl p-6 bg-white hover:bg-[#f1f7fc] transition-colors">
-                    <Upload size={28} className="text-[#1b5a9f] mb-2" />
-                    <p className="text-xs font-bold text-[#325270]">Pilih File Gambar dari Perangkat</p>
-                    <p className="text-[11px] text-[#718da6] mt-0.5">Format JPG, PNG, WEBP (Maksimal 8MB)</p>
-
-                    <label className="mt-3 cursor-pointer inline-flex items-center gap-2 rounded-lg bg-[#1b5a9f] px-3.5 py-2 text-xs font-bold text-white shadow hover:bg-[#154b85]">
-                      <ImageIcon size={14} /> Pilih Berkas Gambar
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
-                )}
-
-                <div className="pt-1">
-                  <label className="block text-[11px] font-semibold text-[#5a7894]">Atau Masukkan URL Gambar Daring (Opsional)</label>
-                  <input
-                    type="url"
-                    value={articleForm.imageUrl || ""}
-                    onChange={(e) => setArticleForm({ ...articleForm, imageUrl: e.target.value })}
-                    placeholder="https://images.unsplash.com/..."
-                    className="field-input mt-1 text-xs"
-                  />
-                </div>
+              <div className="rounded-xl border border-[#dce8f2] bg-[#f8fbfe] p-4">
+                <ImageUploader
+                  id="article-image-uploader"
+                  label="Gambar / Sampul Berita & Artikel"
+                  value={articleForm.imageUrl || ""}
+                  onChange={(url) => setArticleForm((prev: any) => ({ ...prev, imageUrl: url }))}
+                  aspectRatio="video"
+                  maxDimension={1400}
+                  helpText="Tarik & lepas atau pilih foto dokumentasi kegiatan, kelas, atau berita dari perangkat Anda."
+                  placeholder="https://images.unsplash.com/..."
+                />
               </div>
 
               <div className="grid gap-4 sm:grid-cols-3">

@@ -1,0 +1,1242 @@
+import React, { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+
+export type Language = "id" | "de" | "en";
+
+export interface LanguageOption {
+  code: Language;
+  label: string;
+  nativeLabel: string;
+  flag: string;
+  short: string;
+}
+
+export const LANGUAGES: LanguageOption[] = [
+  { code: "id", label: "Bahasa Indonesia", nativeLabel: "Indonesia", flag: "🇮🇩", short: "ID" },
+  { code: "de", label: "Deutsch", nativeLabel: "Deutsch", flag: "🇩🇪", short: "DE" },
+  { code: "en", label: "English", nativeLabel: "English", flag: "🇬🇧", short: "EN" },
+];
+
+export const translations: Record<Language, Record<string, string>> = {
+  id: {
+    // Navbar
+    "nav.brand_subtitle": "Lembaga Kursus Bahasa Jerman Terdaftar",
+    "nav.home": "Beranda",
+    "nav.programs": "Program Kursus",
+    "nav.programs_sub": "5 Jalur Resmi Ke Jerman",
+    "nav.ausbildung": "1. Ausbildung",
+    "nav.ausbildung_sub": "Sekolah Kejuruan & Praktik Bergaji",
+    "nav.aupair": "2. Au Pair",
+    "nav.aupair_sub": "Tinggal Bersama Host Family & Kursus",
+    "nav.fsj": "3. FSJ / BFD",
+    "nav.fsj_sub": "Program Sukarelawan Sosial 1 Tahun",
+    "nav.gtog": "4. G to G",
+    "nav.gtog_sub": "Penempatan Perawat Resmi Pemerintah",
+    "nav.studium": "5. Kuliah / Studium",
+    "nav.studium_sub": "Persiapan Kuliah Universitas Jerman",
+    "nav.about": "Tentang Kami",
+    "nav.about_sub": "Profil & Lokasi",
+    "nav.about_profile": "Profil Lembaga",
+    "nav.about_profile_sub": "Lembaga Terdaftar & Berizin Operasional",
+    "nav.about_contact": "Alamat & Kontak",
+    "nav.about_contact_sub": "Jl. Ternak II No. 39, Medan Polonia",
+    "nav.about_partner": "Konsultasi Partner",
+    "nav.about_partner_sub": "Kemitraan & Informasi Program",
+    "nav.news_ref": "Kabar & Referensi",
+    "nav.news_ref_sub": "Informasi & Prestasi",
+    "nav.news": "Kabar & Berita",
+    "nav.news_sub": "Artikel & Pengumuman Terbaru",
+    "nav.references": "Kisah Referensi",
+    "nav.references_sub": "Kisah Sukses Alumni di Jerman",
+    "nav.cta": "Hubungi Kami",
+    "nav.language": "Bahasa",
+
+    // Common Buttons & Badges
+    "common.back_home": "Kembali ke beranda",
+    "common.back_news": "Kembali ke semua kabar",
+    "common.contact_us": "Hubungi Kami",
+    "common.whatsapp_consult": "Konsultasi WhatsApp",
+    "common.see_all_services": "Lihat semua layanan",
+    "common.see_portfolio": "Lihat portfolio kandidat",
+    "common.send_message": "Kirim pesan",
+    "common.read_more": "Baca selengkapnya",
+    "common.all": "Semua",
+    "common.search": "Cari artikel atau pengumuman...",
+    "common.step": "Tahap",
+    "common.location_medan": "Medan, Sumatera Utara",
+    "common.germany": "Jerman",
+
+    // Hero Section
+    "hero.eyebrow": "Lembaga Kursus Bahasa Jerman Resmi · Medan",
+    "hero.title": "ICH LIEBE DEUTSCH MEDAN",
+    "hero.description": "Belajar bahasa Jerman, memahami kehidupan di Jerman, dan mempersiapkan masa depan dengan lebih baik bersama pendiri lulusan UNIMED yang berpengalaman 6 tahun tinggal di Jerman.",
+    "hero.cta_wa": "Konsultasi WhatsApp",
+    "hero.cta_approach": "Kenali pendekatan kami",
+    "hero.cta_programs": "Lihat 5 Program Kursus",
+    "hero.badge_two_places": "Dua tempat. Satu arah.",
+    "hero.trusted_by": "Dipercaya untuk membuka jalan oleh",
+
+    // Stats
+    "stats.students": "profil dalam bimbingan",
+    "stats.ready": "siap diberangkatkan",
+    "stats.placement_rate": "tingkat keberhasilan",
+    "stats.founder_exp": "pengalaman pendiri di Jerman",
+
+    // Vision
+    "vision.label": "Unsere Vision",
+    "vision.title": "“Deutsch lernen. Deutschland verstehen. Zukunft gestalten.”",
+    "vision.text": "Belajar bahasa Jerman, memahami kehidupan di Jerman, dan mempersiapkan masa depan dengan lebih baik. Kami tidak hanya berfokus menyalurkan siswa, tetapi membimbing dan mempersiapkan siswa agar mampu menjalani kehidupan di Jerman secara mandiri dan percaya diri.",
+
+    // Approach & Process (Landing)
+    "approach.eyebrow": "Lebih dari penempatan",
+    "approach.title": "Kami merawat perjalanan, bukan hanya keberangkatan.",
+    "approach.text": "Pindah negara untuk Ausbildung, Au Pair, atau Kuliah adalah keputusan besar. Karena itu, kami membuat setiap tahap bisa dipahami, dibicarakan, dan dipersiapkan bersama.",
+    "approach.step1_num": "01",
+    "approach.step1_title": "Konsultasi & Pemetaan",
+    "approach.step1_text": "Menganalisis minat, latar belakang pendidikan, dan memilih jalur resmi ke Jerman yang paling tepat (Ausbildung, Au Pair, FSJ, G to G, Kuliah).",
+    "approach.step2_num": "02",
+    "approach.step2_title": "Kursus Bahasa Jerman Terarah",
+    "approach.step2_text": "Pelatihan intensif tingkat A1, A2, hingga B1/B2 dengan kurikulum standar Goethe-Institut, dipandu langsung oleh lulusan Pendidikan Bahasa Jerman UNIMED.",
+    "approach.step3_num": "03",
+    "approach.step3_title": "Dokumen & Wawancara",
+    "approach.step3_text": "Penyusunan Lebenslauf (CV Jerman), Anschreiben (surat motivasi), simulasi wawancara dengan pemberi kerja / host family di Jerman.",
+    "approach.step4_num": "04",
+    "approach.step4_title": "Kontrak & Visa Resmi",
+    "approach.step4_text": "Pendampingan pengurusan kontrak resmi (Ausbildungsvertrag), verifikasi kedutaan, asuransi, dan pengajuan visa nasional Jerman.",
+    "approach.step5_num": "05",
+    "approach.step5_title": "Kemandirian & Adaptasi",
+    "approach.step5_text": "Pembekalan budaya kehidupan sehari-hari (Interkulturelle Kompetenz), perumahan, pendaftaran kota (Anmeldung), dan jaringan komunitas.",
+
+    // Program Cards Section (Landing)
+    "programs.eyebrow": "5 Program Kursus & Jalur Resmi",
+    "programs.title": "Yang terencana dengan baik, terasa ringan saat dijalani.",
+    "programs.subtitle": "Satu lembaga lokal di Medan untuk membimbing langkah Anda dengan percaya diri lintas bahasa, budaya, dan administrasi.",
+    "programs.card1_title": "Ausbildung",
+    "programs.card1_desc": "Sekolah kejuruan (Berufsschule) digabung praktik kerja di perusahaan Jerman dengan uang saku bulanan. Durasi 2–3,5 tahun (Perawat, Gastro, IT, Teknik, Bisnis).",
+    "programs.card2_title": "Au Pair",
+    "programs.card2_desc": "Program pertukaran budaya tinggal bersama keluarga Jerman (Host Family). Mendapat uang saku, kamar pribadi, makan gratis, dan kursus bahasa Jerman.",
+    "programs.card3_title": "FSJ / BFD",
+    "programs.card3_desc": "Freiwilliges Soziales Jahr / Bundesfreiwilligendienst: program sukarelawan sosial 1 tahun di rumah sakit, panti sosial, atau TK dengan uang saku dan akomodasi.",
+    "programs.card4_title": "G to G Perawat",
+    "programs.card4_desc": "Program resmi antar-pemerintah (Government to Government) penempatan tenaga perawat profesional Indonesia di berbagai fasilitas kesehatan di Jerman.",
+    "programs.card5_title": "Kuliah / Studium",
+    "programs.card5_desc": "Persiapan kuliah universitas di Jerman (Bachelor/Master), Studienkolleg, sertifikasi bahasa C1/TestDaF, dan bimbingan dokumen universitas.",
+
+    // Candidate Portfolio Highlight
+    "portfolio_highlight.eyebrow": "Kesiapan Kandidat",
+    "portfolio_highlight.title": "Kenali orangnya, sebelum bertemu.",
+    "portfolio_highlight.description": "Profil peserta yang menyatukan kemampuan bahasa, pemahaman budaya, dan motivasi kerja nyata. Karena keberhasilan dimulai dari kesiapan mental.",
+    "portfolio_highlight.pill_lang": "Level Bahasa B1/B2",
+    "portfolio_highlight.pill_exp": "Praktik & Keahlian",
+    "portfolio_highlight.pill_mot": "Motivasi Kuat",
+    "portfolio_highlight.pill_readiness": "Kesiapan Mental",
+
+    // For Employers / Partners
+    "employer_sec.eyebrow": "Kemitraan & Integritas",
+    "employer_sec.title": "Bukan sekadar mengirimkan. Menyiapkan manusia yang siap berkarya.",
+    "employer_sec.description": "Kami membekali kandidat dengan bahasa yang baik dan etos kerja Jerman, sehingga proses adaptasi di tempat kerja berlangsung cepat dan harmonis.",
+    "employer_sec.check1": "Kandidat dengan sertifikat bahasa resmi B1 / B2",
+    "employer_sec.check2": "Pemahaman budaya kerja Jerman dan kedisiplinan",
+    "employer_sec.check3": "Pendampingan kontak berkelanjutan selama masa kontrak",
+    "employer_sec.cta": "Konsultasi Kemitraan",
+
+    // Testimonial & Quote
+    "quote.eyebrow": "Suara Dari Jerman",
+    "quote.text": "“Di ICH LIEBE DEUTSCH MEDAN saya tidak hanya belajar tata bahasa, tapi belajar bagaimana menghadapi kehidupan nyata dan bekerja profesional di Jerman.”",
+    "quote.author": "— Alumni Peserta Bimbingan · Jerman",
+    "quote.box1_title": "Lembaga Berizin Resmi",
+    "quote.box1_text": "Memiliki izin operasional resmi dan terdaftar di Medan dengan kurikulum terstruktur.",
+    "quote.box2_title": "Pengalaman Riil Jerman",
+    "quote.box2_text": "Dibimbing langsung oleh pendiri yang berpengalaman 6 tahun hidup mandiri dan berkarir di Jerman.",
+
+    // News Section Preview
+    "news_sec.eyebrow": "Kabar Terkini",
+    "news_sec.title": "Catatan dan informasi penting dari Medan ke Jerman.",
+    "news_sec.see_all": "Buka semua kabar",
+
+    // FAQs
+    "faq.eyebrow": "Pertanyaan yang Sering Muncul",
+    "faq.title": "Mari mulai dari apa yang ingin Anda ketahui.",
+    "faq.q1": "Apakah Ausbildung sama dengan kuliah?",
+    "faq.a1": "Ausbildung adalah sistem pendidikan dan pelatihan kejuruan di Jerman yang menggabungkan belajar teori di Berufsschule dengan praktik kerja di perusahaan. Program ini tidak memberikan gelar akademis sarjana, tetapi menghasilkan kualifikasi profesional resmi Jerman dan peserta menerima gaji pelatihan bulanan.",
+    "faq.q2": "Berapa lama durasi program Ausbildung?",
+    "faq.a2": "Durasi Ausbildung umumnya 2 hingga 3,5 tahun tergantung bidang profesinya (misalnya perawat, teknik, gastronomie, IT, manajemen bisnis).",
+    "faq.q3": "Apa syarat utama untuk mendaftar program di ICH LIEBE DEUTSCH MEDAN?",
+    "faq.a3": "Syarat utama adalah lulusan minimal SMA/SMK sederajat atau D3/S1, usia 18–30 tahun, memiliki tekad kuat, dan berkomitmen mengikuti kursus bahasa Jerman intensif hingga level B1 atau B2 sesuai syarat jalur yang dituju.",
+    "faq.q4": "Bagaimana legalitas ICH LIEBE DEUTSCH MEDAN?",
+    "faq.a4": "ICH LIEBE DEUTSCH MEDAN adalah Lembaga Kursus dan Pelatihan (LKP) Bahasa Jerman resmi yang terdaftar dan berizin operasional di Kota Medan, beralamat di Jl. Ternak II No. 39, Medan Polonia.",
+
+    // CTA Bottom Banner
+    "cta_banner.eyebrow": "Langkah Berikutnya",
+    "cta_banner.title": "Wujudkan impian masa depan Anda di Jerman bersama kami.",
+    "cta_banner.subtitle": "Konsultasikan impian dan rencana Anda bersama tim ICH LIEBE DEUTSCH MEDAN. Kami siap mendampingi dari nol hingga tiba di Jerman.",
+    "cta_banner.button": "Hubungi WhatsApp Kami",
+
+    // Services Page
+    "services.eyebrow": "5 Program Kursus & Jalur Ke Jerman",
+    "services.title": "Pendidikan dan pelatihan terarah menuju Jerman.",
+    "services.description": "Kami menyediakan kursus bahasa Jerman komprehensif dan bimbingan lengkap untuk 5 program resmi: Ausbildung, Au Pair, FSJ/BFD, G to G Perawat, dan Kuliah/Studium.",
+    "services.primary_cta": "Mulai Konsultasi",
+    "services.badge_track": "Jalur Resmi Terverifikasi",
+    "services.badge_track_desc": "Dari Medan langsung terhubung ke Jerman.",
+    "services.pillar1_title": "Kurikulum Goethe Standar",
+    "services.pillar1_text": "Materi terstruktur dari tingkat dasar A1 sampai kemahiran B2.",
+    "services.pillar2_title": "Proses Transparan",
+    "services.pillar2_text": "Setiap tahap bimbingan terdokumentasi rapi tanpa perantara gelap.",
+    "services.pillar3_title": "Pendampingan Holistik",
+    "services.pillar3_text": "Bimbingan bahasa, dokumen kontrak, visa, hingga adaptasi di Jerman.",
+    "services.workflow_eyebrow": "Alur Bimbingan Kami",
+    "services.workflow_title": "Satu perjalanan terpadu, 7 tahap utama.",
+    "services.workflow_subtitle": "Pilih salah satu tahap untuk melihat apa yang dipelajari dan dipersiapkan di dalamnya.",
+    "services.stage_selected_title": "Tahap",
+    "services.talk_needs": "Konsultasikan Kebutuhan Anda",
+    "services.results_eyebrow": "Komitmen Kualitas Kami",
+    "services.results_title": "Siswa mendapat kompetensi nyata. Masa depan terbuka lebar.",
+    "services.results_subtitle": "Fokus kami adalah membentuk kandidat mandiri yang menguasai bahasa Jerman dan siap beradaptasi dengan budaya kerja profesional Jerman.",
+    "services.card_understood_title": "Kandidat yang Dipersiapkan",
+    "services.card_understood_text": "Bukan sekadar lulus ujian hafalan, namun mampu berkomunikasi aktif sehari-hari.",
+    "services.card_relation_title": "Jejaring Alumni di Jerman",
+    "services.card_relation_text": "Komunitas alumni yang siap menyambut dan berbagi tips hidup di Jerman.",
+
+    // About Us Page (Jakarta/Medan)
+    "about.eyebrow": "Tentang Kami · Profil Lembaga",
+    "about.title": "ICH LIEBE DEUTSCH MEDAN",
+    "about.description": "Lembaga kursus bahasa Jerman terdaftar dan berizin operasional di Medan. Didirikan oleh alumni Pendidikan Bahasa Jerman UNIMED yang memiliki pengalaman nyata tinggal selama 6 tahun di Jerman.",
+    "about.call_btn": "Hubungi ILD Medan",
+    "about.send_inquiry": "Kirim Pertanyaan",
+    "about.art_eyebrow": "Kampus & Ruang Belajar",
+    "about.art_city": "Medan",
+    "about.art_tag": "Pusat persiapan bahasa Jerman terpercaya di Sumatera Utara",
+    "about.card1_title": "Untuk Siapa?",
+    "about.card1_text": "Siswa SMA/SMK, mahasiswa, profesional muda, dan keluarga yang menginginkan jalur resmi ke Jerman.",
+    "about.card2_title": "Mulai Dari Nol",
+    "about.card2_text": "Tidak perlu dasar bahasa sebelumnya; kami bimbing dari level A1 hingga B1/B2 secara intensif.",
+    "about.card3_title": "Pendampingan Nyata",
+    "about.card3_text": "Pengalaman 6 tahun pendiri di Jerman memastikan Anda mendapat tips praktis dan akurat.",
+    "about.what_we_do_eyebrow": "Nilai Unggulan Kami",
+    "about.what_we_do_title": "Mempersiapkan kemandirian sebelum melangkah ke Jerman.",
+    "about.what_we_do_sub": "Kami tidak hanya mengajarkan bahasa di dalam kelas, melainkan mendidik karakter, etos kerja, dan kemandirian mental yang dibutuhkan di Jerman.",
+    "about.step1_title": "Pembelajaran Interaktif & Intensif",
+    "about.step1_text": "Fokus pada 4 keterampilan: Hörverstehen (mendengar), Leseverstehen (membaca), Schreiben (menulis), dan Sprechen (berbicara).",
+    "about.step2_title": "Pemahaman Budaya Jerman",
+    "about.step2_text": "Membahas aturan hidup, sistem pemilahan sampah, transportasi umum, kedisiplinan waktu, dan budaya kerja Jerman.",
+    "about.step3_title": "Bimbingan Karir & Dokumen",
+    "about.step3_text": "Bimbingan pembuatan CV standar Jerman, persiapan wawancara perusahaan, dan pendampingan visa sampai keberangkatan.",
+    "about.form_eyebrow": "Formulir Konsultasi",
+    "about.form_title": "Mulai langkah pertama Anda bersama kami hari ini.",
+    "about.form_subtitle": "Kirimkan pertanyaan Anda melalui formulir di bawah ini atau hubungi WhatsApp kami langsung.",
+    "about.form_name": "Nama Lengkap",
+    "about.form_email": "Alamat E-mail",
+    "about.form_phone": "Nomor Telepon / WhatsApp",
+    "about.form_program": "Program yang Diminati",
+    "about.form_message": "Tuliskan pertanyaan atau rencana Anda...",
+    "about.form_submit": "Kirim Pesan Sekarang",
+    "about.form_success": "Pesan Anda berhasil disiapkan!",
+    "about.info_address_label": "Alamat Resmi",
+    "about.info_address_val": "Jl. Ternak II No. 39, Medan Polonia, Kota Medan, Sumatera Utara",
+    "about.info_hours_label": "Jam Operasional",
+    "about.info_hours_val": "Senin – Sabtu: 08.00 – 17.00 WIB",
+
+    // News & Articles
+    "news.eyebrow": "Kabar & Publikasi",
+    "news.title": "Berita, tips, dan informasi terbaru seputar Jerman.",
+    "news.subtitle": "Simak artikel informatif tentang bahasa Jerman, Ausbildung, kehidupan di Jerman, dan prestasi siswa kami.",
+    "news.cat_all": "Semua",
+    "news.cat_media": "Media & Berita",
+    "news.cat_story": "Cerita Peserta",
+    "news.cat_partner": "Info Kemitraan",
+    "news.cat_program": "Program & Tips",
+    "news.no_articles": "Tidak ada artikel yang cocok dengan pencarian Anda.",
+
+    // References / Success Stories
+    "ref.eyebrow": "Kisah Sukses Alumni",
+    "ref.title": "Bukti nyata dari tekad, kerja keras, dan bimbingan.",
+    "ref.subtitle": "Cerita inspiratif para peserta bimbingan yang telah berhasil berkarya dan menjalani kehidupan di Jerman.",
+
+    // About Page Extras
+    "about_page.art_label": "Ruang Belajar ILD Medan",
+    "about_page.art_sub": "Tempat pertama untuk memulai bimbingan",
+    "about_page.step1_title": "Menjawab Pertanyaan & Pemetaan Bakat",
+    "about_page.step1_text": "Tentang syarat, pilihan program (Ausbildung, Au Pair, FSJ, G to G, Kuliah), kemampuan bahasa, dan realitas kehidupan di Jerman.",
+    "about_page.step2_title": "Pelatihan Bahasa Terstruktur",
+    "about_page.step2_text": "Materi A1 hingga B1/B2 berstandar Goethe-Institut dengan kelas interaktif dan intensif langsung di Medan.",
+    "about_page.step3_title": "Penghubung Peluang Resmi",
+    "about_page.step3_text": "Bimbingan berkas, kontrak kerja resmi Jerman, hingga pengurusan visa nasional dan pembekalan budaya.",
+    "about_page.highlight1_title": "Untuk Siapa?",
+    "about_page.highlight1_text": "Calon peserta dan keluarga yang ingin bimbingan transparan dan terarah.",
+    "about_page.highlight2_title": "5 Jalur Resmi",
+    "about_page.highlight2_text": "Ausbildung, Au Pair, FSJ/BFD, G to G Perawat, dan Kuliah/Studium.",
+    "about_page.highlight3_title": "Pengalaman Nyata",
+    "about_page.highlight3_text": "Dipandu oleh pendiri dengan pengalaman 6 tahun hidup mandiri di Jerman.",
+    "about_page.what_we_do_eyebrow": "Yang Kami Lakukan",
+    "about_page.what_we_do_title": "Mendampingi setiap tahap dengan teliti dan penuh tanggung jawab.",
+    "about_page.what_we_do_text": "Dari Medan, kami membantu peserta menguasai bahasa Jerman sekaligus memahami budaya kerja dan kemandirian hidup.",
+    "about_page.form_title": "Mulai percakapan Anda bersama kami hari ini.",
+    "about_page.location_title": "Alamat Resmi & Kontak Lembaga",
+    "about_page.location_subtitle": "Kunjungi lokasi kami di Medan Polonia atau hubungi kami via WhatsApp.",
+    "about_page.legal_status": "Lembaga Kursus Terdaftar & Berizin Resmi (2024)",
+    "about_page.curriculum_title": "Konsultasi & Informasi Kursus",
+    "about_page.curriculum_desc": "Kurikulum Bahasa Jerman A1-B2 Goethe Standard, Bimbingan 5 Program Resmi, Didirikan oleh Sarjana UNIMED (6 Tahun di Jerman).",
+    "about_page.banner_title": "Masa depan yang jauh, dimulai dari percakapan dekat.",
+
+    // General Form
+    "form.phone": "Nomor WhatsApp",
+    "form.consent": "Saya menyetujui kebijakan privasi dan mengizinkan data ini diproses untuk konsultasi.",
+    "form.fallback_notice": "Jika aplikasi email tidak terbuka, hubungi langsung via WhatsApp ke 082127324453.",
+    "form.surname": "Nama Belakang / Posisi",
+    "form.company": "Nama Perusahaan / Institusi",
+
+    // Call to Action Banner
+    "cta_banner.eyebrow": "Langkah Berikutnya",
+    "cta_banner.title": "Wujudkan impian masa depan Anda di Jerman bersama kami.",
+    "cta_banner.subtitle": "Konsultasikan impian dan rencana Anda bersama tim ICH LIEBE DEUTSCH MEDAN. Kami siap mendampingi dari nol hingga tiba di Jerman.",
+    "cta_banner.button": "Hubungi WhatsApp Kami",
+
+    // News Extras
+    "news.articles_count": "kabar pilihan",
+    "news.for_students": "Untuk peserta & keluarga",
+    "news.info_eyebrow": "Kenapa Kami Berbagi",
+    "news.info_title": "Proses yang baik layak dibicarakan.",
+    "news.info_text": "Setiap kabar adalah kesempatan untuk memperlihatkan cara kami bekerja: terbuka, dekat, dan berorientasi pada langkah jangka panjang.",
+    "news.info_p1": "Cerita peserta yang nyata",
+    "news.info_p2": "Informasi resmi & terpercaya",
+    "news.info_p3": "Perkembangan program yang terbuka",
+    "news.archive_eyebrow": "Arsip Kabar",
+    "news.archive_title": "Yang sedang kami bawa.",
+    "news.articles_matched": "kabar cocok dengan pilihan Anda.",
+    "news.try_other": "Coba kata kunci atau kategori lain.",
+    "news.load_more": "Muat lebih banyak",
+
+    // News Detail
+    "news_detail.copied_title": "Tautan Berhasil Disalin!",
+    "news_detail.copied_desc": "Tautan artikel berita telah disalin ke clipboard Anda.",
+    "news_detail.not_found_title": "Artikel Tidak Ditemukan",
+    "news_detail.not_found_desc": "Artikel berita yang Anda cari tidak tersedia atau telah dipindahkan.",
+    "news_detail.featured_badge": "Sorotan Utama",
+    "news_detail.read_time": "menit baca",
+    "news_detail.share_btn": "Bagikan",
+    "news_detail.published_by": "Dipublikasikan Oleh",
+    "news_detail.recommended_eyebrow": "Rekomendasi Bacaan",
+    "news_detail.related_title": "Kabar Terkait Lainnya",
+    "news_detail.see_all_news": "Lihat Semua Kabar",
+
+    // Media & Press
+    "media.back_news": "Kembali ke kabar & publikasi",
+    "media.eyebrow": "Ruang Media & Liputan",
+    "media.title": "Dari layar ke percakapan nyata.",
+    "media.description": "Liputan televisi dan dokumenter tentang talenta Indonesia, program ke Jerman, dan persiapan menuju dunia kerja di Jerman.",
+    "media.items_count": "tayangan pilihan",
+    "media.video_doc": "Video & Dokumenter",
+    "media.filter_all": "Semua",
+    "media.filter_tv": "Televisi",
+    "media.filter_doc": "Dokumenter",
+    "media.search_placeholder": "Cari tayangan...",
+    "media.search_label": "Cari tayangan",
+    "media.close_search": "Tutup pencarian",
+    "media.spotlight": "Sorotan",
+    "media.why_eyebrow": "Kenapa Media Penting",
+    "media.why_title": "Yang terlihat membantu orang memahami.",
+    "media.why_desc": "Liputan media membuka percakapan yang lebih luas tentang talenta internasional, kebutuhan industri, dan proses membangun masa depan bersama.",
+    "media.topics_title": "Yang kami bawa ke layar",
+    "media.archive_eyebrow": "Arsip Tayangan",
+    "media.archive_title": "Yang pernah kami bagi.",
+    "media.matched": "tayangan cocok dengan pilihan Anda.",
+    "media.try_other": "Coba kata kunci atau kategori lain.",
+    "media.load_more": "Muat lebih banyak",
+
+    // References Extras
+    "ref.badge_real": "Perjalanan Nyata",
+    "ref.badge_measured": "Prestasi Terukur",
+    "ref.badge_moments": "Momen Untuk Diingat",
+    "ref.badge_moments_sub": "Langkah awal menentukan masa depan.",
+    "ref.col1_title": "Prestasi",
+    "ref.col1_text": "Kemampuan yang bertumbuh menjadi pencapaian nyata di Jerman.",
+    "ref.col2_title": "Ketahanan",
+    "ref.col2_text": "Tetap disiplin dan percaya diri saat menghadapi lingkungan baru.",
+    "ref.col3_title": "Komunitas",
+    "ref.col3_text": "Jejaring alumni yang saling mendukung di berbagai kota di Jerman.",
+    "ref.stories_eyebrow": "Yang Sudah Dicapai",
+    "ref.stories_title": "Cerita yang membuat kemungkinan terasa nyata.",
+    "ref.stories_desc": "Pilih salah satu momen untuk membaca konteks di balik hasilnya. Setiap peserta membawa cerita yang berbeda, namun semuanya dimulai dari langkah pertama belajar bahasa.",
+    "ref.quote_eyebrow": "Pelajaran Dari Perjalanan",
+    "ref.quote_body": "“Hasil yang baik tidak datang sekaligus. Ia tumbuh dari hari-hari ketika seseorang memilih untuk terus belajar, berlatih, dan berani mencoba.”",
+    "ref.box1_title": "Kesiapan Bisa Dilatih",
+    "ref.box1_text": "Bahasa, keahlian, dan kepercayaan diri tumbuh melalui proses bimbingan yang konsisten.",
+    "ref.box2_title": "Peluang Terbuka Lebar",
+    "ref.box2_text": "Lembaga dan peserta sama-sama berperan dalam membangun keberhasilan masa depan di Jerman.",
+    "ref.cta_title": "Cerita sukses berikutnya bisa dimulai dari Anda.",
+    "ref.cta_subtitle": "Mulai persiapan bahasa Jerman dan bimbingan 5 program resmi bersama ICH LIEBE DEUTSCH MEDAN.",
+
+    // Employer / Partner Extras
+    "employer.contact_label": "Konsultasi Partner",
+    "employer.contact_note": "Percakapan awal untuk memahami kebutuhan dan potensi kerja sama tim Anda.",
+    "employer.back_services": "Kembali ke layanan",
+    "employer.eyebrow": "Untuk Pemberi Kerja & Institusi",
+    "employer.title": "Temukan orang yang tepat untuk tim Anda.",
+    "employer.description": "Mari mulai dengan percakapan informasi. Tim kami akan menjelaskan cara kerja, standar kemampuan bahasa, dan langkah bimbingan peserta Ausbildung, Au Pair, atau tenaga profesional.",
+    "employer.fill_form": "Isi formulir",
+    "employer.col1_title": "Informasi yang Jelas",
+    "employer.col1_text": "Pahami proses dan standar kualifikasi sebelum mengambil keputusan kerja sama.",
+    "employer.col2_title": "Disesuaikan Kebutuhan",
+    "employer.col2_text": "Percakapan berfokus pada posisi dan standar lingkungan kerja yang nyata.",
+    "employer.col3_title": "Respons Cepat",
+    "employer.col3_text": "Tim kami di Medan siap menjawab dan merancang program kerja sama yang transparan.",
+    "employer.contact_title": "Satu percakapan untuk melihat peluang baru.",
+    "employer.contact_desc": "Untuk informasi awal, telepon kantor kami atau kirim pesan. Tim kami akan menjelaskan bidang kerja dan pendekatan yang paling sesuai untuk institusi Anda.",
+    "employer.form_label": "Formulir Kemitraan",
+    "employer.form_heading": "Ceritakan kebutuhan institusi Anda.",
+    "employer.form_message_label": "Pesan atau Posisi",
+    "employer.form_message_placeholder": "Posisi atau kebutuhan peserta yang ingin Anda diskusikan...",
+    "employer.form_submit": "Kirim Permintaan Informasi",
+    "employer.banner_title": "Mari mulai dengan percakapan yang tepat.",
+
+    // Footer
+    "footer.tagline": "“Deutsch lernen. Deutschland verstehen. Zukunft gestalten.” — Belajar bahasa Jerman, memahami kehidupan di Jerman, dan mempersiapkan masa depan dengan lebih baik.",
+    "footer.rights": "© 2024–2026 ICH LIEBE DEUTSCH MEDAN. Hak cipta dilindungi undang-undang.",
+    "footer.campus_medan": "Kampus Medan",
+    "footer.germany_partner": "Jerman",
+  },
+
+  de: {
+    // Navbar
+    "nav.brand_subtitle": "Registriertes Deutsches Sprachinstitut",
+    "nav.home": "Startseite",
+    "nav.programs": "Kursprogramme",
+    "nav.programs_sub": "5 offizielle Wege nach Deutschland",
+    "nav.ausbildung": "1. Ausbildung",
+    "nav.ausbildung_sub": "Berufsschule & bezahlte Praxis",
+    "nav.aupair": "2. Au Pair",
+    "nav.aupair_sub": "Leben bei Gastfamilie & Sprachkurs",
+    "nav.fsj": "3. FSJ / BFD",
+    "nav.fsj_sub": "1-jähriger Freiwilligendienst",
+    "nav.gtog": "4. G to G",
+    "nav.gtog_sub": "Staatliche Vermittlung von Pflegefachkräften",
+    "nav.studium": "5. Studium",
+    "nav.studium_sub": "Universitätsvorbereitung Deutschland",
+    "nav.about": "Über Uns",
+    "nav.about_sub": "Profil & Standort",
+    "nav.about_profile": "Institutsprofil",
+    "nav.about_profile_sub": "Registriert & staatlich lizenziert",
+    "nav.about_contact": "Adresse & Kontakt",
+    "nav.about_contact_sub": "Jl. Ternak II Nr. 39, Medan Polonia",
+    "nav.about_partner": "Partnerberatung",
+    "nav.about_partner_sub": "Kooperationen & Programminfos",
+    "nav.news_ref": "Aktuelles & Referenzen",
+    "nav.news_ref_sub": "Informationen & Erfolge",
+    "nav.news": "Nachrichten & Artikel",
+    "nav.news_sub": "Neueste Berichte & Ankündigungen",
+    "nav.references": "Erfolgsgeschichten",
+    "nav.references_sub": "Alumni-Erfahrungen in Deutschland",
+    "nav.cta": "Kontaktieren",
+    "nav.language": "Sprache",
+
+    // Common Buttons & Badges
+    "common.back_home": "Zurück zur Startseite",
+    "common.back_news": "Zurück zu allen Nachrichten",
+    "common.contact_us": "Kontakt aufnehmen",
+    "common.whatsapp_consult": "WhatsApp-Beratung",
+    "common.see_all_services": "Alle Angebote ansehen",
+    "common.see_portfolio": "Kandidaten-Portfolio ansehen",
+    "common.send_message": "Nachricht senden",
+    "common.read_more": "Weiterlesen",
+    "common.all": "Alle",
+    "common.search": "Artikel oder Ankündigungen suchen...",
+    "common.step": "Phase",
+    "common.location_medan": "Medan, Nord-Sumatra",
+    "common.germany": "Deutschland",
+
+    // Hero Section
+    "hero.eyebrow": "Offizielles Deutsches Sprachinstitut · Medan",
+    "hero.title": "ICH LIEBE DEUTSCH MEDAN",
+    "hero.description": "Deutsch lernen, Deutschland verstehen und die Zukunft aktiv gestalten – mit unserer Gründerin (UNIMED-Absolventin für Deutschunterricht & 6 Jahre Lebenserfahrung in Deutschland).",
+    "hero.cta_wa": "WhatsApp-Beratung",
+    "hero.cta_approach": "Unser Ansatz",
+    "hero.cta_programs": "5 Kursprogramme ansehen",
+    "hero.badge_two_places": "Zwei Welten. Ein gemeinsamer Weg.",
+    "hero.trusted_by": "Geschätzt und vertraut von",
+
+    // Stats
+    "stats.students": "Teilnehmende in Vorbereitung",
+    "stats.ready": "Bereit für Deutschland",
+    "stats.placement_rate": "Erfolgsquote",
+    "stats.founder_exp": "Jahre Deutschlanderfahrung",
+
+    // Vision
+    "vision.label": "Unsere Vision",
+    "vision.title": "“Deutsch lernen. Deutschland verstehen. Zukunft gestalten.”",
+    "vision.text": "Deutsch lernen, das Leben in Deutschland verstehen und die Zukunft erfolgreicher vorbereiten. Wir vermitteln nicht nur Sprachkenntnisse, sondern begleiten und stärken Teilnehmende für ein selbstständiges und selbstbewusstes Leben in Deutschland.",
+
+    // Approach & Process (Landing)
+    "approach.eyebrow": "Mehr als reine Vermittlung",
+    "approach.title": "Wir begleiten den gesamten Weg, nicht nur die Abreise.",
+    "approach.text": "Ein Umzug nach Deutschland für eine Ausbildung, Au Pair oder ein Studium ist ein großer Lebensschritt. Daher gestalten wir jede Etappe transparent, verständlich und gemeinsam.",
+    "approach.step1_num": "01",
+    "approach.step1_title": "Beratung & Profiling",
+    "approach.step1_text": "Analyse von Interessen, Schulbildung und Auswahl des passenden offiziellen Weges nach Deutschland (Ausbildung, Au Pair, FSJ, G to G, Studium).",
+    "approach.step2_num": "02",
+    "approach.step2_title": "Zielgerichteter Deutschkurs",
+    "approach.step2_text": "Intensives Sprachentraining (A1 bis B1/B2) nach Standards des Goethe-Instituts, geleitet von erfahrenen Deutschdozenten.",
+    "approach.step3_num": "03",
+    "approach.step3_title": "Bewerbung & Vorbereitung",
+    "approach.step3_text": "Erstellung von tabellarischem Lebenslauf, Motivationsschreiben sowie gezielte Simulation von Vorstellungsgesprächen.",
+    "approach.step4_num": "04",
+    "approach.step4_title": "Vertrag & Visumantrag",
+    "approach.step4_text": "Begleitung bei Ausbildungsverträgen, Anerkennungsverfahren, Krankenversicherung und nationalem Visumantrag.",
+    "approach.step5_num": "05",
+    "approach.step5_title": "Integration & Selbstständigkeit",
+    "approach.step5_text": "Interkulturelle Vorbereitung auf den Alltag in Deutschland, Bürgeramt-Anmeldung, Bahnverkehr und Alumni-Netzwerk.",
+
+    // Program Cards Section (Landing)
+    "programs.eyebrow": "5 Kursprogramme & Offizielle Wege",
+    "programs.title": "Gut vorbereitet im Hintergrund, sicher im Alltag vor Ort.",
+    "programs.subtitle": "Ihr lokaler Partner in Medan für den verlässlichen Übergang nach Deutschland über Sprach-, Kultur- und Behördengrenzen hinweg.",
+    "programs.card1_title": "Ausbildung",
+    "programs.card1_desc": "Duale Berufsausbildung (Berufsschule & Betriebspraxis) mit monatlicher Vergütung. Dauer: 2–3,5 Jahre (Pflege, Gastronomie, IT, Handwerk, Technik).",
+    "programs.card2_title": "Au Pair",
+    "programs.card2_desc": "Kulturaustauschprogramm mit Aufenthalt in einer deutschen Gastfamilie. Inklusive Taschengeld, eigenem Zimmer, Verpflegung und Deutschkurs.",
+    "programs.card3_title": "FSJ / BFD",
+    "programs.card3_desc": "Freiwilliges Soziales Jahr / Bundesfreiwilligendienst: 1 Jahr Engagement in Krankenhäusern, Pflegeeinrichtungen oder Kitas mit Taschengeld & Unterkunft.",
+    "programs.card4_title": "G to G Pflegekräfte",
+    "programs.card4_desc": "Staatliches Programm (Government-to-Government) zur offiziellen Vermittlung indonesischer Pflegefachkräfte an deutsche Kliniken.",
+    "programs.card5_title": "Studium in Deutschland",
+    "programs.card5_desc": "Vorbereitung auf Bachelor- oder Masterstudiengänge, Studienkolleg, C1/TestDaF-Zertifizierung und Hochschulbewerbungen.",
+
+    // Candidate Portfolio Highlight
+    "portfolio_highlight.eyebrow": "Kandidatenbereitschaft",
+    "portfolio_highlight.title": "Lernen Sie die Persönlichkeit vor dem ersten Treffen kennen.",
+    "portfolio_highlight.description": "Profile, die fundierte Sprachkenntnisse, kulturelles Verständnis und echte Eigenmotivation vereinen. Denn nachhaltiger Erfolg basiert auf fundierter Vorbereitung.",
+    "portfolio_highlight.pill_lang": "Sprachniveau B1/B2",
+    "portfolio_highlight.pill_exp": "Praxis & Qualifikation",
+    "portfolio_highlight.pill_mot": "Hohe Motivation",
+    "portfolio_highlight.pill_readiness": "Kulturelle Reife",
+
+    // For Employers / Partners
+    "employer_sec.eyebrow": "Kooperation & Verlässlichkeit",
+    "employer_sec.title": "Nicht nur vermitteln. Sondern engagierte Menschen formen.",
+    "employer_sec.description": "Wir bereiten Teilnehmende mit fundiertem Deutsch und praxisnaher Arbeitsmoral vor, damit die Einarbeitung in Ihrem Betrieb zügig und reibungslos gelingt.",
+    "employer_sec.check1": "Kandidaten mit anerkannten B1/B2-Sprachzertifikaten",
+    "employer_sec.check2": "Verständnis für deutsche Arbeitskultur und Zuverlässigkeit",
+    "employer_sec.check3": "Feste Ansprechpartner vor Ort vor und nach der Einreise",
+    "employer_sec.cta": "Partnerberatung anfragen",
+
+    // Testimonial & Quote
+    "quote.eyebrow": "Stimmen aus Deutschland",
+    "quote.text": "„Bei ICH LIEBE DEUTSCH MEDAN habe ich nicht nur Grammatik gelernt, sondern verstanden, wie man in Deutschland selbstständig lebt und beruflich Fuß fasst.“",
+    "quote.author": "— Ehemalige Teilnehmerin · Deutschland",
+    "quote.box1_title": "Offiziell Lizenziert",
+    "quote.box1_text": "Registriertes Ausbildungsinstitut mit staatlicher Betriebsgenehmigung in Medan und strukturiertem Curriculum.",
+    "quote.box2_title": "Echte Deutschlanderfahrung",
+    "quote.box2_text": "Persönlich geleitet von einer Gründerin mit 6 Jahren Lebenserfahrung und beruflicher Praxis in Deutschland.",
+
+    // News Section Preview
+    "news_sec.eyebrow": "Aktuelles & Neuigkeiten",
+    "news_sec.title": "Wissenswertes und Updates auf dem Weg nach Deutschland.",
+    "news_sec.see_all": "Alle Nachrichten ansehen",
+
+    // FAQs
+    "faq.eyebrow": "Häufig gestellte Fragen",
+    "faq.title": "Starten wir mit den Fragen, die Ihnen am Herzen liegen.",
+    "faq.q1": "Ist eine Ausbildung dasselbe wie ein Universitätsstudium?",
+    "faq.a1": "Eine Ausbildung ist das renommierte duale Berufsbildungssystem in Deutschland, das theoretischen Unterricht an der Berufsschule mit bezahlter Praxis im Ausbildungsbetrieb verknüpft. Man erhält keinen Bachelor-Titel, sondern einen anerkannten deutschen Berufsabschluss und bezieht von Beginn an eine monatliche Ausbildungsvergütung.",
+    "faq.q2": "Wie lange dauert eine Ausbildung in Deutschland?",
+    "faq.a2": "Eine Ausbildung dauert in der Regel zwischen 2 und 3,5 Jahren, abhängig von Fachbereich und Vorqualifikation (z. B. Pflegefachkraft, Mechatroniker, Hotellerie, Fachinformatiker).",
+    "faq.q3": "Welche Voraussetzungen gelten für eine Teilnahme bei ICH LIEBE DEUTSCH MEDAN?",
+    "faq.a3": "Voraussetzung ist mindestens das Abitur / Fachabitur bzw. ein beruflicher Abschluss (SMA/SMK/D3/S1), ein Mindestalter von 18 Jahren sowie der Wille, einen intensiven Sprachkurs bis mindestens B1 oder B2 zu absolvieren.",
+    "faq.q4": "Wie ist der rechtliche Status von ICH LIEBE DEUTSCH MEDAN?",
+    "faq.a4": "ICH LIEBE DEUTSCH MEDAN ist ein offiziell registriertes und lizenziertes deutsches Sprachinstitut (Lembaga Kursus dan Pelatihan) in Medan, mit Sitz in der Jl. Ternak II Nr. 39, Medan Polonia.",
+
+    // CTA Bottom Banner
+    "cta_banner.eyebrow": "Nächste Schritte",
+    "cta_banner.title": "Gestalten Sie Ihre Zukunft in Deutschland mit uns.",
+    "cta_banner.subtitle": "Sprechen Sie mit unserem Team in Medan über Ihre Pläne. Wir begleiten Sie von der ersten Deutschstunde bis zum Arbeitsbeginn in Deutschland.",
+    "cta_banner.button": "Per WhatsApp Kontaktieren",
+
+    // Services Page
+    "services.eyebrow": "5 Kursprogramme & Wege nach Deutschland",
+    "services.title": "Gezielte Bildung und Begleitung für Deutschland.",
+    "services.description": "Wir bieten fundierte Sprachkurse und ganzheitliche Vorbereitung für 5 Wege: Ausbildung, Au Pair, FSJ/BFD, G to G Pflegekräfte und Hochschulstudium.",
+    "services.primary_cta": "Beratung beginnen",
+    "services.badge_track": "Verifizierte offizielle Wege",
+    "services.badge_track_desc": "Direkt von Medan nach Deutschland.",
+    "services.pillar1_title": "Goethe-Standard Lehrplan",
+    "services.pillar1_text": "Systematischer Aufbau von Grundstufe A1 bis zur berufsbezogenen Stufe B2.",
+    "services.pillar2_title": "Transparenter Ablauf",
+    "services.pillar2_text": "Jeder Schritt sauber dokumentiert, ehrlich und ohne unseriöse Zwischenhändler.",
+    "services.pillar3_title": "Ganzheitliche Begleitung",
+    "services.pillar3_text": "Sprachtraining, Vertragsunterlagen, Visum und Vorbereitung auf das Leben in Deutschland.",
+    "services.workflow_eyebrow": "Unser Ablauf",
+    "services.workflow_title": "Eine strukturierte Reise in 7 Phasen.",
+    "services.workflow_subtitle": "Wählen Sie eine Phase aus, um detailliert zu sehen, wie wir Sie vorbereiten.",
+    "services.stage_selected_title": "Phase",
+    "services.talk_needs": "Ihren Bedarf besprechen",
+    "services.results_eyebrow": "Unser Qualitätsversprechen",
+    "services.results_title": "Teilnehmende gewinnen echte Kompetenz. Neue Horizonte öffnen sich.",
+    "services.results_subtitle": "Unser Fokus liegt darauf, sprachlich sichere und mental gestärkte Persönlichkeiten auszubilden, die sich in Deutschland schnell einleben.",
+    "services.card_understood_title": "Gründlich Vorbereitet",
+    "services.card_understood_text": "Keine reinen Auswendiglerner, sondern aktiv sprechfähige Kandidaten.",
+    "services.card_relation_title": "Alumni-Netzwerk in Deutschland",
+    "services.card_relation_text": "Ein erreichbares Netzwerk erfahrener Absolventen vor Ort.",
+
+    // About Us Page (Medan)
+    "about.eyebrow": "Über Uns · Institutsprofil",
+    "about.title": "ICH LIEBE DEUTSCH MEDAN",
+    "about.description": "Staatlich registriertes und lizenziertes deutsches Sprach- und Vorbereitungsinstitut in Medan. Gegründet von einer UNIMED-Absolventin für Deutschunterricht mit 6 Jahren Lebenserfahrung in Deutschland.",
+    "about.call_btn": "ILD Medan anrufen",
+    "about.send_inquiry": "Anfrage senden",
+    "about.art_eyebrow": "Lernräume & Campus",
+    "about.art_city": "Medan",
+    "about.art_tag": "Zentrum für fundierte deutsche Sprachausbildung in Nord-Sumatra",
+    "about.card1_title": "Für wen?",
+    "about.card1_text": "Schulabgänger, Studierende, Fachkräfte und Familien, die einen verlässlichen Weg nach Deutschland suchen.",
+    "about.card2_title": "Start bei Null",
+    "about.card2_text": "Keine Vorkenntnisse nötig – wir begleiten Sie von den ersten Wörtern bis zum Goethe-Zertifikat B1/B2.",
+    "about.card3_title": "Reale Praxistipps",
+    "about.card3_text": "6 Jahre Deutschlanderfahrung der Gründerin garantieren ehrliche und erprobte Ratschläge.",
+    "about.what_we_do_eyebrow": "Unsere Grundwerte",
+    "about.what_we_do_title": "Selbstständigkeit fördern, bevor die Reise beginnt.",
+    "about.what_we_do_sub": "Wir vermitteln nicht nur Vokabeln, sondern stärken Eigenverantwortung, Arbeitsdisziplin und interkulturelle Reife.",
+    "about.step1_title": "Interaktiver & intensiver Unterricht",
+    "about.step1_text": "Ausgewogenes Training in Hören, Lesen, Schreiben und freiem Sprechen.",
+    "about.step2_title": "Alltag & Kultur in Deutschland",
+    "about.step2_text": "Praxiswissen über Regeln, Pünktlichkeit, Mülltrennung, Bankkonten und Berufsalltag.",
+    "about.step3_title": "Bewerbungs- & Visumbegleitung",
+    "about.step3_text": "Erstellung deutscher Bewerbungsunterlagen, Interviewcoaching und Visumvorbereitung.",
+    "about.form_eyebrow": "Beratungsanfrage",
+    "about.form_title": "Machen Sie heute den ersten Schritt mit uns.",
+    "about.form_subtitle": "Senden Sie uns eine Nachricht oder kontaktieren Sie uns direkt per WhatsApp.",
+    "about.form_name": "Vollständiger Name",
+    "about.form_email": "E-Mail-Adresse",
+    "about.form_phone": "Telefon / WhatsApp",
+    "about.form_program": "Gewünschtes Programm",
+    "about.form_message": "Ihre Frage oder Pläne...",
+    "about.form_submit": "Jetzt Nachricht senden",
+    "about.form_success": "Ihre Nachricht wurde vorbereitet!",
+    "about.info_address_label": "Offizielle Adresse",
+    "about.info_address_val": "Jl. Ternak II Nr. 39, Medan Polonia, Kota Medan, Nord-Sumatra",
+    "about.info_hours_label": "Öffnungszeiten",
+    "about.info_hours_val": "Montag – Samstag: 08:00 – 17:00 Uhr WIB",
+
+    // News & Articles
+    "news.eyebrow": "Aktuelles & Artikel",
+    "news.title": "Neuigkeiten, Tipps und Wissenswertes rund um Deutschland.",
+    "news.subtitle": "Lesen Sie aktuelle Berichte über die deutsche Sprache, Ausbildungschancen und Erfolge unserer Lernenden.",
+    "news.cat_all": "Alle",
+    "news.cat_media": "Medienberichte",
+    "news.cat_story": "Erfahrungsberichte",
+    "news.cat_partner": "Partnerinfos",
+    "news.cat_program": "Programme & Tipps",
+    "news.no_articles": "Keine Artikel entsprechen Ihren Suchkriterien.",
+
+    // References / Success Stories
+    "ref.eyebrow": "Alumni-Erfolgsgeschichten",
+    "ref.title": "Echte Belege für Fleiß, Mut und gezielte Vorbereitung.",
+    "ref.subtitle": "Inspirierende Geschichten unserer Teilnehmenden, die erfolgreich ihren Lebensweg in Deutschland beschreiten.",
+
+    // About Page Extras
+    "about_page.art_label": "Lernräume ILD Medan",
+    "about_page.art_sub": "Der erste Schritt für Ihre Vorbereitung",
+    "about_page.step1_title": "Beratung & Potenzialanalyse",
+    "about_page.step1_text": "Voraussetzungen, Programmwahl (Ausbildung, Au Pair, FSJ, G to G, Studium), Sprachniveau und Alltagsrealität in Deutschland.",
+    "about_page.step2_title": "Strukturierter Sprachunterricht",
+    "about_page.step2_text": "A1 bis B1/B2 nach Goethe-Standards mit interaktivem Präsenzunterricht in Medan.",
+    "about_page.step3_title": "Offizielle Wege & Begleitung",
+    "about_page.step3_text": "Bewerbungsunterlagen, Arbeits- und Ausbildungsverträge, Visumbegleitung und interkulturelles Coaching.",
+    "about_page.highlight1_title": "Für wen?",
+    "about_page.highlight1_text": "Teilnehmende und Familien, die transparente und fundierte Begleitung suchen.",
+    "about_page.highlight2_title": "5 Offizielle Wege",
+    "about_page.highlight2_text": "Ausbildung, Au Pair, FSJ/BFD, G to G Pflegekräfte und universitäres Studium.",
+    "about_page.highlight3_title": "Reale Erfahrung",
+    "about_page.highlight3_text": "Geführt von einer Gründerin mit 6 Jahren Lebens- und Berufserfahrung in Deutschland.",
+    "about_page.what_we_do_eyebrow": "Was wir tun",
+    "about_page.what_we_do_title": "Jede Etappe mit Sorgfalt und Verantwortung begleiten.",
+    "about_page.what_we_do_text": "Von Medan aus unterstützen wir Lernende dabei, die deutsche Sprache zu beherrschen und die Arbeitskultur sowie Selbstständigkeit zu verinnerlichen.",
+    "about_page.form_title": "Starten Sie noch heute Ihr Gespräch mit uns.",
+    "about_page.location_title": "Offizielle Adresse & Institutskontakt",
+    "about_page.location_subtitle": "Besuchen Sie unseren Standort in Medan Polonia oder kontaktieren Sie uns direkt per WhatsApp.",
+    "about_page.legal_status": "Registriertes & lizenziertes Sprachinstitut (2024)",
+    "about_page.curriculum_title": "Beratung & Kursinformationen",
+    "about_page.curriculum_desc": "Goethe-Standard A1-B2 Lehrplan, Betreuung von 5 Programmen, gegründet von UNIMED-Absolventin (6 Jahre in Deutschland).",
+    "about_page.banner_title": "Eine weite Reise beginnt mit einem vertrauensvollen Gespräch.",
+
+    // General Form
+    "form.phone": "WhatsApp-Nummer",
+    "form.consent": "Ich stimme den Datenschutzbestimmungen zu und erlaube die Verarbeitung meiner Daten zur Beratung.",
+    "form.fallback_notice": "Falls sich Ihr E-Mail-Programm nicht öffnet, kontaktieren Sie uns direkt per WhatsApp: +62 82127324453.",
+    "form.surname": "Nachname / Position",
+    "form.company": "Unternehmen / Institution",
+
+    // Call to Action Banner
+    "cta_banner.eyebrow": "Nächster Schritt",
+    "cta_banner.title": "Verwirklichen Sie Ihre Zukunft in Deutschland mit uns.",
+    "cta_banner.subtitle": "Besprechen Sie Ihre Wünsche und Pläne mit dem Team von ICH LIEBE DEUTSCH MEDAN. Wir begleiten Sie von den ersten Deutschstunden bis zur Ankunft in Deutschland.",
+    "cta_banner.button": "WhatsApp-Kontakt aufnehmen",
+
+    // News Extras
+    "news.articles_count": "ausgewählte Berichte",
+    "news.for_students": "Für Teilnehmende & Familien",
+    "news.info_eyebrow": "Warum wir berichten",
+    "news.info_title": "Gute Prozesse verdienen es, erzählt zu werden.",
+    "news.info_text": "Jeder Beitrag zeigt unsere transparente Arbeitsweise: nahbar, verlässlich und auf langfristigen Erfolg ausgerichtet.",
+    "news.info_p1": "Echte Teilnehmendengeschichten",
+    "news.info_p2": "Offizielle & verlässliche Informationen",
+    "news.info_p3": "Offene Programmentwicklungen",
+    "news.archive_eyebrow": "Nachrichtenarchiv",
+    "news.archive_title": "Was uns aktuell bewegt.",
+    "news.articles_matched": "Berichte entsprechen Ihrer Auswahl.",
+    "news.try_other": "Versuchen Sie ein anderes Suchwort oder eine andere Kategorie.",
+    "news.load_more": "Mehr laden",
+
+    // News Detail
+    "news_detail.copied_title": "Link kopiert!",
+    "news_detail.copied_desc": "Der Artikellink wurde in Ihre Zwischenablage kopiert.",
+    "news_detail.not_found_title": "Artikel nicht gefunden",
+    "news_detail.not_found_desc": "Der gesuchte Nachrichtenbeitrag ist nicht verfügbar oder wurde verschoben.",
+    "news_detail.featured_badge": "Hauptbericht",
+    "news_detail.read_time": "Min. Lesezeit",
+    "news_detail.share_btn": "Teilen",
+    "news_detail.published_by": "Veröffentlicht von",
+    "news_detail.recommended_eyebrow": "Leseempfehlungen",
+    "news_detail.related_title": "Weitere verwandte Berichte",
+    "news_detail.see_all_news": "Alle Berichte ansehen",
+
+    // Media & Press
+    "media.back_news": "Zurück zu allen Berichten",
+    "media.eyebrow": "Mediathek & Presse",
+    "media.title": "Vom Bildschirm zum echten Dialog.",
+    "media.description": "Fernsehberichte und Dokumentationen über indonesische Talente, Wege nach Deutschland und die Vorbereitung auf die deutsche Arbeitswelt.",
+    "media.items_count": "ausgewählte Beiträge",
+    "media.video_doc": "Videos & Dokumentationen",
+    "media.filter_all": "Alle",
+    "media.filter_tv": "Fernsehen",
+    "media.filter_doc": "Dokumentationen",
+    "media.search_placeholder": "Beitrag suchen...",
+    "media.search_label": "Beitrag suchen",
+    "media.close_search": "Suche schließen",
+    "media.spotlight": "Schwerpunkt",
+    "media.why_eyebrow": "Warum Medienberichte zählen",
+    "media.why_title": "Sichtbarkeit schafft Vertrauen und Verständnis.",
+    "media.why_desc": "Medienberichte eröffnen fundierte Einblicke in internationale Fachkräftepotenziale, betriebliche Anforderungen und eine partnerschaftliche Zukunftsgestaltung.",
+    "media.topics_title": "Themenschwerpunkte unserer Berichte",
+    "media.archive_eyebrow": "Sendungsarchiv",
+    "media.archive_title": "Bisherige Dokumentationen & Beiträge.",
+    "media.matched": "Beiträge entsprechen Ihrer Auswahl.",
+    "media.try_other": "Versuchen Sie andere Suchbegriffe oder Filter.",
+    "media.load_more": "Mehr laden",
+
+    // References Extras
+    "ref.badge_real": "Echter Werdegang",
+    "ref.badge_measured": "Messbare Erfolge",
+    "ref.badge_moments": "Bemerkenswerte Meilensteine",
+    "ref.badge_moments_sub": "Der erste Schritt entscheidet über die Zukunft.",
+    "ref.col1_title": "Leistung",
+    "ref.col1_text": "Fähigkeiten, die zu greifbaren Erfolgen in Deutschland heranwachsen.",
+    "ref.col2_title": "Ausdauer",
+    "ref.col2_text": "Diszipliniert und zuversichtlich in neuem Umfeld wachsen.",
+    "ref.col3_title": "Gemeinschaft",
+    "ref.col3_text": "Ein starkes Alumni-Netzwerk in verschiedenen Städten Deutschlands.",
+    "ref.stories_eyebrow": "Bereits Erreichtes",
+    "ref.stories_title": "Geschichten, die Möglichkeiten greifbar machen.",
+    "ref.stories_desc": "Wählen Sie einen Meilenstein, um den Hintergrund zu erfahren. Jeder Weg ist individuell – doch alle begannen mit der ersten Deutschstunde.",
+    "ref.quote_eyebrow": "Erkenntnisse aus dem Weg",
+    "ref.quote_body": "“Gute Ergebnisse entstehen nicht über Nacht. Sie wachsen an Tagen, an denen man sich entscheidet, weiterzulernen und mutig zu bleiben.”",
+    "ref.box1_title": "Vorbereitung ist trainierbar",
+    "ref.box1_text": "Sprache, Fachkompetenz und Selbstvertrauen entwickeln sich durch beständiges Training.",
+    "ref.box2_title": "Chancen nutzen",
+    "ref.box2_text": "Institut und Lernende tragen gemeinsam zum nachhaltigen Erfolg in Deutschland bei.",
+    "ref.cta_title": "Die nächste Erfolgsgeschichte könnte Ihre sein.",
+    "ref.cta_subtitle": "Starten Sie Ihre Sprachvorbereitung und 5 offizielle Programme mit ICH LIEBE DEUTSCH MEDAN.",
+
+    // Employer / Partner Extras
+    "employer.contact_label": "Partnerberatung",
+    "employer.contact_note": "Ein erstes Gespräch, um Ihren Personalbedarf und Kooperationsmöglichkeiten zu verstehen.",
+    "employer.back_services": "Zurück zu den Angeboten",
+    "employer.eyebrow": "Für Arbeitgeber & Partnerinstitutionen",
+    "employer.title": "Finden Sie die passenden Talente für Ihr Team.",
+    "employer.description": "Lassen Sie uns mit einem unverbindlichen Beratungsgespräch beginnen. Wir erläutern Vorgehensweise, Sprachstandards und Vorbereitung der Teilnehmenden.",
+    "employer.fill_form": "Formular ausfüllen",
+    "employer.col1_title": "Klare Informationen",
+    "employer.col1_text": "Prozesse und Qualifikationsstandards vor einer Entscheidung transparent verstehen.",
+    "employer.col2_title": "Maßgeschneidert",
+    "employer.col2_text": "Gespräche orientieren sich an konkreten Arbeitsplätzen und betrieblichen Anforderungen.",
+    "employer.col3_title": "Schnelle Rückmeldung",
+    "employer.col3_text": "Unser Team in Medan antwortet zeitnah und gestaltet verlässliche Kooperationsmodelle.",
+    "employer.contact_title": "Ein Gespräch für neue Perspektiven.",
+    "employer.contact_desc": "Für eine erste Kontaktaufnahme rufen Sie uns an oder senden Sie uns eine Nachricht.",
+    "employer.form_label": "Partnerformular",
+    "employer.form_heading": "Beschreiben Sie Ihren Bedarf.",
+    "employer.form_message_label": "Nachricht oder Vakanzen",
+    "employer.form_message_placeholder": "Welche Positionen oder Profile möchten Sie besprechen?",
+    "employer.form_submit": "Anfrage absenden",
+    "employer.banner_title": "Lassen Sie uns mit dem passenden Gespräch beginnen.",
+
+    // Footer
+    "footer.tagline": "“Deutsch lernen. Deutschland verstehen. Zukunft gestalten.” — Deutsch lernen, das Leben in Deutschland verstehen und die Zukunft gestalten.",
+    "footer.rights": "© 2024–2026 ICH LIEBE DEUTSCH MEDAN. Alle Rechte vorbehalten.",
+    "footer.campus_medan": "Standort Medan",
+    "footer.germany_partner": "Deutschland",
+  },
+
+  en: {
+    // Navbar
+    "nav.brand_subtitle": "Registered German Language Institute",
+    "nav.home": "Home",
+    "nav.programs": "Course Programs",
+    "nav.programs_sub": "5 Official Pathways to Germany",
+    "nav.ausbildung": "1. Ausbildung",
+    "nav.ausbildung_sub": "Vocational School & Paid Training",
+    "nav.aupair": "2. Au Pair",
+    "nav.aupair_sub": "Living with Host Family & Course",
+    "nav.fsj": "3. FSJ / BFD",
+    "nav.fsj_sub": "1-Year Social Volunteer Program",
+    "nav.gtog": "4. G to G",
+    "nav.gtog_sub": "Official Government Nurse Placement",
+    "nav.studium": "5. University / Studium",
+    "nav.studium_sub": "German University Preparation",
+    "nav.about": "About Us",
+    "nav.about_sub": "Profile & Location",
+    "nav.about_profile": "Institute Profile",
+    "nav.about_profile_sub": "Registered & Officially Licensed",
+    "nav.about_contact": "Address & Contact",
+    "nav.about_contact_sub": "Jl. Ternak II No. 39, Medan Polonia",
+    "nav.about_partner": "Partner Inquiry",
+    "nav.about_partner_sub": "Partnerships & Program Information",
+    "nav.news_ref": "News & References",
+    "nav.news_ref_sub": "Information & Achievements",
+    "nav.news": "News & Updates",
+    "nav.news_sub": "Latest Articles & Announcements",
+    "nav.references": "Success Stories",
+    "nav.references_sub": "Alumni Journeys in Germany",
+    "nav.cta": "Contact Us",
+    "nav.language": "Language",
+
+    // Common Buttons & Badges
+    "common.back_home": "Back to home",
+    "common.back_news": "Back to all news",
+    "common.contact_us": "Contact Us",
+    "common.whatsapp_consult": "WhatsApp Consultation",
+    "common.see_all_services": "View all services",
+    "common.see_portfolio": "View candidate portfolio",
+    "common.send_message": "Send message",
+    "common.read_more": "Read more",
+    "common.all": "All",
+    "common.search": "Search articles or announcements...",
+    "common.step": "Stage",
+    "common.location_medan": "Medan, North Sumatra",
+    "common.germany": "Germany",
+
+    // Hero Section
+    "hero.eyebrow": "Official German Language Institute · Medan",
+    "hero.title": "ICH LIEBE DEUTSCH MEDAN",
+    "hero.description": "Learn German, understand life in Germany, and shape your future with guidance from an UNIMED German Education graduate with 6 years of living and professional experience in Germany.",
+    "hero.cta_wa": "WhatsApp Consultation",
+    "hero.cta_approach": "Our Approach",
+    "hero.cta_programs": "Explore 5 Programs",
+    "hero.badge_two_places": "Two places. One shared journey.",
+    "hero.trusted_by": "Trusted to lead the way by",
+
+    // Stats
+    "stats.students": "students in preparation",
+    "stats.ready": "ready for placement",
+    "stats.placement_rate": "success rate",
+    "stats.founder_exp": "founder experience in Germany",
+
+    // Vision
+    "vision.label": "Our Vision",
+    "vision.title": "“Deutsch lernen. Deutschland verstehen. Zukunft gestalten.”",
+    "vision.text": "Learning German, understanding life in Germany, and preparing a brighter future. We do not simply teach German; we guide and empower students to live independently and confidently in Germany.",
+
+    // Approach & Process (Landing)
+    "approach.eyebrow": "More Than Just Placement",
+    "approach.title": "We nurture the whole journey, not just the departure.",
+    "approach.text": "Relocating to Germany for an Ausbildung, Au Pair, or University is a major milestone. That is why we make each step transparent, well-structured, and supported together.",
+    "approach.step1_num": "01",
+    "approach.step1_title": "Consultation & Mapping",
+    "approach.step1_text": "Assessing personal interests, education history, and selecting the most fitting official pathway to Germany (Ausbildung, Au Pair, FSJ, G to G, Studium).",
+    "approach.step2_num": "02",
+    "approach.step2_title": "Intensive German Courses",
+    "approach.step2_text": "Structured training from A1 to B1/B2 aligned with Goethe-Institut standards, coached by qualified German language instructors.",
+    "approach.step3_num": "03",
+    "approach.step3_title": "Documents & Interview Prep",
+    "approach.step3_text": "Drafting German-standard CVs, motivation letters, and thorough simulations for employer or host family interviews.",
+    "approach.step4_num": "04",
+    "approach.step4_title": "Contracts & National Visa",
+    "approach.step4_text": "Guiding official training contracts (Ausbildungsvertrag), embassy appointments, insurance, and national visa paperwork.",
+    "approach.step5_num": "05",
+    "approach.step5_title": "Independence & Adaptation",
+    "approach.step5_text": "Intercultural briefing on day-to-day German life, city registration (Anmeldung), public transit, and active alumni connections.",
+
+    // Program Cards Section (Landing)
+    "programs.eyebrow": "5 Course Programs & Official Pathways",
+    "programs.title": "Well-prepared behind the scenes, smooth and confident on arrival.",
+    "programs.subtitle": "One dedicated local partner in Medan to guide your journey with confidence across languages, cultures, and administrative processes.",
+    "programs.card1_title": "Ausbildung",
+    "programs.card1_desc": "Dual vocational training (Berufsschule & company practice) with monthly paid stipend. Duration 2–3.5 years (Nursing, Hospitality, IT, Tech, Business).",
+    "programs.card2_title": "Au Pair",
+    "programs.card2_desc": "Cultural exchange program living with a German host family. Includes monthly allowance, private room, meals, and language classes.",
+    "programs.card3_title": "FSJ / BFD",
+    "programs.card3_desc": "Voluntary Social Year: 1-year community service program in hospitals, care centers, or kindergartens with monthly stipend and accommodation.",
+    "programs.card4_title": "G to G Nursing",
+    "programs.card4_desc": "Official Government-to-Government program placing licensed Indonesian professional nurses into German healthcare facilities.",
+    "programs.card5_title": "University / Studium",
+    "programs.card5_desc": "Preparation for Bachelor's or Master's degrees, Studienkolleg entrance, C1/TestDaF certifications, and university application counseling.",
+
+    // Candidate Portfolio Highlight
+    "portfolio_highlight.eyebrow": "Candidate Readiness",
+    "portfolio_highlight.title": "Get to know the person before you meet.",
+    "portfolio_highlight.description": "Profiles combining certified language skills, cultural maturity, and genuine motivation. Real success starts with thorough preparation.",
+    "portfolio_highlight.pill_lang": "Language B1/B2",
+    "portfolio_highlight.pill_exp": "Hands-on Skills",
+    "portfolio_highlight.pill_mot": "High Motivation",
+    "portfolio_highlight.pill_readiness": "Cultural Readiness",
+
+    // For Employers / Partners
+    "employer_sec.eyebrow": "Partnership & Integrity",
+    "employer_sec.title": "More than sending candidates. Preparing people ready to thrive.",
+    "employer_sec.description": "We equip candidates with solid German communication skills and professional work ethic, ensuring fast and smooth onboarding in your team.",
+    "employer_sec.check1": "Candidates with recognized B1 / B2 language certificates",
+    "employer_sec.check2": "Solid understanding of German work culture and reliability",
+    "employer_sec.check3": "Reliable local liaison before and after arrival in Germany",
+    "employer_sec.cta": "Request Partnership Info",
+
+    // Testimonial & Quote
+    "quote.eyebrow": "Voices from Germany",
+    "quote.text": "“At ICH LIEBE DEUTSCH MEDAN, I didn't just study grammar. I learned how to live independently and work professionally in Germany.”",
+    "quote.author": "— Alumni Candidate · Germany",
+    "quote.box1_title": "Officially Licensed",
+    "quote.box1_text": "Registered vocational training institute with official operating permits in Medan and a proven curriculum.",
+    "quote.box2_title": "Real Living Experience",
+    "quote.box2_text": "Led directly by a founder who lived, studied, and worked independently for 6 years in Germany.",
+
+    // News Section Preview
+    "news_sec.eyebrow": "Latest News & Updates",
+    "news_sec.title": "Insights and essential news along the path to Germany.",
+    "news_sec.see_all": "View all news",
+
+    // FAQs
+    "faq.eyebrow": "Frequently Asked Questions",
+    "faq.title": "Let's start with what you need to know.",
+    "faq.q1": "Is Ausbildung the same as going to university?",
+    "faq.a1": "Ausbildung is Germany's dual vocational education and training system combining classroom theory at a Berufsschule with paid on-the-job training. While it does not grant an academic bachelor's degree, it produces a nationally recognized professional German qualification, and trainees receive a monthly training salary from day one.",
+    "faq.q2": "How long is the Ausbildung program?",
+    "faq.a2": "Ausbildung typically lasts between 2 and 3.5 years depending on the chosen profession (e.g., Nursing, Culinary/Hotellerie, IT, Automotive, Business Administration).",
+    "faq.q3": "What are the core requirements to join ICH LIEBE DEUTSCH MEDAN?",
+    "faq.a3": "Requirements include holding at least high school or vocational diploma (SMA/SMK or equivalent), or university degree (D3/S1), age between 18–30, and strong dedication to complete intensive German language courses up to level B1 or B2.",
+    "faq.q4": "What is the legal status of ICH LIEBE DEUTSCH MEDAN?",
+    "faq.a4": "ICH LIEBE DEUTSCH MEDAN is an officially registered and licensed German language training institution (LKP) located in Medan at Jl. Ternak II No. 39, Medan Polonia.",
+
+    // CTA Bottom Banner
+    "cta_banner.eyebrow": "Next Step",
+    "cta_banner.title": "Realize your future in Germany with our guidance.",
+    "cta_banner.subtitle": "Discuss your goals with our team in Medan. We guide you from zero German knowledge all the way to your arrival in Germany.",
+    "cta_banner.button": "Contact Us on WhatsApp",
+
+    // Services Page
+    "services.eyebrow": "5 Course Programs & Pathways to Germany",
+    "services.title": "Targeted education and preparation for Germany.",
+    "services.description": "Comprehensive German language courses and holistic guidance for 5 official pathways: Ausbildung, Au Pair, FSJ/BFD, G to G Nursing, and University / Studium.",
+    "services.primary_cta": "Start Consultation",
+    "services.badge_track": "Verified Official Pathways",
+    "services.badge_track_desc": "Directly from Medan connected to Germany.",
+    "services.pillar1_title": "Goethe Standard Curriculum",
+    "services.pillar1_text": "Systematic progression from beginner A1 to professional proficiency B2.",
+    "services.pillar2_title": "Transparent Process",
+    "services.pillar2_text": "Each milestone is thoroughly documented, honest, and free of shady middlemen.",
+    "services.pillar3_title": "Holistic Support",
+    "services.pillar3_text": "Language coaching, contracts, visa paperwork, and adaptation support in Germany.",
+    "services.workflow_eyebrow": "Our Workflow",
+    "services.workflow_title": "One integrated journey across 7 key stages.",
+    "services.workflow_subtitle": "Select any stage to inspect the preparations and coaching involved.",
+    "services.stage_selected_title": "Stage",
+    "services.talk_needs": "Discuss Your Requirements",
+    "services.results_eyebrow": "Our Quality Commitment",
+    "services.results_title": "Students gain real competence. Bright horizons unfold.",
+    "services.results_subtitle": "Our mission is to foster independent, confident individuals who speak natural German and readily adapt to German professional life.",
+    "services.card_understood_title": "Thoroughly Prepared",
+    "services.card_understood_text": "Not rote memorizers, but candidates capable of active daily conversation.",
+    "services.card_relation_title": "Alumni Network in Germany",
+    "services.card_relation_text": "A friendly network of graduates already living in Germany ready to offer tips.",
+
+    // About Us Page (Medan)
+    "about.eyebrow": "About Us · Institute Profile",
+    "about.title": "ICH LIEBE DEUTSCH MEDAN",
+    "about.description": "Officially registered and licensed German language and preparatory institute in Medan. Founded by an UNIMED German Language Education alumnus with 6 years of living experience in Germany.",
+    "about.call_btn": "Call ILD Medan",
+    "about.send_inquiry": "Send Inquiry",
+    "about.art_eyebrow": "Campus & Learning Space",
+    "about.art_city": "Medan",
+    "about.art_tag": "Trusted German language preparation hub in North Sumatra",
+    "about.card1_title": "Who is it for?",
+    "about.card1_text": "High school graduates, college students, young professionals, and families seeking legitimate pathways to Germany.",
+    "about.card2_title": "Start from Scratch",
+    "about.card2_text": "No prior German needed; we coach you step-by-step from A1 to official B1/B2 certifications.",
+    "about.card3_title": "Authentic Guidance",
+    "about.card3_text": "6 years of hands-on German experience by the founder gives you practical, tested insights.",
+    "about.what_we_do_eyebrow": "Our Core Values",
+    "about.what_we_do_title": "Fostering independence before your departure.",
+    "about.what_we_do_sub": "We don't merely teach vocabulary; we instill the work ethic, self-reliance, and intercultural readiness necessary in Germany.",
+    "about.step1_title": "Interactive & Intensive Learning",
+    "about.step1_text": "Balanced development in listening, reading, writing, and spontaneous speaking.",
+    "about.step2_title": "German Life & Work Culture",
+    "about.step2_text": "Real-world knowledge regarding punctuality, waste sorting, public transit, banking, and professional standards.",
+    "about.step3_title": "Career Documents & Visa Guidance",
+    "about.step3_text": "German-format CV crafting, interview simulations, and complete embassy visa preparation.",
+    "about.form_eyebrow": "Consultation Inquiry",
+    "about.form_title": "Take your very first step with us today.",
+    "about.form_subtitle": "Fill in the form below or chat directly with our WhatsApp counseling team.",
+    "about.form_name": "Full Name",
+    "about.form_email": "Email Address",
+    "about.form_phone": "Phone / WhatsApp",
+    "about.form_program": "Interested Program",
+    "about.form_message": "Tell us about your goals or questions...",
+    "about.form_submit": "Send Message Now",
+    "about.form_success": "Your message is ready to send!",
+    "about.info_address_label": "Official Address",
+    "about.info_address_val": "Jl. Ternak II No. 39, Medan Polonia, Medan, North Sumatra",
+    "about.info_hours_label": "Operating Hours",
+    "about.info_hours_val": "Monday – Saturday: 08:00 – 17:00 WIB",
+
+    // News & Articles
+    "news.eyebrow": "News & Publications",
+    "news.title": "Articles, practical tips, and latest updates on Germany.",
+    "news.subtitle": "Read informative updates regarding the German language, Ausbildung opportunities, and student achievements.",
+    "news.cat_all": "All",
+    "news.cat_media": "Media & News",
+    "news.cat_story": "Student Stories",
+    "news.cat_partner": "Partner Info",
+    "news.cat_program": "Programs & Tips",
+    "news.no_articles": "No articles match your search criteria.",
+
+    // References / Success Stories
+    "ref.eyebrow": "Alumni Success Stories",
+    "ref.title": "Concrete proof of hard work, courage, and expert guidance.",
+    "ref.subtitle": "Inspiring stories of our students who are successfully living and thriving in Germany.",
+
+    // About Page Extras
+    "about_page.art_label": "ILD Medan Learning Spaces",
+    "about_page.art_sub": "The first step to begin your preparation",
+    "about_page.step1_title": "Advising & Talent Mapping",
+    "about_page.step1_text": "Clarifying requirements, program selection (Ausbildung, Au Pair, FSJ, G to G, University), language levels, and living reality in Germany.",
+    "about_page.step2_title": "Structured Language Training",
+    "about_page.step2_text": "A1 to B1/B2 aligned with Goethe standards through interactive, intensive in-person courses in Medan.",
+    "about_page.step3_title": "Official Pathways & Liaison",
+    "about_page.step3_text": "Application portfolios, formal contracts, national visa procedures, and intercultural readiness coaching.",
+    "about_page.highlight1_title": "Who Is It For?",
+    "about_page.highlight1_text": "Prospective applicants and families seeking transparent, structured, and dependable guidance.",
+    "about_page.highlight2_title": "5 Official Pathways",
+    "about_page.highlight2_text": "Ausbildung, Au Pair, FSJ/BFD, G to G Nursing, and University / Studium.",
+    "about_page.highlight3_title": "Real Experience",
+    "about_page.highlight3_text": "Mentored directly by a founder with 6 years of personal and professional life in Germany.",
+    "about_page.what_we_do_eyebrow": "What We Do",
+    "about_page.what_we_do_title": "Guiding every step with precision, care, and responsibility.",
+    "about_page.what_we_do_text": "From Medan, we prepare students to master the German language while understanding German work ethics and independent living.",
+    "about_page.form_title": "Start your conversation with us today.",
+    "about_page.location_title": "Official Address & Contact Information",
+    "about_page.location_subtitle": "Visit our premises in Medan Polonia or contact our team via WhatsApp.",
+    "about_page.legal_status": "Registered & Officially Licensed Language Institute (2024)",
+    "about_page.curriculum_title": "Course Information & Guidance",
+    "about_page.curriculum_desc": "Goethe Standard A1-B2 Curriculum, 5 Official Pathways, Founded by UNIMED Graduate (6 Years in Germany).",
+    "about_page.banner_title": "A long journey begins with an open conversation.",
+
+    // General Form
+    "form.phone": "WhatsApp Number",
+    "form.consent": "I agree to the privacy policy and consent to the processing of this information for consultation.",
+    "form.fallback_notice": "If your email app does not open automatically, contact us directly via WhatsApp at +62 82127324453.",
+    "form.surname": "Last Name / Role",
+    "form.company": "Company / Institution Name",
+
+    // Call to Action Banner
+    "cta_banner.eyebrow": "Next Step",
+    "cta_banner.title": "Build your future in Germany together with us.",
+    "cta_banner.subtitle": "Consult your aspirations and timeline with the ICH LIEBE DEUTSCH MEDAN team. We accompany you from the very basics until arrival in Germany.",
+    "cta_banner.button": "Contact Us on WhatsApp",
+
+    // News Extras
+    "news.articles_count": "curated articles",
+    "news.for_students": "For students & families",
+    "news.info_eyebrow": "Why We Share",
+    "news.info_title": "A good journey deserves to be shared.",
+    "news.info_text": "Every update is an opportunity to show how we work: openly, closely, and focused on long-term sustainability.",
+    "news.info_p1": "Real participant stories",
+    "news.info_p2": "Official & reliable information",
+    "news.info_p3": "Transparent program developments",
+    "news.archive_eyebrow": "News Archive",
+    "news.archive_title": "What we are bringing forward.",
+    "news.articles_matched": "articles matched your selection.",
+    "news.try_other": "Try another keyword or category.",
+    "news.load_more": "Load more articles",
+
+    // News Detail
+    "news_detail.copied_title": "Link Copied!",
+    "news_detail.copied_desc": "The article link has been copied to your clipboard.",
+    "news_detail.not_found_title": "Article Not Found",
+    "news_detail.not_found_desc": "The news article you are looking for is unavailable or has been relocated.",
+    "news_detail.featured_badge": "Featured Story",
+    "news_detail.read_time": "min read",
+    "news_detail.share_btn": "Share",
+    "news_detail.published_by": "Published By",
+    "news_detail.recommended_eyebrow": "Recommended Reading",
+    "news_detail.related_title": "Related News & Articles",
+    "news_detail.see_all_news": "View All News",
+
+    // Media & Press
+    "media.back_news": "Back to news & publications",
+    "media.eyebrow": "Media & Press Room",
+    "media.title": "From screen to meaningful dialogue.",
+    "media.description": "Television features and documentaries exploring Indonesian talent, programs to Germany, and genuine workplace integration.",
+    "media.items_count": "selected broadcasts",
+    "media.video_doc": "Videos & Documentaries",
+    "media.filter_all": "All",
+    "media.filter_tv": "Television",
+    "media.filter_doc": "Documentaries",
+    "media.search_placeholder": "Search broadcasts...",
+    "media.search_label": "Search broadcasts",
+    "media.close_search": "Close search",
+    "media.spotlight": "Spotlight",
+    "media.why_eyebrow": "Why Media Matters",
+    "media.why_title": "Visibility fosters trust and understanding.",
+    "media.why_desc": "Media reporting encourages informed perspectives on international talent, industrial workforce needs, and collaborative future building.",
+    "media.topics_title": "Topics brought to the screen",
+    "media.archive_eyebrow": "Broadcast Archive",
+    "media.archive_title": "Stories we have shared.",
+    "media.matched": "broadcasts match your criteria.",
+    "media.try_other": "Try other search terms or categories.",
+    "media.load_more": "Load more",
+
+    // References Extras
+    "ref.badge_real": "Real Journeys",
+    "ref.badge_measured": "Measurable Results",
+    "ref.badge_moments": "Moments to Remember",
+    "ref.badge_moments_sub": "The first step shapes the entire journey.",
+    "ref.col1_title": "Achievement",
+    "ref.col1_text": "Skills nurtured into tangible accomplishments in Germany.",
+    "ref.col2_title": "Resilience",
+    "ref.col2_text": "Staying disciplined and confident in new environments.",
+    "ref.col3_title": "Community",
+    "ref.col3_text": "An active alumni network supporting each other across German cities.",
+    "ref.stories_eyebrow": "Accomplishments",
+    "ref.stories_title": "Stories making possibilities feel real.",
+    "ref.stories_desc": "Choose a milestone to discover the story behind the outcome. Every candidate has a unique journey, but all begin with learning the language.",
+    "ref.quote_eyebrow": "Lessons from the Journey",
+    "ref.quote_body": "“Great outcomes do not happen all at once. They grow from days when someone chooses to keep practicing and showing courage.”",
+    "ref.box1_title": "Readiness Can Be Trained",
+    "ref.box1_text": "Language, skills, and confidence grow through consistent, structured guidance.",
+    "ref.box2_title": "Opportunities Must Be Seized",
+    "ref.box2_text": "Institute and students work as partners toward lasting success in Germany.",
+    "ref.cta_title": "The next success story can begin with you.",
+    "ref.cta_subtitle": "Start your German language preparation and 5 official programs with ICH LIEBE DEUTSCH MEDAN.",
+
+    // Employer / Partner Extras
+    "employer.contact_label": "Partner Inquiry",
+    "employer.contact_note": "An initial conversation to explore your team's staffing needs and collaboration models.",
+    "employer.back_services": "Back to services",
+    "employer.eyebrow": "For Employers & Partner Institutions",
+    "employer.title": "Find the right candidates for your organization.",
+    "employer.description": "Let us start with an informative conversation. Our team explains the process, language standards, and preparation of vocational trainees and professionals.",
+    "employer.fill_form": "Fill out inquiry form",
+    "employer.col1_title": "Clear Information",
+    "employer.col1_text": "Understand the process and qualification standards before making commitments.",
+    "employer.col2_title": "Tailored to Your Team",
+    "employer.col2_text": "Discussions focus on actual workplace positions and operational environments.",
+    "employer.col3_title": "Responsive Communication",
+    "employer.col3_text": "Our team in Medan is ready to collaborate and design transparent partnership models.",
+    "employer.contact_title": "A conversation to unlock new opportunities.",
+    "employer.contact_desc": "For initial inquiries, call our office or send a message. Our team will explain the most suitable approach for your institution.",
+    "employer.form_label": "Partnership Form",
+    "employer.form_heading": "Tell us about your institutional requirements.",
+    "employer.form_message_label": "Message or Positions",
+    "employer.form_message_placeholder": "Describe the positions or participant profiles you wish to discuss...",
+    "employer.form_submit": "Submit Information Request",
+    "employer.banner_title": "Let us start with the right conversation.",
+
+    // Footer
+    "footer.tagline": "“Deutsch lernen. Deutschland verstehen. Zukunft gestalten.” — Learn German, understand Germany, and shape your future.",
+    "footer.rights": "© 2024–2026 ICH LIEBE DEUTSCH MEDAN. All rights reserved.",
+    "footer.campus_medan": "Medan Campus",
+    "footer.germany_partner": "Germany",
+  },
+};
+
+interface LanguageContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string, fallback?: string) => string;
+  currentOption: LanguageOption;
+  availableLanguages: LanguageOption[];
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+const LANGUAGE_STORAGE_KEY = "ild_preferred_language";
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguageState] = useState<Language>(() => {
+    try {
+      const saved = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      if (saved === "id" || saved === "de" || saved === "en") {
+        return saved as Language;
+      }
+    } catch {
+      // ignore localStorage errors
+    }
+    return "id";
+  });
+
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    try {
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+      document.documentElement.lang = lang;
+    } catch {
+      // ignore
+    }
+  };
+
+  useEffect(() => {
+    try {
+      document.documentElement.lang = language;
+    } catch {
+      // ignore
+    }
+  }, [language]);
+
+  const t = (key: string, fallback?: string): string => {
+    const langDict = translations[language];
+    if (langDict && langDict[key]) {
+      return langDict[key];
+    }
+    const idDict = translations.id;
+    if (idDict && idDict[key]) {
+      return idDict[key];
+    }
+    return fallback || key;
+  };
+
+  const currentOption = LANGUAGES.find((l) => l.code === language) || LANGUAGES[0];
+
+  return (
+    <LanguageContext.Provider
+      value={{
+        language,
+        setLanguage,
+        t,
+        currentOption,
+        availableLanguages: LANGUAGES,
+      }}
+    >
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    return {
+      language: "id" as Language,
+      setLanguage: () => {},
+      t: (key: string, fallback?: string) => fallback || key,
+      currentOption: LANGUAGES[0],
+      availableLanguages: LANGUAGES,
+    };
+  }
+  return context;
+}

@@ -12,6 +12,8 @@
     "dev": "tsx server.ts",
     "build": "vite build --config artifacts/german-student-portfolio/vite.config.ts && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
     "start": "node dist/server.cjs",
+    "db:push": "tsx scripts/src/db-push.ts",
+    "db:push:drizzle": "drizzle-kit push",
     "typecheck": "tsc --build",
     "lint": "tsc --build"
   },

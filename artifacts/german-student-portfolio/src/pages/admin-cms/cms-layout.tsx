@@ -31,16 +31,16 @@ export function CmsLayout({
   const [location] = useLocation();
 
   const publicPagesList = [
-    { href: "/admin/content/home", label: "Utama (Beranda)", icon: "🏠" },
-    { href: "/admin/content/news", label: "Berita", icon: "📰" },
-    { href: "/admin/content/media", label: "Media", icon: "📺" },
-    { href: "/admin/content/services", label: "Layanan", icon: "🛠️" },
-    { href: "/admin/content/jakarta", label: "Jakarta", icon: "📍" },
-    { href: "/admin/content/references", label: "Referensi", icon: "🏆" },
-    { href: "/admin/content/placements", label: "Penempatan", icon: "🤝" },
-    { href: "/admin/content/partner", label: "Untuk Partner", icon: "🏢" },
-    { href: "/admin/content/navbar", label: "Navbar", icon: "🧭" },
-    { href: "/admin/content/footer", label: "Footer", icon: "🦶" },
+    { href: "/admin/cms/home", label: "Utama (Beranda)", icon: "🏠" },
+    { href: "/admin/cms/news", label: "Berita", icon: "📰" },
+    { href: "/admin/cms/media", label: "Media", icon: "📺" },
+    { href: "/admin/cms/services", label: "Layanan", icon: "🛠️" },
+    { href: "/admin/cms/jakarta", label: "Jakarta", icon: "📍" },
+    { href: "/admin/cms/references", label: "Referensi", icon: "🏆" },
+    { href: "/admin/cms/placements", label: "Penempatan", icon: "🤝" },
+    { href: "/admin/cms/partner", label: "Untuk Partner", icon: "🏢" },
+    { href: "/admin/cms/navbar", label: "Navbar", icon: "🧭" },
+    { href: "/admin/cms/footer", label: "Footer", icon: "🦶" },
   ];
 
   return (

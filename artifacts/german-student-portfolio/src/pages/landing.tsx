@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowDownRight,
@@ -24,6 +24,8 @@ import {
 import { Link } from "wouter";
 import { useGetSiteContent, getGetSiteContentQueryKey } from "@workspace/api-client-react";
 import { useCmsSection } from "@/lib/use-cms";
+import { useLanguage } from "@/lib/language-context";
+import { getLocalizedArticle } from "@/lib/news-translations";
 import { SectionEyebrow } from "@/components/portfolio-ui";
 import { PublicNavbar } from "@/components/public-navbar";
 import { PublicFooter } from "@/components/public-footer";
@@ -178,40 +180,97 @@ function CandidateArt() {
 export default function Landing() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const { language, t } = useLanguage();
   const contentQuery = useGetSiteContent({ query: { queryKey: getGetSiteContentQueryKey() } });
   const summaryQuery = useLandingSummary();
   const { data: homeCms } = useCmsSection("home");
   const { data: newsCms } = useCmsSection("news");
 
-  const newsList = newsCms?.items && Array.isArray(newsCms.items) && newsCms.items.length > 0 
+  const rawNewsList = newsCms?.items && Array.isArray(newsCms.items) && newsCms.items.length > 0 
     ? newsCms.items.slice(0, 3) 
     : [
         { id: 1, date: "18 JUN 2024", category: "Media", tag: "Media", title: "Bagaimana peserta Ausbildung dari Indonesia membantu menjawab kebutuhan tenaga kerja?", tone: "coral" },
-        { id: 2, date: "12 JUN 2024", category: "Cerita", tag: "Cerita peserta", title: "Dari Bandung ke dapur hotel di Baden-Württemberg", tone: "sea" },
-        { id: 3, date: "03 SEP 2023", category: "Partner", tag: "Untuk partner", title: "Lernpfad hadir di CHEFS CULINAR Messe di Leipzig", tone: "butter" },
+        { id: 2, date: "12 JUN 2024", category: "Cerita", tag: "Cerita peserta", title: "Dari Medan ke dapur hotel di Baden-Württemberg", tone: "sea" },
+        { id: 3, date: "03 SEP 2023", category: "Partner", tag: "Untuk partner", title: "Peluang Ausbildung Perawat dan Hospitaliti di Jerman", tone: "butter" },
       ];
 
-  const title = homeCms?.title || contentQuery.data?.title || "Membuka jalan talenta muda Indonesia menuju Ausbildung di Jerman.";
-  const description = homeCms?.description || contentQuery.data?.description || "Lernpfad adalah jembatan langsung antara calon peserta di Indonesia dan pemberi kerja di Jerman. Dari percakapan awal, persiapan bahasa, hingga pendampingan setelah tiba.";
-  const primaryCta = homeCms?.primaryCta || contentQuery.data?.primaryCta || "Jelajahi portfolio kandidat";
-  const primaryCtaHref = homeCms?.primaryCtaHref || "/login";
-  const eyebrow = homeCms?.eyebrow || "Jembatan talenta Indonesia — Jerman";
+  const newsList = useMemo(() => {
+    return rawNewsList.map((item: any) => getLocalizedArticle(item, language));
+  }, [rawNewsList, language]);
+
+  const title = language !== "id" ? t("hero.title", homeCms?.title) : (homeCms?.title || contentQuery.data?.title || "ICH LIEBE DEUTSCH MEDAN");
+  const description = language !== "id" ? t("hero.description", homeCms?.description) : (homeCms?.description || contentQuery.data?.description || "Belajar bahasa Jerman, memahami kehidupan di Jerman, dan mempersiapkan masa depan dengan lebih baik bersama pendiri lulusan UNIMED yang berpengalaman 6 tahun tinggal di Jerman.");
+  const primaryCta = language !== "id" ? t("hero.cta_wa", homeCms?.primaryCta) : (homeCms?.primaryCta || "Konsultasi WhatsApp");
+  const primaryCtaHref = homeCms?.primaryCtaHref || "https://wa.me/6282127324453";
+  const eyebrow = language !== "id" ? t("hero.eyebrow", homeCms?.eyebrow) : (homeCms?.eyebrow || "Lembaga Kursus Bahasa Jerman Resmi · Medan");
 
   const trustedPartners = homeCms?.trustedPartners || ["Bergblick Hotels", "Küchenwerk", "Pflegehaus Nord", "Rhein & Raum"];
-  const serviceCards = homeCms?.programCards || defaultServiceCards;
-  const processSteps = homeCms?.processSteps || defaultProcessSteps;
-  const quoteText = homeCms?.quoteText || "“Saya tidak merasa dikirim pergi. Saya merasa dipersiapkan untuk datang.”";
-  const quoteAuthor = homeCms?.quoteAuthor || "— Rafi, peserta Ausbildung · Stuttgart";
-  const ctaTitle = homeCms?.ctaTitle || "Mari temukan kemungkinan yang belum terlihat.";
-  const ctaSubtitle = homeCms?.ctaSubtitle || "Ceritakan posisi atau rencana tim Anda. Masuk ke portal untuk memulai percakapan berbasis portfolio yang sudah terverifikasi.";
-  const ctaButtonText = homeCms?.ctaButtonText || "Hubungi tim Lernpfad";
-  const ctaButtonHref = homeCms?.ctaButtonHref || "/login";
+  
+  const serviceCards = [
+    {
+      number: "01",
+      icon: UsersRound,
+      title: t("programs.card1_title", "Ausbildung"),
+      text: t("programs.card1_desc", "Sekolah kejuruan (Berufsschule) digabung praktik kerja di perusahaan Jerman dengan uang saku bulanan. Durasi 2–3,5 tahun (Perawat, Gastro, IT, Teknik, Bisnis)."),
+      accent: "sea",
+    },
+    {
+      number: "02",
+      icon: Handshake,
+      title: t("programs.card2_title", "Au Pair"),
+      text: t("programs.card2_desc", "Program pertukaran budaya tinggal bersama keluarga Jerman (Host Family). Mendapat uang saku, kamar pribadi, makan gratis, dan kursus bahasa Jerman."),
+      accent: "coral",
+    },
+    {
+      number: "03",
+      icon: Sparkles,
+      title: t("programs.card3_title", "FSJ / BFD"),
+      text: t("programs.card3_desc", "Freiwilliges Soziales Jahr / Bundesfreiwilligendienst: program sukarelawan sosial 1 tahun di rumah sakit, panti sosial, atau TK dengan uang saku dan akomodasi."),
+      accent: "butter",
+    },
+    {
+      number: "04",
+      icon: ShieldCheck,
+      title: t("programs.card4_title", "G to G Perawat"),
+      text: t("programs.card4_desc", "Program resmi antar-pemerintah (Government to Government) penempatan tenaga perawat profesional Indonesia di berbagai fasilitas kesehatan di Jerman."),
+      accent: "ink",
+    },
+    {
+      number: "05",
+      icon: Globe2,
+      title: t("programs.card5_title", "Kuliah / Studium"),
+      text: t("programs.card5_desc", "Persiapan kuliah universitas di Jerman (Bachelor/Master), Studienkolleg, sertifikasi bahasa C1/TestDaF, dan bimbingan dokumen universitas."),
+      accent: "lavender",
+    },
+  ];
+
+  const processSteps = [
+    { number: t("approach.step1_num", "01"), title: t("approach.step1_title", "Konsultasi & Pemetaan"), text: t("approach.step1_text", "Menganalisis minat, latar belakang pendidikan, dan memilih jalur resmi ke Jerman yang paling tepat.") },
+    { number: t("approach.step2_num", "02"), title: t("approach.step2_title", "Kursus Bahasa Jerman Terarah"), text: t("approach.step2_text", "Pelatihan intensif tingkat A1, A2, hingga B1/B2 dengan kurikulum standar Goethe-Institut, dipandu langsung oleh alumni UNIMED.") },
+    { number: t("approach.step3_num", "03"), title: t("approach.step3_title", "Dokumen & Wawancara"), text: t("approach.step3_text", "Penyusunan Lebenslauf, Anschreiben, serta simulasi wawancara dengan pemberi kerja / host family di Jerman.") },
+    { number: t("approach.step4_num", "04"), title: t("approach.step4_title", "Kontrak & Visa Resmi"), text: t("approach.step4_text", "Pendampingan pengurusan kontrak resmi (Ausbildungsvertrag), verifikasi kedutaan, asuransi, dan pengajuan visa nasional.") },
+    { number: t("approach.step5_num", "05"), title: t("approach.step5_title", "Kemandirian & Adaptasi"), text: t("approach.step5_text", "Pembekalan budaya kehidupan sehari-hari, perumahan, pendaftaran kota (Anmeldung), dan jaringan komunitas alumni.") },
+  ];
+
+  const currentFaqs = [
+    [t("faq.q1"), t("faq.a1")],
+    [t("faq.q2"), t("faq.a2")],
+    [t("faq.q3"), t("faq.a3")],
+    [t("faq.q4"), t("faq.a4")],
+  ];
+
+  const quoteText = t("quote.text", homeCms?.quoteText || "“Di ICH LIEBE DEUTSCH MEDAN saya tidak hanya belajar tata bahasa, tapi belajar bagaimana menghadapi kehidupan nyata dan bekerja profesional di Jerman.”");
+  const quoteAuthor = t("quote.author", homeCms?.quoteAuthor || "— Alumni Peserta Bimbingan · Jerman");
+  const ctaTitle = t("cta_banner.title", homeCms?.ctaTitle || "Wujudkan impian masa depan Anda di Jerman bersama kami.");
+  const ctaSubtitle = t("cta_banner.subtitle", homeCms?.ctaSubtitle || "Konsultasikan impian dan rencana Anda bersama tim ICH LIEBE DEUTSCH MEDAN. Kami siap mendampingi dari nol hingga tiba di Jerman.");
+  const ctaButtonText = t("cta_banner.button", homeCms?.ctaButtonText || "Hubungi WhatsApp Kami");
+  const ctaButtonHref = homeCms?.ctaButtonHref || "https://wa.me/6282127324453";
 
   const summary = summaryQuery.data;
   const stats = [
-    { value: summary?.totalStudents ?? (homeCms?.stats?.[0]?.value || "48+"), label: homeCms?.stats?.[0]?.label || "profil dalam portfolio", icon: UsersRound },
-    { value: summary?.readyToPlace ?? (homeCms?.stats?.[1]?.value || "19"), label: homeCms?.stats?.[1]?.label || "siap dikenalkan", icon: BadgeCheck },
-    { value: summary ? `${summary.placementRate}%` : (homeCms?.stats?.[2]?.value || "94%"), label: homeCms?.stats?.[2]?.label || "placement rate", icon: BarChart3 },
+    { value: summary?.totalStudents ?? (homeCms?.stats?.[0]?.value || "48+"), label: t("stats.students", "profil dalam bimbingan"), icon: UsersRound },
+    { value: summary?.readyToPlace ?? (homeCms?.stats?.[1]?.value || "19"), label: t("stats.ready", "siap diberangkatkan"), icon: BadgeCheck },
+    { value: summary ? `${summary.placementRate}%` : (homeCms?.stats?.[2]?.value || "98%"), label: t("stats.placement_rate", "tingkat keberhasilan"), icon: BarChart3 },
   ];
   const navTo = (id: string) => { setMenuOpen(false); document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); };
 
@@ -237,11 +296,11 @@ export default function Landing() {
             <h1 className="landing-rise-2 mt-7 max-w-2xl font-['Fraunces'] text-[clamp(2.4rem,6vw,6.6rem)] font-medium leading-[0.92] tracking-[-0.075em] text-[#173d3a]" data-testid="text-landing-title">{title}</h1>
             <p className="landing-rise-3 mt-7 max-w-xl text-[17px] leading-8 text-[#55736b]" data-testid="text-landing-description">{description}</p>
             <div className="landing-rise-3 mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Link href={primaryCtaHref} className="group inline-flex w-fit items-center gap-3 rounded-full bg-[#d35f46] px-5 py-3.5 font-mono-ui text-[11px] font-bold uppercase tracking-[0.12em] text-[#fff8ee] shadow-[5px_5px_0_#173d3a] transition-all hover:-translate-y-1 hover:shadow-[7px_8px_0_#173d3a]" data-testid="link-landing-primary-cta">
+              <a href={primaryCtaHref} target="_blank" rel="noreferrer" className="group inline-flex w-fit items-center gap-3 rounded-full bg-[#d35f46] px-5 py-3.5 font-mono-ui text-[11px] font-bold uppercase tracking-[0.12em] text-[#fff8ee] shadow-[5px_5px_0_#173d3a] transition-all hover:-translate-y-1 hover:shadow-[7px_8px_0_#173d3a]" data-testid="link-landing-primary-cta">
                 {primaryCta} <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </Link>
+              </a>
               <button type="button" onClick={() => navTo("cara-kerja")} className="inline-flex w-fit items-center gap-2 px-3 py-3 font-mono-ui text-[11px] font-bold uppercase tracking-[0.12em] text-[#486961] transition-colors hover:text-[#d35f46]" data-testid="button-landing-secondary-cta">
-                Kenali pendekatan kami <ArrowDownRight size={16} />
+                {t("hero.cta_approach", "Kenali pendekatan kami")} <ArrowDownRight size={16} />
               </button>
             </div>
             <div className="mt-12 grid max-w-md grid-cols-3 gap-2 sm:gap-4 border-t border-[#173d3a]/20 pt-5">
@@ -257,7 +316,7 @@ export default function Landing() {
             <CandidateArt />
             <div className="absolute right-1 top-0 hidden w-[145px] -rotate-[7deg] rounded-xl border-2 border-[#173d3a] bg-[#9ccabc] p-3 text-[#173d3a] shadow-[5px_6px_0_#173d3a] sm:block">
               <Globe2 size={18} />
-              <p className="mt-4 font-['Fraunces'] text-[19px] font-semibold leading-[1.05]">Dua tempat.<br />Satu arah.</p>
+              <p className="mt-4 font-['Fraunces'] text-[19px] font-semibold leading-[1.05]">{t("hero.badge_two_places", "Dua tempat. Satu arah.")}</p>
               <p className="mt-3 font-mono-ui text-[8px] font-bold uppercase tracking-[0.12em]">ID × DE</p>
             </div>
           </div>
@@ -265,7 +324,7 @@ export default function Landing() {
 
         <div className="border-y border-[#173d3a]/15 bg-[#e7f0e9]">
           <div className="mx-auto flex max-w-[1240px] flex-wrap items-center gap-x-8 gap-y-4 px-5 py-5 lg:px-8">
-            <p className="mr-2 font-mono-ui text-[9px] font-bold uppercase tracking-[0.17em] text-[#6b867e]">Dipercaya untuk membuka jalan oleh</p>
+            <p className="mr-2 font-mono-ui text-[9px] font-bold uppercase tracking-[0.17em] text-[#6b867e]">{t("hero.trusted_by", "Dipercaya untuk membuka jalan oleh")}</p>
             {trustedPartners.map((name: string, index: number) => (
               <div key={name} className={`font-['Fraunces'] text-lg font-semibold tracking-[-0.04em] ${index % 2 === 0 ? "text-[#315c54]" : "text-[#66817a]"}`}>{name}</div>
             ))}
@@ -274,15 +333,15 @@ export default function Landing() {
 
         <section id="cara-kerja" className="mx-auto grid max-w-[1240px] gap-14 px-5 py-24 lg:grid-cols-[.8fr_1.2fr] lg:px-8 lg:py-32">
           <div>
-            <SectionLabel>{homeCms?.introLabel || "Lebih dari penempatan"}</SectionLabel>
+            <SectionLabel>{t("approach.eyebrow", homeCms?.introLabel || "Lebih dari penempatan")}</SectionLabel>
             <h2 className="mt-6 max-w-md font-['Fraunces'] text-3xl sm:text-5xl lg:text-6xl font-medium leading-[.98] tracking-[-.065em] text-[#173d3a]">
-              {homeCms?.introTitle || "Kami merawat perjalanan, bukan hanya keberangkatan."}
+              {t("approach.title", homeCms?.introTitle || "Kami merawat perjalanan, bukan hanya keberangkatan.")}
             </h2>
             <p className="mt-7 max-w-sm text-[15px] leading-7 text-[#66817a]">
-              {homeCms?.introText || "Pindah negara untuk Ausbildung adalah keputusan besar. Karena itu, kami membuat setiap tahap bisa dipahami, dibicarakan, dan dipersiapkan bersama."}
+              {t("approach.text", homeCms?.introText || "Pindah negara untuk Ausbildung, Au Pair, atau Kuliah adalah keputusan besar. Karena itu, kami membuat setiap tahap bisa dipahami, dibicarakan, dan dipersiapkan bersama.")}
             </p>
             <button type="button" onClick={() => navTo("layanan")} className="mt-8 inline-flex items-center gap-2 border-b border-[#d35f46] pb-2 font-mono-ui text-[10px] font-bold uppercase tracking-[0.16em] text-[#d35f46]">
-              Lihat semua layanan <ArrowRight size={14} />
+              {t("common.see_all_services", "Lihat semua layanan")} <ArrowRight size={14} />
             </button>
           </div>
           <div className="grid gap-0 border-t border-[#173d3a]/20">
@@ -307,10 +366,10 @@ export default function Landing() {
           <div className="mx-auto max-w-[1240px]">
             <div className="flex flex-col justify-between gap-7 lg:flex-row lg:items-end">
               <div>
-                <SectionLabel light>Layanan Lernpfad</SectionLabel>
-                <h2 className="mt-6 max-w-3xl font-['Fraunces'] text-3xl sm:text-5xl lg:text-7xl font-medium leading-[.94] tracking-[-0.065em]">Yang rapi di belakang layar, terasa ringan di <em className="text-[#f4c76b]">depan.</em></h2>
+                <SectionLabel light>{t("programs.eyebrow", "5 Program Kursus & Jalur Resmi")}</SectionLabel>
+                <h2 className="mt-6 max-w-3xl font-['Fraunces'] text-3xl sm:text-5xl lg:text-7xl font-medium leading-[.94] tracking-[-0.065em]">{t("programs.title", "Yang terencana dengan baik, terasa ringan saat dijalani.")}</h2>
               </div>
-              <p className="max-w-xs text-sm leading-6 text-[#a9c5bb]">Satu partner lokal untuk membantu tim Anda bergerak percaya diri lintas bahasa, zona waktu, dan proses.</p>
+              <p className="max-w-xs text-sm leading-6 text-[#a9c5bb]">{t("programs.subtitle", "Satu lembaga lokal di Medan untuk membimbing langkah Anda dengan percaya diri lintas bahasa, budaya, dan administrasi.")}</p>
             </div>
             <div className="mt-16 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {serviceCards.map((card: any) => {
@@ -349,32 +408,41 @@ export default function Landing() {
             <div className="absolute -right-16 -top-20 h-64 w-64 rounded-full border-[34px] border-[#d35f46]/80" />
             <div className="absolute -bottom-20 -left-16 h-64 w-64 rounded-full border-[34px] border-[#9ccabc]/90" />
             <div className="relative z-10">
-              <SectionLabel>Portfolio kandidat</SectionLabel>
+              <SectionLabel>{t("portfolio_highlight.eyebrow", "Kesiapan Kandidat")}</SectionLabel>
               <div className="mt-20 max-w-sm">
-                <p className="font-['Fraunces'] text-3xl sm:text-5xl lg:text-6xl font-medium leading-[.93] tracking-[-0.07em] text-[#173d3a]">Kenali orangnya, sebelum bertemu.</p>
-                <p className="mt-6 max-w-xs text-sm leading-6 text-[#4f6b64]">Profil yang menyatukan angka, bukti, dan cerita. Karena kecocokan dimulai dari konteks.</p>
+                <p className="font-['Fraunces'] text-3xl sm:text-5xl lg:text-6xl font-medium leading-[.93] tracking-[-0.07em] text-[#173d3a]">{t("portfolio_highlight.title", "Kenali orangnya, sebelum bertemu.")}</p>
+                <p className="mt-6 max-w-xs text-sm leading-6 text-[#4f6b64]">{t("portfolio_highlight.description", "Profil peserta yang menyatukan kemampuan bahasa, pemahaman budaya, dan motivasi kerja nyata. Karena keberhasilan dimulai dari kesiapan mental.")}</p>
               </div>
               <div className="mt-16 flex flex-wrap gap-2">
-                {["Level bahasa", "Pengalaman", "Motivasi", "Kesiapan"].map((label) => (
+                {[
+                  t("portfolio_highlight.pill_lang", "Level Bahasa B1/B2"),
+                  t("portfolio_highlight.pill_exp", "Praktik & Keahlian"),
+                  t("portfolio_highlight.pill_mot", "Motivasi Kuat"),
+                  t("portfolio_highlight.pill_readiness", "Kesiapan Mental"),
+                ].map((label) => (
                   <span key={label} className="rounded-full border border-[#173d3a]/25 px-3 py-1.5 font-mono-ui text-[9px] font-bold uppercase tracking-[0.1em] text-[#315c54]">{label}</span>
                 ))}
               </div>
             </div>
           </div>
           <div>
-            <SectionLabel>Untuk pemberi kerja</SectionLabel>
-            <h2 className="mt-6 max-w-lg font-['Fraunces'] text-3xl sm:text-5xl font-medium leading-[.98] tracking-[-0.065em] text-[#173d3a]">Bukan daftar CV yang panjang. <span className="text-[#d35f46]">Sinyal yang jelas.</span></h2>
-            <p className="mt-7 max-w-md text-[15px] leading-7 text-[#66817a]">Anda mendapat gambaran utuh tentang kandidat yang sedang dipertimbangkan — dan tim kami untuk menerjemahkan detail yang tidak terlihat di atas kertas.</p>
+            <SectionLabel>{t("employer_sec.eyebrow", "Kemitraan & Integritas")}</SectionLabel>
+            <h2 className="mt-6 max-w-lg font-['Fraunces'] text-3xl sm:text-5xl font-medium leading-[.98] tracking-[-0.065em] text-[#173d3a]">{t("employer_sec.title", "Bukan sekadar mengirimkan. Menyiapkan manusia yang siap berkarya.")}</h2>
+            <p className="mt-7 max-w-md text-[15px] leading-7 text-[#66817a]">{t("employer_sec.description", "Kami membekali kandidat dengan bahasa yang baik dan etos kerja Jerman, sehingga proses adaptasi di tempat kerja berlangsung cepat dan harmonis.")}</p>
             <div className="mt-9 space-y-4 border-t border-[#173d3a]/20 pt-5">
-              {["Profil kandidat yang dikurasi", "Status dokumen yang transparan", "Satu kontak untuk pertanyaan lanjutan"].map((item) => (
+              {[
+                t("employer_sec.check1", "Kandidat dengan sertifikat bahasa resmi B1 / B2"),
+                t("employer_sec.check2", "Pemahaman budaya kerja Jerman dan kedisiplinan"),
+                t("employer_sec.check3", "Pendampingan kontak berkelanjutan selama masa kontrak"),
+              ].map((item) => (
                 <div key={item} className="flex items-center gap-3 text-sm font-semibold text-[#315c54]">
                   <span className="grid h-6 w-6 place-items-center rounded-full bg-[#e7f0e9] text-[#d35f46]"><Check size={14} strokeWidth={3} /></span>
                   {item}
                 </div>
               ))}
             </div>
-            <Link href="/login" className="mt-9 inline-flex items-center gap-2 rounded-full border border-[#173d3a] px-5 py-3 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#173d3a] transition-colors hover:bg-[#173d3a] hover:text-[#f5eee3]" data-testid="link-landing-catalog">
-              Lihat portfolio partner <ArrowUpRight size={15} />
+            <Link href="/jakarta#formulir" className="mt-9 inline-flex items-center gap-2 rounded-full border border-[#173d3a] px-5 py-3 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#173d3a] transition-colors hover:bg-[#173d3a] hover:text-[#f5eee3]" data-testid="link-landing-catalog">
+              {t("employer_sec.cta", "Konsultasi Kemitraan")} <ArrowUpRight size={15} />
             </Link>
           </div>
         </section>
@@ -382,7 +450,7 @@ export default function Landing() {
         <section className="border-y border-[#173d3a]/15 bg-[#e7f0e9] px-5 py-20 lg:px-8 lg:py-24">
           <div className="mx-auto grid max-w-[1240px] gap-12 lg:grid-cols-[.75fr_1.25fr]">
             <div>
-              <SectionLabel>Suara dari perjalanan</SectionLabel>
+              <SectionLabel>{t("quote.eyebrow", "Suara Dari Jerman")}</SectionLabel>
               <Quote className="mt-8 text-[#d35f46]" size={38} strokeWidth={1.2} />
               <blockquote className="mt-5 max-w-sm font-['Fraunces'] text-3xl font-medium leading-[1.05] tracking-[-0.045em] text-[#173d3a]">
                 {quoteText}
@@ -392,13 +460,13 @@ export default function Landing() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-[1.3rem] bg-[#f5eee3] p-6 sm:translate-y-8">
                 <ShieldCheck className="text-[#d35f46]" size={24} />
-                <p className="mt-14 font-['Fraunces'] text-3xl font-semibold leading-[.95] tracking-[-0.04em] text-[#173d3a]">{homeCms?.trustTitle || "Standar yang bisa dipercaya"}</p>
-                <p className="mt-4 text-sm leading-6 text-[#66817a]">{homeCms?.trustText || "Kami bekerja dengan proses yang terdokumentasi dan komunikasi yang terbuka."}</p>
+                <p className="mt-14 font-['Fraunces'] text-3xl font-semibold leading-[.95] tracking-[-0.04em] text-[#173d3a]">{t("quote.box1_title", "Lembaga Berizin Resmi")}</p>
+                <p className="mt-4 text-sm leading-6 text-[#66817a]">{t("quote.box1_text", "Memiliki izin operasional resmi dan terdaftar di Medan dengan kurikulum terstruktur.")}</p>
               </div>
               <div className="rounded-[1.3rem] bg-[#d35f46] p-6 text-[#fff8ee]">
                 <Sparkles size={24} />
-                <p className="mt-14 font-['Fraunces'] text-3xl font-semibold leading-[.95] tracking-[-0.04em]">Manusia tetap di pusat</p>
-                <p className="mt-4 text-sm leading-6 text-[#f7d5c5]">Setiap angka mewakili seseorang dengan harapan, keluarga, dan rencana hidup.</p>
+                <p className="mt-14 font-['Fraunces'] text-3xl font-semibold leading-[.95] tracking-[-0.04em]">{t("quote.box2_title", "Pengalaman Riil Jerman")}</p>
+                <p className="mt-4 text-sm leading-6 text-[#f7d5c5]">{t("quote.box2_text", "Dibimbing langsung oleh pendiri yang berpengalaman 6 tahun hidup mandiri dan berkarir di Jerman.")}</p>
               </div>
             </div>
           </div>
@@ -406,8 +474,8 @@ export default function Landing() {
 
         <section id="kabar" className="mx-auto max-w-[1240px] px-5 py-24 lg:px-8 lg:py-32">
           <div className="flex items-end justify-between gap-5">
-            <div><SectionLabel>Kabar terkini</SectionLabel><h2 className="mt-5 font-['Fraunces'] text-3xl sm:text-5xl font-medium leading-none tracking-[-0.065em] text-[#173d3a]">Catatan di sepanjang jalan.</h2></div>
-            <Link href="/berita" className="hidden items-center gap-2 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#d35f46] sm:flex">Buka semua kabar <ArrowRight size={15} /></Link>
+            <div><SectionLabel>{t("news_sec.eyebrow", "Kabar Terkini")}</SectionLabel><h2 className="mt-5 font-['Fraunces'] text-3xl sm:text-5xl font-medium leading-none tracking-[-0.065em] text-[#173d3a]">{t("news_sec.title", "Catatan dan informasi penting dari Medan ke Jerman.")}</h2></div>
+            <Link href="/berita" className="hidden items-center gap-2 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#d35f46] sm:flex">{t("news_sec.see_all", "Buka semua kabar")} <ArrowRight size={15} /></Link>
           </div>
           <div className="mt-12 grid gap-5 lg:grid-cols-3">
             {newsList.map((update: any) => (
@@ -438,9 +506,9 @@ export default function Landing() {
         </section>
 
         <section className="mx-auto grid max-w-[1240px] gap-16 px-5 pb-24 lg:grid-cols-[.9fr_1.1fr] lg:px-8 lg:pb-32">
-          <div><SectionLabel>Pertanyaan yang sering muncul</SectionLabel><h2 className="mt-6 max-w-md font-['Fraunces'] text-3xl sm:text-5xl font-medium leading-[.95] tracking-[-0.065em] text-[#173d3a]">Mari mulai dari yang <span className="text-[#d35f46]">ingin Anda tahu.</span></h2></div>
+          <div><SectionLabel>{t("faq.eyebrow", "Pertanyaan yang Sering Muncul")}</SectionLabel><h2 className="mt-6 max-w-md font-['Fraunces'] text-3xl sm:text-5xl font-medium leading-[.95] tracking-[-0.065em] text-[#173d3a]">{t("faq.title", "Mari mulai dari apa yang ingin Anda ketahui.")}</h2></div>
           <div className="border-t border-[#173d3a]/20">
-            {faqs.map(([question, answer], index) => (
+            {currentFaqs.map(([question, answer], index) => (
               <div key={question} className="border-b border-[#173d3a]/20">
                 <button type="button" onClick={() => setOpenFaq(openFaq === index ? null : index)} className="flex w-full items-center justify-between gap-5 py-5 text-left">
                   <span className="font-['Fraunces'] text-xl sm:text-2xl font-semibold tracking-[-0.035em] text-[#173d3a]">{question}</span>
@@ -456,12 +524,12 @@ export default function Landing() {
           <div className="absolute -right-20 -top-32 h-80 w-80 rounded-full border-[44px] border-[#f4c76b]/70" />
           <div className="absolute -bottom-28 right-[28%] h-56 w-56 rounded-full border-[28px] border-[#173d3a]/15" />
           <div className="relative z-10 max-w-2xl">
-            <SectionLabel light>Langkah berikutnya</SectionLabel>
+            <SectionLabel light>{t("cta_banner.eyebrow", "Langkah Berikutnya")}</SectionLabel>
             <h2 className="mt-6 font-['Fraunces'] text-3xl sm:text-5xl lg:text-7xl font-medium leading-[.94] tracking-[-0.065em]">{ctaTitle}</h2>
             <p className="mt-6 max-w-lg text-[15px] leading-7 text-[#f9d6c9]">{ctaSubtitle}</p>
-            <Link href={ctaButtonHref} className="mt-8 inline-flex items-center gap-3 rounded-full bg-[#f5eee3] px-5 py-3.5 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#173d3a] transition-transform hover:-translate-y-1" data-testid="link-landing-contact">
+            <a href={ctaButtonHref} target="_blank" rel="noreferrer" className="mt-8 inline-flex items-center gap-3 rounded-full bg-[#f5eee3] px-5 py-3.5 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#173d3a] transition-transform hover:-translate-y-1" data-testid="link-landing-contact">
               {ctaButtonText} <ArrowUpRight size={16} />
-            </Link>
+            </a>
           </div>
         </section>
       </main>

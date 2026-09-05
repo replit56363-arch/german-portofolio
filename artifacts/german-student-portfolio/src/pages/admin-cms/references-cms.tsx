@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useCmsSection, useUpdateCmsSection, useResetCms } from "@/lib/use-cms";
 import { CmsLayout } from "./cms-layout";
 import { SectionEyebrow } from "@/components/portfolio-ui";
-import { Plus, Trash2, Edit2, Trophy, Sparkles, X } from "lucide-react";
+import { Plus, Trash2, Edit2, Trophy, Sparkles, X, Image as ImageIcon } from "lucide-react";
+import { ImageUploader } from "@/components/image-uploader";
 
 export default function ReferencesCms() {
   const { data, isLoading, isError } = useCmsSection("references");
@@ -24,6 +25,7 @@ export default function ReferencesCms() {
     personName: "",
     company: "",
     year: "2024",
+    imageUrl: "",
     tone: "butter",
     published: true,
   });
@@ -65,6 +67,7 @@ export default function ReferencesCms() {
       personName: "",
       company: "Mitra Ausbildung di Jerman",
       year: new Date().getFullYear().toString(),
+      imageUrl: "",
       tone: "butter",
       published: true,
     });
@@ -204,6 +207,16 @@ export default function ReferencesCms() {
                 key={story.id}
                 className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 rounded-xl border border-[#e1ebf4] bg-[#f9fbfd] p-4 transition-all hover:bg-white hover:shadow-sm"
               >
+                {story.imageUrl && (
+                  <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-[#cfdce7] bg-[#eef4f9]">
+                    <img
+                      src={story.imageUrl}
+                      alt={story.personName || story.title}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                )}
+
                 <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="rounded bg-[#fdf2d8] px-2 py-0.5 font-mono text-xs font-bold text-[#865910]">
@@ -341,6 +354,20 @@ export default function ReferencesCms() {
                     className="field-input mt-1.5 font-mono"
                   />
                 </div>
+              </div>
+
+              {/* UPLOAD FOTO ALUMNI / PRESTASI */}
+              <div className="rounded-xl border border-[#dce8f2] bg-[#f8fbfe] p-4">
+                <ImageUploader
+                  id="reference-photo-uploader"
+                  label="Foto Siswa / Dokumentasi Prestasi (Upload dari Perangkat)"
+                  value={storyForm.imageUrl || ""}
+                  onChange={(url) => setStoryForm({ ...storyForm, imageUrl: url })}
+                  aspectRatio="square"
+                  maxDimension={1000}
+                  helpText="Unggah foto siswa/alumni atau sertifikat penghargaan dari komputer/ponsel Anda."
+                  placeholder="https://images.unsplash.com/..."
+                />
               </div>
 
               <div>

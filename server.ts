@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express, { type Express } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -20,10 +23,20 @@ app.use("/api", apiRouter);
 
 async function startServer() {
   await seedDevelopmentData();
-  if (process.env.NODE_ENV !== "production") {
+
+  const isProduction =
+    process.env.NODE_ENV === "production" ||
+    (typeof process.argv[1] === "string" && process.argv[1].includes("dist")) ||
+    fs.existsSync(path.resolve(process.cwd(), "dist/public/index.html"));
+
+  if (!isProduction) {
     const vite = await createViteServer({
       configFile: path.resolve(process.cwd(), "artifacts/german-student-portfolio/vite.config.ts"),
-      server: { middlewareMode: true, host: "0.0.0.0" },
+      server: {
+        middlewareMode: true,
+        host: "0.0.0.0",
+        hmr: { port: 24680 }, // Hindari konflik port default 24678 jika ada aplikasi lain
+      },
       appType: "spa",
       root: path.resolve(process.cwd(), "artifacts/german-student-portfolio"),
     });
@@ -47,3 +60,4 @@ async function startServer() {
 }
 
 startServer();
+

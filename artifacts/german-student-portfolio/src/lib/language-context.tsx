@@ -285,12 +285,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "form.surname": "Nama Belakang / Posisi",
     "form.company": "Nama Perusahaan / Institusi",
 
-    // Call to Action Banner
-    "cta_banner.eyebrow": "Langkah Berikutnya",
-    "cta_banner.title": "Wujudkan impian masa depan Anda di Jerman bersama kami.",
-    "cta_banner.subtitle": "Konsultasikan impian dan rencana Anda bersama tim ICH LIEBE DEUTSCH MEDAN. Kami siap mendampingi dari nol hingga tiba di Jerman.",
-    "cta_banner.button": "Hubungi WhatsApp Kami",
-
     // News Extras
     "news.articles_count": "kabar pilihan",
     "news.for_students": "Untuk peserta & keluarga",
@@ -664,12 +658,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "form.surname": "Nachname / Position",
     "form.company": "Unternehmen / Institution",
 
-    // Call to Action Banner
-    "cta_banner.eyebrow": "Nächster Schritt",
-    "cta_banner.title": "Verwirklichen Sie Ihre Zukunft in Deutschland mit uns.",
-    "cta_banner.subtitle": "Besprechen Sie Ihre Wünsche und Pläne mit dem Team von ICH LIEBE DEUTSCH MEDAN. Wir begleiten Sie von den ersten Deutschstunden bis zur Ankunft in Deutschland.",
-    "cta_banner.button": "WhatsApp-Kontakt aufnehmen",
-
     // News Extras
     "news.articles_count": "ausgewählte Berichte",
     "news.for_students": "Für Teilnehmende & Familien",
@@ -1042,12 +1030,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "form.fallback_notice": "If your email app does not open automatically, contact us directly via WhatsApp at +62 82127324453.",
     "form.surname": "Last Name / Role",
     "form.company": "Company / Institution Name",
-
-    // Call to Action Banner
-    "cta_banner.eyebrow": "Next Step",
-    "cta_banner.title": "Build your future in Germany together with us.",
-    "cta_banner.subtitle": "Consult your aspirations and timeline with the ICH LIEBE DEUTSCH MEDAN team. We accompany you from the very basics until arrival in Germany.",
-    "cta_banner.button": "Contact Us on WhatsApp",
 
     // News Extras
     "news.articles_count": "curated articles",

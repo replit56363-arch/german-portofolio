@@ -4,8 +4,8 @@ import pg from "pg";
 import fs from "node:fs";
 import path from "node:path";
 import { scryptSync, randomBytes } from "node:crypto";
-import * as schema from "./schema";
-import { adminsTable, sessionsTable, studentsTable, siteContentTable, cmsSectionsTable } from "./schema";
+import * as schema from "./schema/index";
+import { adminsTable, sessionsTable, studentsTable, siteContentTable, cmsSectionsTable } from "./schema/index";
 import { defaultCmsData } from "./default-cms";
 
 const { Pool } = pg;
@@ -655,5 +655,5 @@ export async function seedDevelopmentData() {
 }
 
 export { pool, db };
-export * from "./schema";
+export * from "./schema/index";
 export * from "./default-cms";

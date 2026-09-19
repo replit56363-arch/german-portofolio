@@ -1,7 +1,7 @@
 import { createHash, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import type { NextFunction, Request, Response } from "express";
 import { and, eq, gt } from "drizzle-orm";
-import { db, adminsTable, sessionsTable, getEnvAdminCredentials } from "@workspace/db";
+import { db, adminsTable, sessionsTable, getEnvAdminCredentials, memoryStore } from "@workspace/db";
 
 export const SESSION_COOKIE = "sprachraum_session";
 
@@ -37,23 +37,47 @@ export async function currentAdmin(request: Request) {
     sessionId = (request.headers["x-session-id"] || request.headers["x-auth-token"]) as string | undefined;
   }
 
-  if (!sessionId) return null;
+  if (typeof sessionId === "string") {
+    sessionId = sessionId.trim().replace(/^["']|["']$/g, "");
+  }
 
-  const [result] = await db
-    .select({ admin: adminsTable, session: sessionsTable })
-    .from(sessionsTable)
-    .innerJoin(adminsTable, eq(sessionsTable.adminId, adminsTable.id))
-    .where(and(eq(sessionsTable.id, sessionId), gt(sessionsTable.expiresAt, new Date())))
-    .limit(1);
-
-  if (!result?.admin) return null;
-
-  const { email: expectedEmail } = getEnvAdminCredentials();
-  if (result.admin.email.toLowerCase() !== expectedEmail) {
+  if (!sessionId || sessionId === "null" || sessionId === "undefined" || sessionId === "") {
     return null;
   }
 
-  return result.admin;
+  // 1. Try PostgreSQL / DB query
+  try {
+    const [result] = await db
+      .select({ admin: adminsTable, session: sessionsTable })
+      .from(sessionsTable)
+      .innerJoin(adminsTable, eq(sessionsTable.adminId, adminsTable.id))
+      .where(and(eq(sessionsTable.id, sessionId), gt(sessionsTable.expiresAt, new Date())))
+      .limit(1);
+
+    if (result?.admin) {
+      return result.admin;
+    }
+  } catch (dbErr) {
+    console.warn("[AUTH] Error querying database for session:", dbErr);
+  }
+
+  // 2. Fallback to memoryStore
+  try {
+    const now = Date.now();
+    const memSession = (memoryStore as any)?.sessions?.find(
+      (s: any) => s.id === sessionId && new Date(s.expiresAt).getTime() > now
+    );
+    if (memSession) {
+      const memAdmin = (memoryStore as any)?.admins?.find((a: any) => a.id === memSession.adminId);
+      if (memAdmin) {
+        return memAdmin;
+      }
+    }
+  } catch (memErr) {
+    console.warn("[AUTH] Error checking in-memory session:", memErr);
+  }
+
+  return null;
 }
 
 export async function requireAdmin(request: Request, response: Response, next: NextFunction) {

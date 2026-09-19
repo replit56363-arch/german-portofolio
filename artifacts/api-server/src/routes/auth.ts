@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { eq } from "drizzle-orm";
-import { db, adminsTable, sessionsTable, getEnvAdminCredentials, hashPassword } from "@workspace/db";
+import { db, adminsTable, sessionsTable, getEnvAdminCredentials, hashPassword, memoryStore } from "@workspace/db";
 import { LoginBody } from "@workspace/api-zod";
 import {
   SESSION_COOKIE,
@@ -40,11 +40,28 @@ router.post("/auth/login", async (request, response) => {
   }
 
   const sessionId = createSessionId();
-  await db.insert(sessionsTable).values({
-    id: sessionId,
-    adminId: admin.id,
-    expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-  });
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
+
+  try {
+    await db.insert(sessionsTable).values({
+      id: sessionId,
+      adminId: admin.id,
+      expiresAt: expiresAt,
+    });
+  } catch (err) {
+    console.warn("[AUTH] Error inserting session into DB:", err);
+  }
+
+  try {
+    if ((memoryStore as any)?.sessions) {
+      (memoryStore as any).sessions.unshift({
+        id: sessionId,
+        adminId: admin.id,
+        expiresAt: expiresAt,
+        createdAt: new Date(),
+      });
+    }
+  } catch {}
 
   // Set cookie for browser sessions (including iframe support and standalone VPS reverse-proxy)
   try {

@@ -23,13 +23,23 @@ export function getAuthHeaders(): Record<string, string> {
   };
   try {
     const token = localStorage.getItem("admin_session_token");
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-      headers["x-session-id"] = token;
-      headers["x-auth-token"] = token;
+    if (token && token !== "null" && token !== "undefined" && token.trim() !== "") {
+      const cleanToken = token.trim().replace(/^["']|["']$/g, "");
+      headers["Authorization"] = `Bearer ${cleanToken}`;
+      headers["x-session-id"] = cleanToken;
+      headers["x-auth-token"] = cleanToken;
     }
   } catch {}
   return headers;
+}
+
+function handleFetchError(res: Response, errorData: any, fallbackMessage: string): Error {
+  if (res.status === 401) {
+    return new Error(
+      "Sesi login telah berakhir atau Anda belum login (401 Unauthorized). Silakan muat ulang atau login kembali di /login."
+    );
+  }
+  return new Error(errorData?.error || fallbackMessage);
 }
 
 export function useCms() {
@@ -40,7 +50,10 @@ export function useCms() {
         credentials: "include",
         headers: getAuthHeaders(),
       });
-      if (!res.ok) throw new Error("Gagal mengambil data CMS");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw handleFetchError(res, errorData, "Gagal mengambil data CMS");
+      }
       return res.json();
     },
     staleTime: 10_000,
@@ -55,7 +68,10 @@ export function useCmsSection<T = any>(section: CmsSectionName) {
         credentials: "include",
         headers: getAuthHeaders(),
       });
-      if (!res.ok) throw new Error(`Gagal memuat bagian ${section}`);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw handleFetchError(res, errorData, `Gagal memuat bagian ${section}`);
+      }
       return res.json() as Promise<T>;
     },
     staleTime: 10_000,
@@ -74,7 +90,7 @@ export function useUpdateCmsSection(section: CmsSectionName) {
       });
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || "Gagal menyimpan perubahan");
+        throw handleFetchError(res, errorData, "Gagal menyimpan perubahan");
       }
       return res.json();
     },
@@ -99,7 +115,7 @@ export function useCreateCmsItem(section: CmsSectionName, field?: string) {
       });
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || "Gagal menambahkan item baru");
+        throw handleFetchError(res, errorData, "Gagal menambahkan item baru");
       }
       return res.json();
     },
@@ -123,7 +139,7 @@ export function useUpdateCmsItem(section: CmsSectionName, field?: string) {
       });
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || "Gagal memperbarui item");
+        throw handleFetchError(res, errorData, "Gagal memperbarui item");
       }
       return res.json();
     },
@@ -146,7 +162,7 @@ export function useDeleteCmsItem(section: CmsSectionName, field?: string) {
       });
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || "Gagal menghapus item");
+        throw handleFetchError(res, errorData, "Gagal menghapus item");
       }
       return res.json();
     },
@@ -169,7 +185,7 @@ export function useResetCms() {
       });
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || "Gagal mengembalikan data");
+        throw handleFetchError(res, errorData, "Gagal mengembalikan data");
       }
       return res.json();
     },

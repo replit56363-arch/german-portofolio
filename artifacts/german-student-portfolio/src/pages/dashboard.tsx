@@ -38,20 +38,24 @@ export default function Dashboard() {
           href="/admin/cms"
           className="inline-flex items-center gap-1 text-xs font-bold text-[#1b5a9f] hover:text-[#124d8c]"
         >
-          Buka Semua CMS ({10} Halaman) <ArrowUpRight size={14} />
+          Buka Semua CMS (13 Halaman) <ArrowUpRight size={14} />
         </Link>
       </div>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
           { label: "Halaman Utama", desc: "Hero, statistik, 4 alur", href: "/admin/cms/home", tone: "bg-[#eaf3fa] text-[#1b5a9f]" },
+          { label: "Data Siswa", desc: "Direktori & level bahasa", href: "/admin/cms/students", tone: "bg-[#eff6ff] text-[#1e40af]" },
+          { label: "Foto Alumni", desc: "Galeri nyata di Jerman", href: "/admin/cms/alumni", tone: "bg-[#fdf4ff] text-[#86198f]" },
+          { label: "Ruangan Kelas", desc: "Fasilitas & lab audio Medan", href: "/admin/cms/classrooms", tone: "bg-[#f0fdf4] text-[#166534]" },
           { label: "Halaman Berita", desc: "Kabar & artikel terkini", href: "/admin/cms/news", tone: "bg-[#feece8] text-[#c04b34]" },
           { label: "Halaman Media", desc: "Liputan TV & dokumenter", href: "/admin/cms/media", tone: "bg-[#e2f7f3] text-[#1c7866]" },
           { label: "Halaman Layanan", desc: "Alur kerja 7 tahap", href: "/admin/cms/services", tone: "bg-[#fdf4db] text-[#936b0d]" },
           { label: "Halaman Jakarta", desc: "Kantor & jam operasional", href: "/admin/cms/jakarta", tone: "bg-[#fbeee6] text-[#b4532c]" },
           { label: "Referensi Prestasi", desc: "Kisah sukses & juara", href: "/admin/cms/references", tone: "bg-[#fbf4d9] text-[#8e6810]" },
-          { label: "Navbar Header", desc: "Link menu & CTA", href: "/admin/cms/navbar", tone: "bg-[#eaf2f9] text-[#1f568c]" },
-          { label: "Footer Publik", desc: "Medsos & copyright", href: "/admin/cms/footer", tone: "bg-[#edf1f5] text-[#37526d]" },
+          { label: "Penempatan", desc: "4 pilar jaminan karier", href: "/admin/cms/placements", tone: "bg-[#eaf4eb] text-[#2c753b]" },
+          { label: "Untuk Partner", desc: "Kontak B2B di Jerman", href: "/admin/cms/partner", tone: "bg-[#fdf2f8] text-[#9d174d]" },
+          { label: "Navbar & Footer", desc: "Menu navigasi & kontak", href: "/admin/cms/navbar", tone: "bg-[#eaf2f9] text-[#1f568c]" },
         ].map((item) => (
           <Link
             key={item.href}

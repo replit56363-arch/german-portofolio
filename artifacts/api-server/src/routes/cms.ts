@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { requireAdmin } from "./portfolio-utils";
-import { db, siteContentTable, cmsSectionsTable, defaultCmsData, memoryStore } from "@workspace/db";
+import { db, siteContentTable, cmsSectionsTable, defaultCmsData, memoryStore, saveMemoryStoreToDisk } from "@workspace/db";
 import { desc, eq } from "drizzle-orm";
 
 const router: IRouter = Router();
@@ -117,6 +117,7 @@ async function saveSectionToDb(sectionKey: string, content: any): Promise<void> 
       updatedAt: new Date(),
     });
   }
+  saveMemoryStoreToDisk();
 }
 
 // GET all CMS content

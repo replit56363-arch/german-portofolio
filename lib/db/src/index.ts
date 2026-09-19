@@ -256,6 +256,55 @@ let siteContentAutoId = 2;
 let adminAutoId = 3;
 let cmsSectionAutoId = 11;
 
+const DATA_STORE_PATH = path.resolve(process.cwd(), "data_store.json");
+
+export function saveMemoryStoreToDisk() {
+  try {
+    const dataToSave = {
+      seedCompleted: (memoryStore as any).seedCompleted || false,
+      admins: memoryStore.admins,
+      sessions: memoryStore.sessions,
+      students: memoryStore.students,
+      siteContent: memoryStore.siteContent,
+      cmsSections: memoryStore.cmsSections,
+      studentAutoId,
+      siteContentAutoId,
+      adminAutoId,
+      cmsSectionAutoId,
+    };
+    fs.writeFileSync(DATA_STORE_PATH, JSON.stringify(dataToSave, null, 2), "utf-8");
+  } catch (err) {
+    console.warn("[DB] Error persisting memory store to disk:", err);
+  }
+}
+
+export function loadMemoryStoreFromDisk() {
+  try {
+    if (fs.existsSync(DATA_STORE_PATH)) {
+      const content = fs.readFileSync(DATA_STORE_PATH, "utf-8");
+      const parsed = JSON.parse(content);
+      if (parsed) {
+        if (Array.isArray(parsed.students)) memoryStore.students = parsed.students;
+        if (Array.isArray(parsed.siteContent)) memoryStore.siteContent = parsed.siteContent;
+        if (Array.isArray(parsed.cmsSections)) memoryStore.cmsSections = parsed.cmsSections;
+        if (Array.isArray(parsed.admins)) memoryStore.admins = parsed.admins;
+        if (Array.isArray(parsed.sessions)) memoryStore.sessions = parsed.sessions;
+        if (parsed.seedCompleted) (memoryStore as any).seedCompleted = parsed.seedCompleted;
+        if (typeof parsed.studentAutoId === "number") studentAutoId = parsed.studentAutoId;
+        if (typeof parsed.siteContentAutoId === "number") siteContentAutoId = parsed.siteContentAutoId;
+        if (typeof parsed.adminAutoId === "number") adminAutoId = parsed.adminAutoId;
+        if (typeof parsed.cmsSectionAutoId === "number") cmsSectionAutoId = parsed.cmsSectionAutoId;
+        console.log("[DB] Loaded persisted data_store.json with", memoryStore.students.length, "students and", memoryStore.cmsSections.length, "CMS sections.");
+      }
+    }
+  } catch (err) {
+    console.warn("[DB] Error loading memory store from disk:", err);
+  }
+}
+
+// Immediately load disk store
+loadMemoryStoreFromDisk();
+
 function unwrapParens(cond: any) {
   if (
     cond?.queryChunks?.length === 3 &&
@@ -543,6 +592,7 @@ function createMockDb() {
               results.push(newRow);
             }
           }
+          saveMemoryStoreToDisk();
           return results;
         },
         then: (resolve: any, reject?: any) => {
@@ -560,6 +610,7 @@ function createMockDb() {
               memoryStore.admins.unshift({ id: adminAutoId++, createdAt: new Date(), ...item });
             }
           }
+          saveMemoryStoreToDisk();
           return Promise.resolve(items).then(resolve, reject);
         },
       }),
@@ -583,6 +634,7 @@ function createMockDb() {
               return item;
             });
 
+            saveMemoryStoreToDisk();
             return results.length ? results : [updateData];
           };
 
@@ -615,6 +667,7 @@ function createMockDb() {
           (memoryStore as any)[tableName] = initial.filter(
             (item: any) => !evaluateCondition(condition, item)
           );
+          saveMemoryStoreToDisk();
           return [];
         };
 
@@ -832,6 +885,7 @@ export async function seedDevelopmentData() {
       }
 
       // Mark seed as completed so future server boots will NOT re-seed deleted data
+      (memoryStore as any).seedCompleted = true;
       try {
         if (pool) {
           const client = await pool.connect();
@@ -840,12 +894,11 @@ export async function seedDevelopmentData() {
           } finally {
             client.release();
           }
-        } else {
-          (memoryStore as any).seedCompleted = true;
         }
       } catch (markErr) {
         console.warn("[DB] Note on marking seed completion:", markErr);
       }
+      saveMemoryStoreToDisk();
       console.log("[DB] Initial seed completed successfully.");
     } else {
       console.log("[DB] Database already seeded previously. Preserving existing records and user deletions.");

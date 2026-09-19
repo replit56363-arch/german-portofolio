@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useCmsSection, useUpdateCmsSection, useResetCms } from "@/lib/use-cms";
 import { CmsLayout } from "./cms-layout";
 import { SectionEyebrow } from "@/components/portfolio-ui";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Plus, Trash2, Edit2, Trophy, Sparkles, X, Image as ImageIcon } from "lucide-react";
 import { ImageUploader } from "@/components/image-uploader";
 
@@ -13,6 +14,8 @@ export default function ReferencesCms() {
   const [form, setForm] = useState<any>({});
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [storyToDelete, setStoryToDelete] = useState<any>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [storyForm, setStoryForm] = useState<any>({
@@ -49,11 +52,34 @@ export default function ReferencesCms() {
   };
 
   const handleReset = () => {
-    if (window.confirm("Kembalikan cerita referensi ke standar awal?")) {
-      resetMutation.mutate("references", {
-        onSuccess: () => setSaved(true),
-      });
-    }
+    resetMutation.mutate("references", {
+      onSuccess: (res: any) => {
+        if (res?.data) {
+          setForm(res.data);
+        }
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+        setShowResetConfirm(false);
+      },
+      onError: (err: any) => {
+        setError(err.message || "Gagal mengembalikan konfigurasi referensi");
+        setShowResetConfirm(false);
+      },
+    });
+  };
+
+  const confirmDeleteStory = () => {
+    if (!storyToDelete) return;
+    const stories = (form.stories || []).filter((s: any) => s.id !== storyToDelete.id);
+    const updatedForm = { ...form, stories };
+    setForm(updatedForm);
+    updateMutation.mutate(updatedForm, {
+      onSuccess: () => {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      },
+    });
+    setStoryToDelete(null);
   };
 
   const openCreateModal = () => {
@@ -82,7 +108,7 @@ export default function ReferencesCms() {
   const saveStoryItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (!storyForm.title.trim()) {
-      alert("Judul cerita prestasi tidak boleh kosong.");
+      setError("Judul cerita prestasi tidak boleh kosong.");
       return;
     }
 
@@ -104,17 +130,6 @@ export default function ReferencesCms() {
     });
   };
 
-  const deleteStoryItem = (id: any) => {
-    if (window.confirm("Hapus cerita referensi ini?")) {
-      const stories = (form.stories || []).filter((s: any) => s.id !== id);
-      const updatedForm = { ...form, stories };
-      setForm(updatedForm);
-      updateMutation.mutate(updatedForm, {
-        onSuccess: () => setSaved(true),
-      });
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -133,7 +148,7 @@ export default function ReferencesCms() {
       isSaved={saved}
       errorMessage={error}
       onSave={handleSave}
-      onReset={handleReset}
+      onReset={() => setShowResetConfirm(true)}
       isResetting={resetMutation.isPending}
     >
       <div className="space-y-6">
@@ -252,7 +267,7 @@ export default function ReferencesCms() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => deleteStoryItem(story.id)}
+                    onClick={() => setStoryToDelete(story)}
                     className="rounded-lg border border-[#f2d7d3] bg-[#fffbf9] p-2 text-[#ab594d] hover:bg-[#faebe8]"
                   >
                     <Trash2 size={14} />
@@ -401,6 +416,31 @@ export default function ReferencesCms() {
           </div>
         </div>
       )}
+
+      {/* Delete Story Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={storyToDelete !== null}
+        title="Hapus Kisah Keberhasilan"
+        description={`Apakah Anda yakin ingin menghapus cerita "${storyToDelete?.title || storyToDelete?.personName || ""}"?`}
+        confirmText="Hapus"
+        cancelText="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteStory}
+        onCancel={() => setStoryToDelete(null)}
+      />
+
+      {/* Reset Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showResetConfirm}
+        title="Reset Data Referensi"
+        description="Kembalikan semua kisah keberhasilan dan teks referensi ke pengaturan standar awal?"
+        confirmText="Reset ke Bawaan"
+        cancelText="Batal"
+        variant="warning"
+        isLoading={resetMutation.isPending}
+        onConfirm={handleReset}
+        onCancel={() => setShowResetConfirm(false)}
+      />
     </CmsLayout>
   );
 }

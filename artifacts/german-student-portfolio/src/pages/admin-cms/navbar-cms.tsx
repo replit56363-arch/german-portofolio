@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useCmsSection, useUpdateCmsSection, useResetCms } from "@/lib/use-cms";
 import { CmsLayout } from "./cms-layout";
 import { SectionEyebrow } from "@/components/portfolio-ui";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import {
   Plus,
   Trash2,
@@ -26,6 +27,9 @@ export default function NavbarCms() {
   const [form, setForm] = useState<any>({});
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [linkToDelete, setLinkToDelete] = useState<any>(null);
+  const [childToDelete, setChildToDelete] = useState<{ parentId: any; child: any } | null>(null);
 
   // Top-level modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -73,11 +77,55 @@ export default function NavbarCms() {
   };
 
   const handleReset = () => {
-    if (window.confirm("Kembalikan menu navigasi header ke standar awal (termasuk sub-menu dropdown Aktuelles, Über AuLiD, Referenzen)?")) {
-      resetMutation.mutate("navbar", {
-        onSuccess: () => setSaved(true),
-      });
-    }
+    resetMutation.mutate("navbar", {
+      onSuccess: (res: any) => {
+        if (res?.data) {
+          setForm(res.data);
+        }
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+        setShowResetConfirm(false);
+      },
+      onError: (err: any) => {
+        setError(err.message || "Gagal mengembalikan konfigurasi navbar");
+        setShowResetConfirm(false);
+      },
+    });
+  };
+
+  const confirmDeleteLink = () => {
+    if (!linkToDelete) return;
+    const links = (form.links || []).filter((l: any) => l.id !== linkToDelete.id);
+    const updatedForm = { ...form, links };
+    setForm(updatedForm);
+    updateMutation.mutate(updatedForm, {
+      onSuccess: () => {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      },
+    });
+    setLinkToDelete(null);
+  };
+
+  const confirmDeleteChild = () => {
+    if (!childToDelete) return;
+    const links = (form.links || []).map((parent: any) => {
+      if (parent.id !== childToDelete.parentId) return parent;
+      return {
+        ...parent,
+        children: (parent.children || []).filter((c: any) => c.id !== childToDelete.child.id),
+      };
+    });
+
+    const updatedForm = { ...form, links };
+    setForm(updatedForm);
+    updateMutation.mutate(updatedForm, {
+      onSuccess: () => {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      },
+    });
+    setChildToDelete(null);
   };
 
   // --- Top Level Link Handlers ---
@@ -105,7 +153,7 @@ export default function NavbarCms() {
   const saveLinkItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (!linkForm.label.trim()) {
-      alert("Nama label menu wajib diisi.");
+      setError("Nama label menu wajib diisi.");
       return;
     }
 
@@ -134,17 +182,6 @@ export default function NavbarCms() {
     updateMutation.mutate(updatedForm, {
       onSuccess: () => setSaved(true),
     });
-  };
-
-  const deleteLinkItem = (id: any) => {
-    if (window.confirm("Hapus tautan menu ini beserta semua sub-menunya?")) {
-      const links = (form.links || []).filter((l: any) => l.id !== id);
-      const updatedForm = { ...form, links };
-      setForm(updatedForm);
-      updateMutation.mutate(updatedForm, {
-        onSuccess: () => setSaved(true),
-      });
-    }
   };
 
   const toggleVisibility = (id: any) => {
@@ -180,7 +217,7 @@ export default function NavbarCms() {
   const saveChildItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (!childForm.label.trim() || !childForm.href.trim()) {
-      alert("Nama label dan URL sub-menu wajib diisi.");
+      setError("Nama label dan URL sub-menu wajib diisi.");
       return;
     }
 
@@ -208,24 +245,6 @@ export default function NavbarCms() {
     });
   };
 
-  const deleteChildItem = (parentId: any, childId: any) => {
-    if (window.confirm("Hapus item sub-menu dropdown ini?")) {
-      const links = (form.links || []).map((parent: any) => {
-        if (parent.id !== parentLinkId && parent.id !== parentId) return parent;
-        return {
-          ...parent,
-          children: (parent.children || []).filter((c: any) => c.id !== childId),
-        };
-      });
-
-      const updatedForm = { ...form, links };
-      setForm(updatedForm);
-      updateMutation.mutate(updatedForm, {
-        onSuccess: () => setSaved(true),
-      });
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -244,7 +263,8 @@ export default function NavbarCms() {
       isSaved={saved}
       errorMessage={error}
       onSave={handleSave}
-      onReset={handleReset}
+      onReset={() => setShowResetConfirm(true)}
+      isResetting={resetMutation.isPending}
     >
       <div className="space-y-8">
         {/* INTERACTIVE LIVE PREVIEW OF HOVER DROPDOWN */}
@@ -512,7 +532,7 @@ export default function NavbarCms() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => deleteLinkItem(item.id)}
+                        onClick={() => setLinkToDelete(item)}
                         className="p-1.5 rounded-lg border border-[#fedad5] text-[#d64531] hover:bg-[#fff2f0]"
                         title="Hapus Menu"
                       >
@@ -551,7 +571,7 @@ export default function NavbarCms() {
                               </button>
                               <button
                                 type="button"
-                                onClick={() => deleteChildItem(item.id, child.id)}
+                                onClick={() => setChildToDelete({ parentId: item.id, child })}
                                 className="p-1 rounded-md text-[#c74c37] hover:bg-[#feeeeb]"
                                 title="Hapus Sub-menu"
                               >
@@ -751,6 +771,43 @@ export default function NavbarCms() {
           </div>
         </div>
       )}
+
+      {/* Delete Menu Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={linkToDelete !== null}
+        title="Hapus Menu Utama"
+        description={`Apakah Anda yakin ingin menghapus menu "${linkToDelete?.label || ""}" beserta seluruh sub-menu dropdown di dalamnya?`}
+        confirmText="Hapus Menu"
+        cancelText="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteLink}
+        onCancel={() => setLinkToDelete(null)}
+      />
+
+      {/* Delete Sub-menu Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={childToDelete !== null}
+        title="Hapus Sub-menu Dropdown"
+        description={`Apakah Anda yakin ingin menghapus sub-menu "${childToDelete?.child?.label || ""}"?`}
+        confirmText="Hapus Sub-menu"
+        cancelText="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteChild}
+        onCancel={() => setChildToDelete(null)}
+      />
+
+      {/* Reset Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showResetConfirm}
+        title="Reset Menu Header & Navbar"
+        description="Kembalikan semua susunan menu header (termasuk sub-menu dropdown Aktuelles, Über AuLiD, Referenzen) ke pengaturan bawaan?"
+        confirmText="Reset ke Bawaan"
+        cancelText="Batal"
+        variant="warning"
+        isLoading={resetMutation.isPending}
+        onConfirm={handleReset}
+        onCancel={() => setShowResetConfirm(false)}
+      />
     </CmsLayout>
   );
 }

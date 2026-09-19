@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useCmsSection, useUpdateCmsSection, useResetCms } from "@/lib/use-cms";
 import { CmsLayout } from "./cms-layout";
 import { SectionEyebrow } from "@/components/portfolio-ui";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Plus, Trash2, Edit2, Sparkles, X, ArrowUpDown } from "lucide-react";
 
 export default function ServicesCms() {
@@ -12,6 +13,8 @@ export default function ServicesCms() {
   const [form, setForm] = useState<any>({});
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [stageToDelete, setStageToDelete] = useState<any>(null);
 
   // Modal for Service Stage CRUD
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,11 +48,34 @@ export default function ServicesCms() {
   };
 
   const handleReset = () => {
-    if (window.confirm("Kembalikan alur layanan ke standar awal?")) {
-      resetMutation.mutate("services", {
-        onSuccess: () => setSaved(true),
-      });
-    }
+    resetMutation.mutate("services", {
+      onSuccess: (res: any) => {
+        if (res?.data) {
+          setForm(res.data);
+        }
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+        setShowResetConfirm(false);
+      },
+      onError: (err: any) => {
+        setError(err.message || "Gagal mengembalikan konfigurasi layanan");
+        setShowResetConfirm(false);
+      },
+    });
+  };
+
+  const confirmDeleteStage = () => {
+    if (!stageToDelete) return;
+    const stages = (form.stages || []).filter((s: any) => s.id !== stageToDelete.id);
+    const updatedForm = { ...form, stages };
+    setForm(updatedForm);
+    updateMutation.mutate(updatedForm, {
+      onSuccess: () => {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      },
+    });
+    setStageToDelete(null);
   };
 
   const openCreateModal = () => {
@@ -75,7 +101,7 @@ export default function ServicesCms() {
   const saveStageItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (!stageForm.title.trim()) {
-      alert("Judul tahap tidak boleh kosong.");
+      setError("Judul tahap tidak boleh kosong.");
       return;
     }
 
@@ -97,17 +123,6 @@ export default function ServicesCms() {
     });
   };
 
-  const deleteStageItem = (id: any) => {
-    if (window.confirm("Hapus tahapan alur layanan ini?")) {
-      const stages = (form.stages || []).filter((s: any) => s.id !== id);
-      const updatedForm = { ...form, stages };
-      setForm(updatedForm);
-      updateMutation.mutate(updatedForm, {
-        onSuccess: () => setSaved(true),
-      });
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -126,7 +141,7 @@ export default function ServicesCms() {
       isSaved={saved}
       errorMessage={error}
       onSave={handleSave}
-      onReset={handleReset}
+      onReset={() => setShowResetConfirm(true)}
       isResetting={resetMutation.isPending}
     >
       <div className="space-y-6">
@@ -225,7 +240,7 @@ export default function ServicesCms() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => deleteStageItem(stage.id)}
+                    onClick={() => setStageToDelete(stage)}
                     className="rounded-lg border border-[#f2d7d3] bg-[#fffbf9] p-2 text-[#ab594d] hover:bg-[#faebe8]"
                   >
                     <Trash2 size={14} />
@@ -353,6 +368,31 @@ export default function ServicesCms() {
           </div>
         </div>
       )}
+
+      {/* Delete Stage Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={stageToDelete !== null}
+        title="Hapus Tahapan Layanan"
+        description={`Apakah Anda yakin ingin menghapus tahapan "${stageToDelete?.title || ""}"?`}
+        confirmText="Hapus"
+        cancelText="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteStage}
+        onCancel={() => setStageToDelete(null)}
+      />
+
+      {/* Reset Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showResetConfirm}
+        title="Reset Data Layanan"
+        description="Kembalikan seluruh susunan 7 alur tahapan layanan ke pengaturan standar awal?"
+        confirmText="Reset ke Bawaan"
+        cancelText="Batal"
+        variant="warning"
+        isLoading={resetMutation.isPending}
+        onConfirm={handleReset}
+        onCancel={() => setShowResetConfirm(false)}
+      />
     </CmsLayout>
   );
 }

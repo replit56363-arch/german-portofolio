@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { CmsLayout } from "./cms-layout";
 import { SectionEyebrow } from "@/components/portfolio-ui";
+import { ConfirmDialog } from "@/components/confirm-dialog";
+import { getAuthHeaders } from "@/lib/use-cms";
 import {
   Plus,
   Trash2,
@@ -17,6 +19,7 @@ import {
   MapPin,
   Calendar,
   Save,
+  AlertCircle,
 } from "lucide-react";
 import { ImageUploader } from "@/components/image-uploader";
 
@@ -140,6 +143,7 @@ export default function StudentsCms() {
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [studentToDelete, setStudentToDelete] = useState<StudentItem | null>(null);
 
   const [studentForm, setStudentForm] = useState<StudentItem>({
     id: Date.now(),
@@ -158,21 +162,34 @@ export default function StudentsCms() {
   useEffect(() => {
     async function fetchStudents() {
       try {
-        const res = await fetch("/api/students");
+        const res = await fetch("/api/students", {
+          credentials: "include",
+          headers: getAuthHeaders(),
+        });
         if (res.ok) {
           const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            setStudents(data);
+            return;
+          }
+        }
+        // Fallback to public endpoint if private gives empty/unauthorized
+        const publicRes = await fetch("/api/public/students");
+        if (publicRes.ok) {
+          const data = await publicRes.json();
           if (Array.isArray(data) && data.length > 0) {
             setStudents(data);
           }
         }
       } catch (err) {
-        console.warn("Could not fetch /api/students, using local state", err);
+        console.warn("Could not fetch students, using fallback list", err);
       }
     }
     fetchStudents();
   }, []);
 
   const openCreateModal = () => {
+    setError("");
     setEditingId(null);
     setStudentForm({
       id: Date.now(),
@@ -191,6 +208,7 @@ export default function StudentsCms() {
   };
 
   const openEditModal = (student: StudentItem) => {
+    setError("");
     setEditingId(student.id);
     setStudentForm({ ...student });
     setIsModalOpen(true);
@@ -198,43 +216,67 @@ export default function StudentsCms() {
 
   const handleSaveStudent = async () => {
     if (!studentForm.name.trim()) {
-      alert("Nama siswa wajib diisi!");
+      setError("Nama siswa wajib diisi!");
       return;
     }
 
+    setError("");
+    const safeEmail = (studentForm.email && studentForm.email.includes("@"))
+      ? studentForm.email.trim().toLowerCase()
+      : `${studentForm.name.trim().toLowerCase().replace(/[^a-z0-9]/g, "") || "siswa"}.${Date.now().toString().slice(-4)}@student.ild-medan.id`;
+
     try {
       if (editingId !== null) {
-        // Try to update via API
-        try {
-          await fetch(`/api/students/${editingId}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(studentForm),
-          });
-        } catch {
-          // ignore network error, update locally
+        const updatePayload = {
+          name: studentForm.name.trim(),
+          email: safeEmail,
+          level: studentForm.level,
+          status: studentForm.status,
+          cohort: studentForm.cohort,
+          bio: studentForm.bio || "",
+          photoUrl: studentForm.photoUrl || "",
+        };
+
+        const res = await fetch(`/api/students/${editingId}`, {
+          method: "PATCH",
+          credentials: "include",
+          headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+          body: JSON.stringify(updatePayload),
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || "Gagal memperbarui data siswa di database");
         }
+        const updated = await res.json();
         setStudents((prev) =>
-          prev.map((s) => (s.id === editingId ? { ...studentForm } : s))
+          prev.map((s) => (s.id === editingId ? { ...s, ...updated, ...studentForm } : s))
         );
       } else {
-        // Try to create via API
-        try {
-          const res = await fetch("/api/students", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(studentForm),
-          });
-          if (res.ok) {
-            const created = await res.json();
-            if (created && created.id) {
-              studentForm.id = created.id;
-            }
-          }
-        } catch {
-          // ignore
+        const createPayload = {
+          name: studentForm.name.trim(),
+          email: safeEmail,
+          level: studentForm.level,
+          status: studentForm.status,
+          cohort: studentForm.cohort || `Cohort ${new Date().getFullYear()}-A`,
+          joinedAt: new Date().toISOString(),
+          bio: studentForm.bio || "",
+          photoUrl: studentForm.photoUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80",
+        };
+
+        const res = await fetch("/api/students", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+          body: JSON.stringify(createPayload),
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || "Gagal menambahkan siswa baru di database");
         }
-        setStudents((prev) => [studentForm, ...prev]);
+        const created = await res.json();
+        setStudents((prev) => [{ ...studentForm, ...created }, ...prev]);
       }
 
       setSaved(true);
@@ -245,16 +287,25 @@ export default function StudentsCms() {
     }
   };
 
-  const handleDeleteStudent = async (id: number) => {
-    if (window.confirm("Hapus data siswa ini?")) {
-      try {
-        await fetch(`/api/students/${id}`, { method: "DELETE" });
-      } catch {
-        // ignore
+  const confirmDeleteStudent = async () => {
+    if (!studentToDelete) return;
+    try {
+      const res = await fetch(`/api/students/${studentToDelete.id}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: getAuthHeaders(),
+      });
+      if (!res.ok && res.status !== 204 && res.status !== 404) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Gagal menghapus siswa di server");
       }
-      setStudents((prev) => prev.filter((s) => s.id !== id));
+      setStudents((prev) => prev.filter((s) => s.id !== studentToDelete.id));
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
+    } catch (err: any) {
+      setError(err.message || "Gagal menghapus siswa");
+    } finally {
+      setStudentToDelete(null);
     }
   };
 
@@ -375,7 +426,7 @@ export default function StudentsCms() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleDeleteStudent(st.id)}
+                    onClick={() => setStudentToDelete(st)}
                     className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
                   >
                     <Trash2 size={13} />
@@ -563,6 +614,17 @@ export default function StudentsCms() {
           </div>
         </div>
       )}
+      {/* Delete Confirmation Modal */}
+      <ConfirmDialog
+        isOpen={Boolean(studentToDelete)}
+        title="Hapus Data Siswa"
+        description={`Apakah Anda yakin ingin menghapus data siswa "${studentToDelete?.name || ""}"? Tindakan ini tidak dapat dibatalkan.`}
+        confirmText="Hapus Siswa"
+        cancelText="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteStudent}
+        onCancel={() => setStudentToDelete(null)}
+      />
     </CmsLayout>
   );
 }

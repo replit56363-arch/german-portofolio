@@ -46,12 +46,19 @@ router.post("/auth/login", async (request, response) => {
     expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
   });
 
-  // Set cookie for browser sessions (including iframe support)
+  // Set cookie for browser sessions (including iframe support and standalone VPS reverse-proxy)
   try {
+    const isHttps = Boolean(
+      request.secure ||
+      request.headers["x-forwarded-proto"] === "https" ||
+      request.headers["referer"]?.startsWith("https://") ||
+      request.headers["origin"]?.startsWith("https://")
+    );
     response.cookie(SESSION_COOKIE, sessionId, {
       httpOnly: true,
-      sameSite: "none",
-      secure: true,
+      sameSite: isHttps ? "none" : "lax",
+      secure: isHttps,
+      path: "/",
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
   } catch {}

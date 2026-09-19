@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useCmsSection, useUpdateCmsSection, useResetCms } from "@/lib/use-cms";
 import { CmsLayout } from "./cms-layout";
 import { SectionEyebrow } from "@/components/portfolio-ui";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import {
   Plus,
   Trash2,
@@ -31,6 +32,8 @@ export default function NewsCms() {
   const [form, setForm] = useState<any>({});
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [articleToDelete, setArticleToDelete] = useState<any>(null);
 
   // Search and filter in admin
   const [searchTerm, setSearchTerm] = useState("");
@@ -81,13 +84,34 @@ export default function NewsCms() {
   };
 
   const handleReset = () => {
-    if (window.confirm("Kembalikan daftar berita ke standar awal?")) {
-      resetMutation.mutate("news", {
-        onSuccess: () => {
-          setSaved(true);
-        },
-      });
-    }
+    resetMutation.mutate("news", {
+      onSuccess: (res: any) => {
+        if (res?.data) {
+          setForm(res.data);
+        }
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+        setShowResetConfirm(false);
+      },
+      onError: (err: any) => {
+        setError(err.message || "Gagal mengembalikan pengaturan berita");
+        setShowResetConfirm(false);
+      },
+    });
+  };
+
+  const confirmDeleteArticle = () => {
+    if (!articleToDelete) return;
+    const items = (form.items || []).filter((i: any) => i.id !== articleToDelete.id);
+    const updatedForm = { ...form, items };
+    setForm(updatedForm);
+    updateMutation.mutate(updatedForm, {
+      onSuccess: () => {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      },
+    });
+    setArticleToDelete(null);
   };
 
   // Open Create Modal
@@ -155,7 +179,7 @@ export default function NewsCms() {
   const saveArticle = (e: React.FormEvent) => {
     e.preventDefault();
     if (!articleForm.title.trim()) {
-      alert("Judul artikel tidak boleh kosong.");
+      setError("Judul artikel tidak boleh kosong.");
       return;
     }
 
@@ -176,18 +200,6 @@ export default function NewsCms() {
     updateMutation.mutate(updatedForm, {
       onSuccess: () => setSaved(true),
     });
-  };
-
-  // Delete Article
-  const deleteArticle = (id: any) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus artikel ini?")) {
-      const items = (form.items || []).filter((i: any) => i.id !== id);
-      const updatedForm = { ...form, items };
-      setForm(updatedForm);
-      updateMutation.mutate(updatedForm, {
-        onSuccess: () => setSaved(true),
-      });
-    }
   };
 
   // Toggle Featured
@@ -235,7 +247,7 @@ export default function NewsCms() {
       isSaved={saved}
       errorMessage={error}
       onSave={handleSave}
-      onReset={handleReset}
+      onReset={() => setShowResetConfirm(true)}
       isResetting={resetMutation.isPending}
     >
       <div className="space-y-6">
@@ -432,7 +444,7 @@ export default function NewsCms() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => deleteArticle(item.id)}
+                      onClick={() => setArticleToDelete(item)}
                       className="rounded-lg border border-[#f2d7d3] bg-[#fffbf9] p-2 text-[#ab594d] hover:bg-[#faebe8]"
                       title="Hapus artikel"
                     >
@@ -728,6 +740,31 @@ export default function NewsCms() {
           </div>
         </div>
       )}
+
+      {/* Delete Article Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={articleToDelete !== null}
+        title="Hapus Artikel Berita"
+        description={`Apakah Anda yakin ingin menghapus artikel "${articleToDelete?.title || ""}"?`}
+        confirmText="Hapus"
+        cancelText="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteArticle}
+        onCancel={() => setArticleToDelete(null)}
+      />
+
+      {/* Reset Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showResetConfirm}
+        title="Reset Data Berita"
+        description="Kembalikan seluruh daftar artikel berita dan tampilan header ke konfigurasi bawaan awal?"
+        confirmText="Reset ke Bawaan"
+        cancelText="Batal"
+        variant="warning"
+        isLoading={resetMutation.isPending}
+        onConfirm={handleReset}
+        onCancel={() => setShowResetConfirm(false)}
+      />
     </CmsLayout>
   );
 }

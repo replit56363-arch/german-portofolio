@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useCmsSection, useUpdateCmsSection, useResetCms } from "@/lib/use-cms";
 import { CmsLayout } from "./cms-layout";
 import { SectionEyebrow } from "@/components/portfolio-ui";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Plus, Trash2, Edit2, Check, X, Sparkles } from "lucide-react";
 
 export default function HomeCms() {
@@ -12,6 +13,7 @@ export default function HomeCms() {
   const [form, setForm] = useState<any>({});
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   // Modal / Inline edit for Stats
   const [editingStat, setEditingStat] = useState<any>(null);
@@ -45,13 +47,20 @@ export default function HomeCms() {
   };
 
   const handleReset = () => {
-    if (window.confirm("Kembalikan konten Halaman Utama ke pengaturan bawaan?")) {
-      resetMutation.mutate("home", {
-        onSuccess: () => {
-          setSaved(true);
-        },
-      });
-    }
+    resetMutation.mutate("home", {
+      onSuccess: (res: any) => {
+        if (res?.data) {
+          setForm(res.data);
+        }
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+        setShowResetConfirm(false);
+      },
+      onError: (err: any) => {
+        setError(err.message || "Gagal mengembalikan pengaturan default");
+        setShowResetConfirm(false);
+      },
+    });
   };
 
   // Stats CRUD
@@ -134,7 +143,7 @@ export default function HomeCms() {
       isSaved={saved}
       errorMessage={error}
       onSave={handleSave}
-      onReset={handleReset}
+      onReset={() => setShowResetConfirm(true)}
       isResetting={resetMutation.isPending}
     >
       <div className="grid gap-6 lg:grid-cols-[1.2fr_.8fr]">
@@ -632,6 +641,18 @@ export default function HomeCms() {
           </div>
         </aside>
       </div>
+
+      <ConfirmDialog
+        isOpen={showResetConfirm}
+        title="Reset Pengaturan Beranda"
+        description="Kembalikan semua teks Hero, Statistik, Program, dan Alur Kerja di Halaman Utama ke konfigurasi standar bawaan?"
+        confirmText="Reset ke Bawaan"
+        cancelText="Batal"
+        variant="warning"
+        isLoading={resetMutation.isPending}
+        onConfirm={handleReset}
+        onCancel={() => setShowResetConfirm(false)}
+      />
     </CmsLayout>
   );
 }

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useCmsSection, useUpdateCmsSection, useResetCms } from "@/lib/use-cms";
 import { CmsLayout } from "./cms-layout";
 import { SectionEyebrow } from "@/components/portfolio-ui";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Plus, Trash2, Edit2, Check, X, ShieldCheck } from "lucide-react";
 
 export default function PlacementsCms() {
@@ -12,6 +13,8 @@ export default function PlacementsCms() {
   const [form, setForm] = useState<any>({});
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [stepToDelete, setStepToDelete] = useState<any>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [stepForm, setStepForm] = useState<any>({
@@ -42,11 +45,34 @@ export default function PlacementsCms() {
   };
 
   const handleReset = () => {
-    if (window.confirm("Kembalikan langkah penempatan ke standar awal?")) {
-      resetMutation.mutate("placements", {
-        onSuccess: () => setSaved(true),
-      });
-    }
+    resetMutation.mutate("placements", {
+      onSuccess: (res: any) => {
+        if (res?.data) {
+          setForm(res.data);
+        }
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+        setShowResetConfirm(false);
+      },
+      onError: (err: any) => {
+        setError(err.message || "Gagal mengembalikan konfigurasi penempatan");
+        setShowResetConfirm(false);
+      },
+    });
+  };
+
+  const confirmDeleteStep = () => {
+    if (!stepToDelete) return;
+    const steps = (form.steps || []).filter((s: any) => s.id !== stepToDelete.id);
+    const updatedForm = { ...form, steps };
+    setForm(updatedForm);
+    updateMutation.mutate(updatedForm, {
+      onSuccess: () => {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      },
+    });
+    setStepToDelete(null);
   };
 
   const openCreateModal = () => {
@@ -70,7 +96,7 @@ export default function PlacementsCms() {
   const saveStepItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (!stepForm.title.trim()) {
-      alert("Judul langkah tidak boleh kosong.");
+      setError("Judul langkah tidak boleh kosong.");
       return;
     }
 
@@ -92,17 +118,6 @@ export default function PlacementsCms() {
     });
   };
 
-  const deleteStepItem = (id: any) => {
-    if (window.confirm("Hapus langkah penempatan ini?")) {
-      const steps = (form.steps || []).filter((s: any) => s.id !== id);
-      const updatedForm = { ...form, steps };
-      setForm(updatedForm);
-      updateMutation.mutate(updatedForm, {
-        onSuccess: () => setSaved(true),
-      });
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -121,7 +136,7 @@ export default function PlacementsCms() {
       isSaved={saved}
       errorMessage={error}
       onSave={handleSave}
-      onReset={handleReset}
+      onReset={() => setShowResetConfirm(true)}
       isResetting={resetMutation.isPending}
     >
       <div className="space-y-6">
@@ -217,7 +232,7 @@ export default function PlacementsCms() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => deleteStepItem(step.id)}
+                    onClick={() => setStepToDelete(step)}
                     className="rounded-lg border border-[#f2d7d3] bg-[#fffbf9] p-2 text-[#ab594d] hover:bg-[#faebe8]"
                   >
                     <Trash2 size={14} />
@@ -331,6 +346,31 @@ export default function PlacementsCms() {
           </div>
         </div>
       )}
+
+      {/* Delete Step Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={stepToDelete !== null}
+        title="Hapus Langkah Penempatan"
+        description={`Apakah Anda yakin ingin menghapus langkah "${stepToDelete?.title || ""}"?`}
+        confirmText="Hapus"
+        cancelText="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteStep}
+        onCancel={() => setStepToDelete(null)}
+      />
+
+      {/* Reset Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showResetConfirm}
+        title="Reset Data Penempatan"
+        description="Kembalikan semua langkah penempatan dan teks header ke pengaturan standar awal?"
+        confirmText="Reset ke Bawaan"
+        cancelText="Batal"
+        variant="warning"
+        isLoading={resetMutation.isPending}
+        onConfirm={handleReset}
+        onCancel={() => setShowResetConfirm(false)}
+      />
     </CmsLayout>
   );
 }

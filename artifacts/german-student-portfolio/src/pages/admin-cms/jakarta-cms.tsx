@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useCmsSection, useUpdateCmsSection, useResetCms } from "@/lib/use-cms";
 import { CmsLayout } from "./cms-layout";
 import { SectionEyebrow } from "@/components/portfolio-ui";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Plus, Trash2, Edit2, MapPin, Building, Sparkles } from "lucide-react";
 
 export default function JakartaCms() {
@@ -12,6 +13,7 @@ export default function JakartaCms() {
   const [form, setForm] = useState<any>({});
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   useEffect(() => {
     if (data) setForm(data);
@@ -50,11 +52,20 @@ export default function JakartaCms() {
   };
 
   const handleReset = () => {
-    if (window.confirm("Kembalikan informasi kantor ke standar awal?")) {
-      resetMutation.mutate("jakarta", {
-        onSuccess: () => setSaved(true),
-      });
-    }
+    resetMutation.mutate("jakarta", {
+      onSuccess: (res: any) => {
+        if (res?.data) {
+          setForm(res.data);
+        }
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+        setShowResetConfirm(false);
+      },
+      onError: (err: any) => {
+        setError(err.message || "Gagal mengembalikan konfigurasi kantor");
+        setShowResetConfirm(false);
+      },
+    });
   };
 
   if (isLoading) {
@@ -75,7 +86,7 @@ export default function JakartaCms() {
       isSaved={saved}
       errorMessage={error}
       onSave={handleSave}
-      onReset={handleReset}
+      onReset={() => setShowResetConfirm(true)}
       isResetting={resetMutation.isPending}
     >
       <div className="space-y-6">
@@ -242,6 +253,19 @@ export default function JakartaCms() {
           </section>
         </div>
       </div>
+
+      {/* Reset Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showResetConfirm}
+        title="Reset Data Halaman Jakarta"
+        description="Kembalikan informasi kantor Jakarta, kantor Jerman, dan detail kontak ke pengaturan standar awal?"
+        confirmText="Reset ke Bawaan"
+        cancelText="Batal"
+        variant="warning"
+        isLoading={resetMutation.isPending}
+        onConfirm={handleReset}
+        onCancel={() => setShowResetConfirm(false)}
+      />
     </CmsLayout>
   );
 }

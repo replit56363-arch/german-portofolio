@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useCmsSection, useUpdateCmsSection, useResetCms } from "@/lib/use-cms";
 import { CmsLayout } from "./cms-layout";
 import { SectionEyebrow } from "@/components/portfolio-ui";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import {
   Plus,
   Trash2,
@@ -24,6 +25,8 @@ export default function AlumniCms() {
   const [form, setForm] = useState<any>({});
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [deleteItemIndex, setDeleteItemIndex] = useState<number | null>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -64,14 +67,35 @@ export default function AlumniCms() {
   };
 
   const handleReset = () => {
-    if (window.confirm("Kembalikan galeri alumni ke konfigurasi standar awal?")) {
-      resetMutation.mutate("alumni", {
-        onSuccess: () => {
-          setSaved(true);
-          setTimeout(() => setSaved(false), 3000);
-        },
-      });
-    }
+    resetMutation.mutate("alumni", {
+      onSuccess: (res: any) => {
+        if (res?.data) {
+          setForm(res.data);
+        }
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+        setShowResetConfirm(false);
+      },
+      onError: (err: any) => {
+        setError(err.message || "Gagal mengembalikan pengaturan alumni");
+        setShowResetConfirm(false);
+      },
+    });
+  };
+
+  const confirmDeleteItem = () => {
+    if (deleteItemIndex === null) return;
+    const currentItems = [...(form.items || [])];
+    currentItems.splice(deleteItemIndex, 1);
+    const updated = { ...form, items: currentItems };
+    setForm(updated);
+    updateMutation.mutate(updated, {
+      onSuccess: () => {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      },
+    });
+    setDeleteItemIndex(null);
   };
 
   const openCreateModal = () => {
@@ -101,7 +125,7 @@ export default function AlumniCms() {
 
   const handleSaveItem = () => {
     if (!itemForm.name.trim()) {
-      alert("Nama alumni wajib diisi!");
+      setError("Nama alumni wajib diisi!");
       return;
     }
 
@@ -126,21 +150,6 @@ export default function AlumniCms() {
     });
   };
 
-  const handleDeleteItem = (index: number) => {
-    if (window.confirm("Hapus foto alumni ini dari daftar galeri?")) {
-      const currentItems = [...(form.items || [])];
-      currentItems.splice(index, 1);
-      const updated = { ...form, items: currentItems };
-      setForm(updated);
-      updateMutation.mutate(updated, {
-        onSuccess: () => {
-          setSaved(true);
-          setTimeout(() => setSaved(false), 3000);
-        },
-      });
-    }
-  };
-
   const items = form.items || [];
 
   return (
@@ -152,7 +161,8 @@ export default function AlumniCms() {
       isSaving={updateMutation.isPending}
       errorMessage={error}
       onSave={handleSave}
-      onReset={handleReset}
+      onReset={() => setShowResetConfirm(true)}
+      isResetting={resetMutation.isPending}
     >
       {/* Header Info Card */}
       <div className="bg-white p-5 rounded-2xl border border-[#dfe8f0] shadow-sm space-y-4">
@@ -257,7 +267,7 @@ export default function AlumniCms() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleDeleteItem(idx)}
+                  onClick={() => setDeleteItemIndex(idx)}
                   className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
                 >
                   <Trash2 size={13} />
@@ -413,6 +423,31 @@ export default function AlumniCms() {
           </div>
         </div>
       )}
+
+      {/* Delete Item Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={deleteItemIndex !== null}
+        title="Hapus Foto Alumni"
+        description="Apakah Anda yakin ingin menghapus foto dan cerita alumni ini dari galeri?"
+        confirmText="Hapus"
+        cancelText="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteItem}
+        onCancel={() => setDeleteItemIndex(null)}
+      />
+
+      {/* Reset Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showResetConfirm}
+        title="Reset Galeri Alumni"
+        description="Kembalikan semua daftar foto dan cerita alumni ke konfigurasi awal?"
+        confirmText="Reset ke Bawaan"
+        cancelText="Batal"
+        variant="warning"
+        isLoading={resetMutation.isPending}
+        onConfirm={handleReset}
+        onCancel={() => setShowResetConfirm(false)}
+      />
     </CmsLayout>
   );
 }

@@ -42,12 +42,12 @@ interface AlumniItem {
 }
 
 export default function AlumniPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { data: alumniData, loading } = useCmsSection("alumni");
   const [selectedCategory, setSelectedCategory] = useState<string>("Semua");
   const [activeStory, setActiveStory] = useState<AlumniItem | null>(null);
 
-  const categories = alumniData?.categories || [
+  const rawCategories = alumniData?.categories || [
     "Semua",
     "Ausbildung",
     "Au Pair",
@@ -56,12 +56,24 @@ export default function AlumniPage() {
     "Kuliah",
   ];
 
+  const getCategoryLabel = (cat: string) => {
+    if (language === "id") return cat;
+    const lower = cat.toLowerCase();
+    if (lower.includes("semua") || lower === "all") return t("alumni.cat_all", "Alle");
+    if (lower.includes("ausbildung")) return "Ausbildung";
+    if (lower.includes("au pair")) return "Au Pair";
+    if (lower.includes("fsj")) return "FSJ / BFD";
+    if (lower.includes("g to g") || lower.includes("perawat")) return t("alumni.cat_gtog", "G to G Pflege");
+    if (lower.includes("kuliah") || lower.includes("studium")) return t("alumni.cat_studium", "Studium");
+    return cat;
+  };
+
   const items: AlumniItem[] = alumniData?.items || [];
-  const stats = alumniData?.stats || [
-    { id: 1, number: "01", value: "100%", label: "Tingkat Persetujuan Visa", detail: "Verifikasi resmi & pendampingan" },
-    { id: 2, number: "02", value: "25+", label: "Kota Penempatan di Jerman", detail: "Frankfurt, München, Berlin, dll." },
-    { id: 3, number: "03", value: "5 Jalur", label: "Program Resmi Terbukti", detail: "Ausbildung, Au Pair, FSJ, G to G, Kuliah" },
-    { id: 4, number: "04", value: "1:1", label: "Konsultasi Mandiri", detail: "Bimbingan intensif hingga berangkat" },
+  const stats = [
+    { id: 1, number: "01", value: alumniData?.stats?.[0]?.value || "100%", label: language !== "id" ? t("alumni.stat_visa", "Visabewilligungsrate") : (alumniData?.stats?.[0]?.label || "Tingkat Persetujuan Visa"), detail: language !== "id" ? t("alumni.stat_visa_desc", "Offizielle Prüfung & Begleitung") : (alumniData?.stats?.[0]?.detail || "Verifikasi resmi & pendampingan") },
+    { id: 2, number: "02", value: alumniData?.stats?.[1]?.value || "25+", label: language !== "id" ? t("alumni.stat_cities", "Einsatzstädte in DE") : (alumniData?.stats?.[1]?.label || "Kota Penempatan di Jerman"), detail: alumniData?.stats?.[1]?.detail || "Frankfurt, München, Berlin, dll." },
+    { id: 3, number: "03", value: alumniData?.stats?.[2]?.value || "5 Jalur", label: language !== "id" ? t("alumni.stat_programs", "Offizielle Wege") : (alumniData?.stats?.[2]?.label || "Program Resmi Terbukti"), detail: alumniData?.stats?.[2]?.detail || "Ausbildung, Au Pair, FSJ, G to G, Kuliah" },
+    { id: 4, number: "04", value: alumniData?.stats?.[3]?.value || "1:1", label: language !== "id" ? t("alumni.stat_guidance", "Intensive Begleitung") : (alumniData?.stats?.[3]?.label || "Konsultasi Mandiri"), detail: language !== "id" ? t("alumni.stat_guidance_desc", "1:1 Betreuung bis zur Abreise") : (alumniData?.stats?.[3]?.detail || "Bimbingan intensif hingga berangkat") },
   ];
 
   const filteredItems = useMemo(() => {
@@ -88,6 +100,10 @@ export default function AlumniPage() {
     }
   };
 
+  const heroEyebrow = language !== "id" ? t("alumni.eyebrow", "Alumni-Dokumentation & Galerie") : (alumniData?.headerEyebrow || "Dokumentasi & Galeri Alumni");
+  const heroTitle = language !== "id" ? t("alumni.title", "Fotos & Erfolgsgeschichten in Deutschland") : (alumniData?.headerTitle || "Foto & Kisah Sukses Alumni di Jerman");
+  const heroSubtitle = language !== "id" ? t("alumni.subtitle", "Echte Fotodokumentation von ICH LIEBE DEUTSCH MEDAN Alumni, die erfolgreich in Ausbildung, Au Pair, FSJ, G to G Pflege und Universitätsstudium in ganz Deutschland tätig sind.") : (alumniData?.headerSubtitle || "Dokumentasi foto nyata para alumni ICH LIEBE DEUTSCH MEDAN yang telah resmi berkarier dan menempuh program Ausbildung, Au Pair, FSJ, G to G Perawat, dan Kuliah di berbagai kota di Jerman.");
+
   return (
     <div className="min-h-screen bg-[#f8fafc] text-[#1e293b] flex flex-col selection:bg-[#1b5a9f] selection:text-white">
       <PublicNavbar />
@@ -98,17 +114,13 @@ export default function AlumniPage() {
         <div className="max-w-6xl mx-auto text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-xs font-semibold tracking-wide uppercase mb-4 text-[#dbeafe]">
             <Sparkles size={14} className="text-[#93c5fd]" />
-            {alumniData?.headerEyebrow || t("alumni.eyebrow", "Dokumentasi & Galeri Alumni")}
+            {heroEyebrow}
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {alumniData?.headerTitle || t("alumni.title", "Foto & Kisah Sukses Alumni di Jerman")}
+            {heroTitle}
           </h1>
           <p className="max-w-3xl mx-auto text-base sm:text-lg text-slate-200 leading-relaxed font-normal">
-            {alumniData?.headerSubtitle ||
-              t(
-                "alumni.subtitle",
-                "Dokumentasi foto nyata para alumni ICH LIEBE DEUTSCH MEDAN yang telah resmi berkarier dan menempuh program Ausbildung, Au Pair, FSJ, G to G Perawat, dan Kuliah di berbagai kota di Jerman."
-              )}
+            {heroSubtitle}
           </p>
 
           {/* Key Achievements Grid */}
@@ -131,7 +143,7 @@ export default function AlumniPage() {
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12">
         {/* Category Filters */}
         <div className="flex items-center justify-center flex-wrap gap-2 sm:gap-3 mb-10">
-          {categories.map((cat: string) => {
+          {rawCategories.map((cat: string) => {
             const isActive = selectedCategory === cat;
             return (
               <button
@@ -145,7 +157,7 @@ export default function AlumniPage() {
                 }`}
               >
                 {getCategoryIcon(cat)}
-                <span>{cat}</span>
+                <span>{getCategoryLabel(cat)}</span>
               </button>
             );
           })}

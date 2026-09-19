@@ -35,8 +35,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "nav.studium_sub": "Persiapan Kuliah Universitas Jerman",
     "nav.students": "Data Siswa",
     "nav.students_sub": "Direktori & Level Bahasa",
+    "nav.students_campus": "Siswa & Kampus",
+    "nav.students_campus_sub": "Data, Alumni & Fasilitas",
+    "nav.students_data": "Data Siswa",
+    "nav.students_data_sub": "Direktori & Level Bahasa",
     "nav.alumni": "Foto Alumni",
     "nav.alumni_sub": "Galeri Alumni di Jerman",
+    "nav.alumni_photos": "Foto Alumni",
+    "nav.alumni_photos_sub": "Galeri Alumni di Jerman",
     "nav.classrooms": "Ruangan Kelas",
     "nav.classrooms_sub": "Fasilitas Belajar & Lab",
     "nav.about": "Tentang Kami",
@@ -499,8 +505,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "nav.studium_sub": "Universitätsvorbereitung Deutschland",
     "nav.students": "Schülerdaten",
     "nav.students_sub": "Verzeichnis & Sprachniveaus",
+    "nav.students_campus": "Studierende & Campus",
+    "nav.students_campus_sub": "Daten, Alumni & Räume",
+    "nav.students_data": "Schülerdaten",
+    "nav.students_data_sub": "Verzeichnis & Sprachniveaus",
     "nav.alumni": "Alumni-Fotos",
     "nav.alumni_sub": "Erfolgsgalerie in Deutschland",
+    "nav.alumni_photos": "Alumni-Fotos",
+    "nav.alumni_photos_sub": "Erfolgsgalerie in Deutschland",
     "nav.classrooms": "Klassenzimmer",
     "nav.classrooms_sub": "Lernräume & Sprachlabore",
     "nav.about": "Über Uns",
@@ -963,8 +975,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "nav.studium_sub": "German University Preparation",
     "nav.students": "Student Directory",
     "nav.students_sub": "Profiles & Language Levels",
+    "nav.students_campus": "Students & Campus",
+    "nav.students_campus_sub": "Profiles, Alumni & Facilities",
+    "nav.students_data": "Student Directory",
+    "nav.students_data_sub": "Profiles & Language Levels",
     "nav.alumni": "Alumni Photos",
     "nav.alumni_sub": "Alumni in Germany Gallery",
+    "nav.alumni_photos": "Alumni Photos",
+    "nav.alumni_photos_sub": "Alumni in Germany Gallery",
     "nav.classrooms": "Classrooms",
     "nav.classrooms_sub": "Modern Facilities & Labs",
     "nav.about": "About Us",
@@ -1454,15 +1472,26 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, [language]);
 
   const t = (key: string, fallback?: string): string => {
-    const langDict = translations[language];
-    if (langDict && langDict[key]) {
-      return langDict[key];
+    // 1. In German (de) or English (en), lookup active translation dictionary first
+    if (language !== "id") {
+      const langDict = translations[language];
+      if (langDict && langDict[key]) {
+        return langDict[key];
+      }
     }
+
+    // 2. In Indonesian (id) or when non-id has no dictionary entry:
+    // Custom dynamic content from CMS or props (fallback) ALWAYS takes precedence over hardcoded defaults!
+    if (fallback !== undefined && fallback !== null && fallback !== "") {
+      return fallback;
+    }
+
+    // 3. Fallback to Indonesian translation dictionary
     const idDict = translations.id;
     if (idDict && idDict[key]) {
       return idDict[key];
     }
-    return fallback || key;
+    return key;
   };
 
   const currentOption = LANGUAGES.find((l) => l.code === language) || LANGUAGES[0];

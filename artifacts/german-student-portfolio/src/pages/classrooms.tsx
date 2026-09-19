@@ -42,12 +42,12 @@ interface ClassroomItem {
 }
 
 export default function ClassroomsPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { data: cmsData, loading } = useCmsSection("classrooms");
   const [selectedCategory, setSelectedCategory] = useState<string>("Semua");
   const [activeRoom, setActiveRoom] = useState<ClassroomItem | null>(null);
 
-  const categories = cmsData?.categories || [
+  const rawCategories = cmsData?.categories || [
     "Semua",
     "Ruang Teori & Grammatik",
     "Lab Audio-Visual (Hören)",
@@ -56,42 +56,43 @@ export default function ClassroomsPage() {
     "Lounge & Konsultasi",
   ];
 
+  const getCategoryLabel = (cat: string) => {
+    if (language === "id") return cat;
+    const lower = cat.toLowerCase();
+    if (lower.includes("semua") || lower === "all") return t("classroom.filter_all", "Alle Räume");
+    if (lower.includes("teori")) return t("classroom.filter_theory", "Theorie & Grammatik");
+    if (lower.includes("audio") || lower.includes("hören")) return t("classroom.filter_audio", "Audiovisuelles Labor (Hören)");
+    if (lower.includes("diskusi") || lower.includes("sprechen")) return t("classroom.filter_discussion", "Diskussionsraum (Sprechen)");
+    if (lower.includes("goethe") || lower.includes("perpustakaan")) return t("classroom.filter_library", "Goethe-Prüfungsecke");
+    if (lower.includes("lounge") || lower.includes("konsultasi")) return t("classroom.filter_lounge", "Lounge & Beratung");
+    return cat;
+  };
+
   const items: ClassroomItem[] = cmsData?.items || [];
-  const facilityHighlights = cmsData?.facilityHighlights || [
+  
+  const facilityHighlights = [
     {
       id: 1,
-      title: t("classroom.feature_ac", "Ruangan Ber-AC & Nyaman"),
-      description: t(
-        "classroom.feature_ac_desc",
-        "Setiap kelas dilengkapi pendingin udara (AC) berkualitas untuk kenyamanan belajar intensif berjam-jam tanpa distraksi."
-      ),
+      title: language !== "id" ? t("classroom.feature_ac") : (cmsData?.facilityHighlights?.[0]?.title || "Ruangan Ber-AC & Nyaman"),
+      description: language !== "id" ? t("classroom.feature_ac_desc") : (cmsData?.facilityHighlights?.[0]?.description || "Setiap kelas dilengkapi pendingin udara (AC) berkualitas untuk kenyamanan belajar intensif berjam-jam tanpa distraksi."),
       icon: "Wind",
     },
     {
       id: 2,
-      title: t("classroom.feature_audio", "Sistem Audio Standar Ujian Goethe"),
-      description: t(
-        "classroom.feature_audio_desc",
-        "Speaker Hi-Fi fidelitas tinggi untuk latihan Hörverstehen dengan kejelasan pelafalan dialek Hochdeutsch asli Jerman."
-      ),
+      title: language !== "id" ? t("classroom.feature_audio") : (cmsData?.facilityHighlights?.[1]?.title || "Sistem Audio Standar Ujian Goethe"),
+      description: language !== "id" ? t("classroom.feature_audio_desc") : (cmsData?.facilityHighlights?.[1]?.description || "Speaker Hi-Fi fidelitas tinggi untuk latihan Hörverstehen dengan kejelasan pelafalan dialek Hochdeutsch asli Jerman."),
       icon: "Volume2",
     },
     {
       id: 3,
-      title: t("classroom.feature_tv", "Smart TV & Presentasi Digital"),
-      description: t(
-        "classroom.feature_tv_desc",
-        "Layar pintar interaktif untuk demonstrasi tata bahasa, pemutaran film kebudayaan Jerman, dan latihan soal bersama."
-      ),
+      title: language !== "id" ? t("classroom.feature_tv") : (cmsData?.facilityHighlights?.[2]?.title || "Smart TV & Presentasi Digital"),
+      description: language !== "id" ? t("classroom.feature_tv_desc") : (cmsData?.facilityHighlights?.[2]?.description || "Layar pintar interaktif untuk demonstrasi tata bahasa, pemutaran film kebudayaan Jerman, dan latihan soal bersama."),
       icon: "Tv",
     },
     {
       id: 4,
-      title: t("classroom.feature_books", "Koleksi Buku Diktat Resmi Jerman"),
-      description: t(
-        "classroom.feature_books_desc",
-        "Buku panduan terbaru (Netzwerk Neu, Aspekte Neu, Fit fürs Goethe-Zertifikat A1-B2) dan kamus lengkap."
-      ),
+      title: language !== "id" ? t("classroom.feature_books") : (cmsData?.facilityHighlights?.[3]?.title || "Koleksi Buku Diktat Resmi Jerman"),
+      description: language !== "id" ? t("classroom.feature_books_desc") : (cmsData?.facilityHighlights?.[3]?.description || "Buku panduan terbaru (Netzwerk Neu, Aspekte Neu, Fit fürs Goethe-Zertifikat A1-B2) dan kamus lengkap."),
       icon: "BookOpen",
     },
   ];
@@ -118,6 +119,10 @@ export default function ClassroomsPage() {
     }
   };
 
+  const heroEyebrow = language !== "id" ? t("classroom.eyebrow") : (cmsData?.headerEyebrow || "Fasilitas & Kampus Medan");
+  const heroTitle = language !== "id" ? t("classroom.title") : (cmsData?.headerTitle || "Ruangan Kelas & Sarana Belajar Modern");
+  const heroSubtitle = language !== "id" ? t("classroom.subtitle") : (cmsData?.headerSubtitle || "Fasilitas ber-AC, multimedia audio-visual standar Goethe-Institut, dan perpustakaan literatur Jerman di Jl. Ternak II No. 39 Medan Polonia yang dirancang untuk mendukung 4 keterampilan bahasa: Hören, Lesen, Schreiben, dan Sprechen.");
+
   return (
     <div className="min-h-screen bg-[#f8fafc] text-[#1e293b] flex flex-col selection:bg-[#1b5a9f] selection:text-white">
       <PublicNavbar />
@@ -128,27 +133,23 @@ export default function ClassroomsPage() {
         <div className="max-w-6xl mx-auto text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-xs font-semibold tracking-wide uppercase mb-4 text-[#dbeafe]">
             <Building2 size={14} className="text-[#93c5fd]" />
-            {cmsData?.headerEyebrow || t("classroom.eyebrow", "Fasilitas & Kampus Medan")}
+            {heroEyebrow}
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-            {cmsData?.headerTitle || t("classroom.title", "Ruangan Kelas & Sarana Belajar Modern")}
+            {heroTitle}
           </h1>
           <p className="max-w-3xl mx-auto text-base sm:text-lg text-slate-200 leading-relaxed font-normal">
-            {cmsData?.headerSubtitle ||
-              t(
-                "classroom.subtitle",
-                "Fasilitas ber-AC, multimedia audio-visual standar Goethe-Institut, dan perpustakaan literatur Jerman di Jl. Ternak II No. 39 Medan Polonia yang dirancang untuk mendukung 4 keterampilan bahasa: Hören, Lesen, Schreiben, dan Sprechen."
-              )}
+            {heroSubtitle}
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs font-semibold text-slate-200">
             <span className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15">
               <MapPin size={13} className="text-amber-300" />
-              Jl. Ternak II No. 39, Medan Polonia
+              {t("classroom.badge_address", "Jl. Ternak II No. 39, Medan Polonia")}
             </span>
             <span className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15">
               <ShieldCheck size={13} className="text-emerald-300" />
-              Lembaga Resmi Terdaftar & Berizin
+              {language !== "id" ? t("classroom.badge_registered", "Offiziell registriertes & lizenziertes Institut") : "Lembaga Resmi Terdaftar & Berizin"}
             </span>
           </div>
         </div>
@@ -181,7 +182,7 @@ export default function ClassroomsPage() {
 
         {/* Category Filters */}
         <div className="flex items-center justify-center flex-wrap gap-2 sm:gap-3 mb-10">
-          {categories.map((cat: string) => {
+          {rawCategories.map((cat: string) => {
             const isActive = selectedCategory === cat;
             return (
               <button
@@ -194,7 +195,7 @@ export default function ClassroomsPage() {
                     : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:text-slate-900"
                 }`}
               >
-                {cat}
+                {getCategoryLabel(cat)}
               </button>
             );
           })}

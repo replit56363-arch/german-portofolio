@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useCmsSection, useUpdateCmsSection, useResetCms } from "@/lib/use-cms";
 import { CmsLayout } from "./cms-layout";
 import { SectionEyebrow } from "@/components/portfolio-ui";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Plus, Trash2, Edit2, Share2, Mail, Phone, MapPin, X } from "lucide-react";
 
 export default function FooterCms() {
@@ -12,6 +13,9 @@ export default function FooterCms() {
   const [form, setForm] = useState<any>({});
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [linkToDelete, setLinkToDelete] = useState<any>(null);
+  const [socialToDelete, setSocialToDelete] = useState<any>(null);
 
   // Modal for Footer Link CRUD
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
@@ -51,11 +55,48 @@ export default function FooterCms() {
   };
 
   const handleReset = () => {
-    if (window.confirm("Kembalikan informasi footer ke standar awal?")) {
-      resetMutation.mutate("footer", {
-        onSuccess: () => setSaved(true),
-      });
-    }
+    resetMutation.mutate("footer", {
+      onSuccess: (res: any) => {
+        if (res?.data) {
+          setForm(res.data);
+        }
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+        setShowResetConfirm(false);
+      },
+      onError: (err: any) => {
+        setError(err.message || "Gagal mengembalikan konfigurasi footer");
+        setShowResetConfirm(false);
+      },
+    });
+  };
+
+  const confirmDeleteLink = () => {
+    if (!linkToDelete) return;
+    const links = (form.links || []).filter((l: any) => l.id !== linkToDelete.id);
+    const updatedForm = { ...form, links };
+    setForm(updatedForm);
+    updateMutation.mutate(updatedForm, {
+      onSuccess: () => {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      },
+    });
+    setLinkToDelete(null);
+  };
+
+  const confirmDeleteSocial = () => {
+    if (!socialToDelete) return;
+    const socialLinks = (form.socialLinks || []).filter((s: any) => s.id !== socialToDelete.id);
+    const updatedForm = { ...form, socialLinks };
+    setForm(updatedForm);
+    updateMutation.mutate(updatedForm, {
+      onSuccess: () => {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      },
+    });
+    setSocialToDelete(null);
   };
 
   // Footer Links CRUD
@@ -79,7 +120,7 @@ export default function FooterCms() {
   const saveLinkItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (!linkForm.label.trim() || !linkForm.href.trim()) {
-      alert("Label dan tautan wajib diisi.");
+      setError("Label dan tautan wajib diisi.");
       return;
     }
 
@@ -99,17 +140,6 @@ export default function FooterCms() {
     updateMutation.mutate(updatedForm, {
       onSuccess: () => setSaved(true),
     });
-  };
-
-  const deleteLinkItem = (id: any) => {
-    if (window.confirm("Hapus tautan footer ini?")) {
-      const links = (form.links || []).filter((l: any) => l.id !== id);
-      const updatedForm = { ...form, links };
-      setForm(updatedForm);
-      updateMutation.mutate(updatedForm, {
-        onSuccess: () => setSaved(true),
-      });
-    }
   };
 
   // Social Links CRUD
@@ -148,17 +178,6 @@ export default function FooterCms() {
     });
   };
 
-  const deleteSocialItem = (id: any) => {
-    if (window.confirm("Hapus akun media sosial ini?")) {
-      const socialLinks = (form.socialLinks || []).filter((s: any) => s.id !== id);
-      const updatedForm = { ...form, socialLinks };
-      setForm(updatedForm);
-      updateMutation.mutate(updatedForm, {
-        onSuccess: () => setSaved(true),
-      });
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -177,7 +196,7 @@ export default function FooterCms() {
       isSaved={saved}
       errorMessage={error}
       onSave={handleSave}
-      onReset={handleReset}
+      onReset={() => setShowResetConfirm(true)}
       isResetting={resetMutation.isPending}
     >
       <div className="space-y-6">
@@ -272,7 +291,7 @@ export default function FooterCms() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => deleteLinkItem(link.id)}
+                    onClick={() => setLinkToDelete(link)}
                     className="rounded p-1 text-[#ab594d] hover:bg-[#faebe8]"
                   >
                     <Trash2 size={13} />
@@ -323,7 +342,7 @@ export default function FooterCms() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => deleteSocialItem(soc.id)}
+                    onClick={() => setSocialToDelete(soc)}
                     className="rounded p-1 text-[#ab594d] hover:bg-[#faebe8]"
                   >
                     <Trash2 size={13} />
@@ -466,6 +485,43 @@ export default function FooterCms() {
           </div>
         </div>
       )}
+
+      {/* Delete Link Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={linkToDelete !== null}
+        title="Hapus Tautan Footer"
+        description={`Apakah Anda yakin ingin menghapus tautan "${linkToDelete?.label || ""}"?`}
+        confirmText="Hapus"
+        cancelText="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteLink}
+        onCancel={() => setLinkToDelete(null)}
+      />
+
+      {/* Delete Social Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={socialToDelete !== null}
+        title="Hapus Akun Media Sosial"
+        description={`Apakah Anda yakin ingin menghapus akun "${socialToDelete?.label || socialToDelete?.platform || ""}"?`}
+        confirmText="Hapus"
+        cancelText="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteSocial}
+        onCancel={() => setSocialToDelete(null)}
+      />
+
+      {/* Reset Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showResetConfirm}
+        title="Reset Data Footer"
+        description="Kembalikan semua pengaturan teks penutup, tautan footer, dan akun media sosial ke konfigurasi awal?"
+        confirmText="Reset ke Bawaan"
+        cancelText="Batal"
+        variant="warning"
+        isLoading={resetMutation.isPending}
+        onConfirm={handleReset}
+        onCancel={() => setShowResetConfirm(false)}
+      />
     </CmsLayout>
   );
 }

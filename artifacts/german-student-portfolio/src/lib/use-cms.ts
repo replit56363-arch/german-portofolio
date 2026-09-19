@@ -17,15 +17,33 @@ export type CmsSectionName =
 export const CMS_QUERY_KEY = ["/api/cms"];
 export const getCmsSectionQueryKey = (section: string) => ["/api/cms", section];
 
+export function getAuthHeaders(): Record<string, string> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  try {
+    const token = localStorage.getItem("admin_session_token");
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+      headers["x-session-id"] = token;
+      headers["x-auth-token"] = token;
+    }
+  } catch {}
+  return headers;
+}
+
 export function useCms() {
   return useQuery({
     queryKey: CMS_QUERY_KEY,
     queryFn: async () => {
-      const res = await fetch("/api/cms");
+      const res = await fetch("/api/cms", {
+        credentials: "include",
+        headers: getAuthHeaders(),
+      });
       if (!res.ok) throw new Error("Gagal mengambil data CMS");
       return res.json();
     },
-    staleTime: 30_000,
+    staleTime: 10_000,
   });
 }
 
@@ -33,11 +51,14 @@ export function useCmsSection<T = any>(section: CmsSectionName) {
   return useQuery<T>({
     queryKey: getCmsSectionQueryKey(section),
     queryFn: async () => {
-      const res = await fetch(`/api/cms/${section}`);
+      const res = await fetch(`/api/cms/${section}`, {
+        credentials: "include",
+        headers: getAuthHeaders(),
+      });
       if (!res.ok) throw new Error(`Gagal memuat bagian ${section}`);
       return res.json() as Promise<T>;
     },
-    staleTime: 30_000,
+    staleTime: 10_000,
   });
 }
 
@@ -47,7 +68,8 @@ export function useUpdateCmsSection(section: CmsSectionName) {
     mutationFn: async (data: Record<string, any>) => {
       const res = await fetch(`/api/cms/${section}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: getAuthHeaders(),
         body: JSON.stringify(data),
       });
       if (!res.ok) {
@@ -71,7 +93,8 @@ export function useCreateCmsItem(section: CmsSectionName, field?: string) {
       const queryParam = field ? `?field=${encodeURIComponent(field)}` : "";
       const res = await fetch(`/api/cms/${section}/items${queryParam}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: getAuthHeaders(),
         body: JSON.stringify(itemData),
       });
       if (!res.ok) {
@@ -94,7 +117,8 @@ export function useUpdateCmsItem(section: CmsSectionName, field?: string) {
       const queryParam = field ? `?field=${encodeURIComponent(field)}` : "";
       const res = await fetch(`/api/cms/${section}/items/${encodeURIComponent(itemId)}${queryParam}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: getAuthHeaders(),
         body: JSON.stringify(data),
       });
       if (!res.ok) {
@@ -117,6 +141,8 @@ export function useDeleteCmsItem(section: CmsSectionName, field?: string) {
       const queryParam = field ? `?field=${encodeURIComponent(field)}` : "";
       const res = await fetch(`/api/cms/${section}/items/${encodeURIComponent(itemId)}${queryParam}`, {
         method: "DELETE",
+        credentials: "include",
+        headers: getAuthHeaders(),
       });
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
@@ -138,6 +164,8 @@ export function useResetCms() {
       const queryParam = section ? `?section=${encodeURIComponent(section)}` : "";
       const res = await fetch(`/api/cms/reset${queryParam}`, {
         method: "POST",
+        credentials: "include",
+        headers: getAuthHeaders(),
       });
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
@@ -145,8 +173,11 @@ export function useResetCms() {
       }
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (_data, section) => {
       void queryClient.invalidateQueries({ queryKey: CMS_QUERY_KEY });
+      if (section) {
+        void queryClient.invalidateQueries({ queryKey: getCmsSectionQueryKey(section) });
+      }
       void queryClient.invalidateQueries({ queryKey: ["/api/site-content"] });
     },
   });

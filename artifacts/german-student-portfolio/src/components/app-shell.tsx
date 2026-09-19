@@ -102,7 +102,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-[100dvh] bg-[#f4f8fc] text-[#20334f]">
       {/* Sidebar Panel */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-[250px] flex-col bg-[#142b4e] px-5 py-6 text-[#eaf3fd] transition-transform duration-300 ease-in-out shadow-2xl ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-[260px] flex-col bg-[#142b4e] px-5 py-6 text-[#eaf3fd] transition-transform duration-300 ease-in-out shadow-2xl lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -110,7 +110,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <AppMark />
           <button
             type="button"
-            className="rounded-lg p-2 text-[#9ab1ce] hover:bg-[#203b63] hover:text-white transition-colors"
+            className="rounded-lg p-2 text-[#9ab1ce] hover:bg-[#203b63] hover:text-white transition-colors lg:hidden"
             onClick={() => setSidebarOpen(false)}
             aria-label="Tutup menu"
             title="Tutup Sidebar"
@@ -237,11 +237,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      {/* Backdrop overlay when sidebar is open */}
+      {/* Backdrop overlay when sidebar is open - mobile/tablet only */}
       {sidebarOpen && (
         <button
           type="button"
-          className="fixed inset-0 z-30 bg-[#10294c]/30 backdrop-blur-[1px] transition-opacity"
+          className="fixed inset-0 z-30 bg-[#10294c]/30 backdrop-blur-[1px] transition-opacity lg:hidden"
           onClick={() => setSidebarOpen(false)}
           aria-label="Tutup navigasi"
           data-testid="button-menu-overlay"
@@ -249,22 +249,22 @@ export function AppShell({ children }: { children: ReactNode }) {
       )}
 
       {/* Main Content Area */}
-      <main className={`min-h-[100dvh] transition-[padding] duration-300 ${sidebarOpen ? "lg:pl-[250px]" : "pl-0"}`}>
+      <main className="min-h-[100dvh] lg:pl-[260px] pl-0 transition-[padding] duration-300">
         <header className="sticky top-0 z-20 flex h-[74px] items-center justify-between border-b border-[#dce6f0] bg-[#f4f8fc]/90 px-5 backdrop-blur-xl sm:px-8 lg:px-10">
           <div className="flex items-center gap-3">
             <button
               type="button"
-              className="flex items-center gap-2 rounded-xl border border-[#d8e4ef] bg-white px-3 py-2 text-xs font-bold text-[#1b5a9f] shadow-sm hover:bg-[#edf5fb] transition-all"
+              className="flex items-center gap-2 rounded-xl border border-[#d8e4ef] bg-white px-3 py-2 text-xs font-bold text-[#1b5a9f] shadow-sm hover:bg-[#edf5fb] transition-all lg:hidden"
               onClick={() => setSidebarOpen((prev) => !prev)}
               aria-label="Buka/Tutup menu sidebar"
               data-testid="button-open-menu"
             >
               <Menu size={18} />
-              <span>Menu Sidebar</span>
+              <span>Menu</span>
             </button>
             <div className="hidden items-center gap-2 text-xs font-medium text-[#7a8ea8] md:flex">
               <span className="h-1.5 w-1.5 rounded-full bg-[#6fd5ee]" />
-              Data internal terverifikasi
+              Data internal terverifikasi & CMS aktif
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -273,12 +273,13 @@ export function AppShell({ children }: { children: ReactNode }) {
               className="hidden items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-[#536a84] hover:bg-white sm:flex"
               data-testid="link-search-students"
             >
-              <Search size={16} /> Cari student
+              <Search size={16} /> Cari siswa
             </Link>
             <Link
-              href="/admin/content"
+              href="/admin/cms"
               className="rounded-xl border border-[#d8e4ef] bg-white p-2.5 text-[#536a84] hover:border-[#b8cadc]"
-              aria-label="Pengaturan konten"
+              aria-label="Pusat CMS"
+              title="Pusat CMS"
               data-testid="button-settings"
             >
               <Settings2 size={17} />

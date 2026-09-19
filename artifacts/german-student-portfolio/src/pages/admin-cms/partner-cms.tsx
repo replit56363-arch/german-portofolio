@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useCmsSection, useUpdateCmsSection, useResetCms } from "@/lib/use-cms";
 import { CmsLayout } from "./cms-layout";
 import { SectionEyebrow } from "@/components/portfolio-ui";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { UserCheck, Building2, ShieldCheck, Mail, Phone, Sparkles } from "lucide-react";
 
 export default function PartnerCms() {
@@ -12,6 +13,7 @@ export default function PartnerCms() {
   const [form, setForm] = useState<any>({});
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   useEffect(() => {
     if (data) setForm(data);
@@ -41,11 +43,20 @@ export default function PartnerCms() {
   };
 
   const handleReset = () => {
-    if (window.confirm("Kembalikan informasi halaman partner ke standar awal?")) {
-      resetMutation.mutate("partner", {
-        onSuccess: () => setSaved(true),
-      });
-    }
+    resetMutation.mutate("partner", {
+      onSuccess: (res: any) => {
+        if (res?.data) {
+          setForm(res.data);
+        }
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+        setShowResetConfirm(false);
+      },
+      onError: (err: any) => {
+        setError(err.message || "Gagal mengembalikan konfigurasi partner");
+        setShowResetConfirm(false);
+      },
+    });
   };
 
   if (isLoading) {
@@ -66,7 +77,7 @@ export default function PartnerCms() {
       isSaved={saved}
       errorMessage={error}
       onSave={handleSave}
-      onReset={handleReset}
+      onReset={() => setShowResetConfirm(true)}
       isResetting={resetMutation.isPending}
     >
       <div className="space-y-6">
@@ -162,6 +173,19 @@ export default function PartnerCms() {
           </div>
         </section>
       </div>
+
+      {/* Reset Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showResetConfirm}
+        title="Reset Data Halaman Partner"
+        description="Kembalikan semua teks header dan informasi kontak perwakilan di Jerman ke konfigurasi standar awal?"
+        confirmText="Reset ke Bawaan"
+        cancelText="Batal"
+        variant="warning"
+        isLoading={resetMutation.isPending}
+        onConfirm={handleReset}
+        onCancel={() => setShowResetConfirm(false)}
+      />
     </CmsLayout>
   );
 }

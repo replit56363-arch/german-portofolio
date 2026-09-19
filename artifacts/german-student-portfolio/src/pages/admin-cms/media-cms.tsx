@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useCmsSection, useUpdateCmsSection, useResetCms } from "@/lib/use-cms";
 import { CmsLayout } from "./cms-layout";
 import { SectionEyebrow } from "@/components/portfolio-ui";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Plus, Trash2, Edit2, Play, Tv, Sparkles, X, Image as ImageIcon } from "lucide-react";
 import { ImageUploader } from "@/components/image-uploader";
 
@@ -13,6 +14,8 @@ export default function MediaCms() {
   const [form, setForm] = useState<any>({});
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [mediaToDelete, setMediaToDelete] = useState<any>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mediaForm, setMediaForm] = useState<any>({
@@ -48,11 +51,34 @@ export default function MediaCms() {
   };
 
   const handleReset = () => {
-    if (window.confirm("Kembalikan daftar liputan media ke standar awal?")) {
-      resetMutation.mutate("media", {
-        onSuccess: () => setSaved(true),
-      });
-    }
+    resetMutation.mutate("media", {
+      onSuccess: (res: any) => {
+        if (res?.data) {
+          setForm(res.data);
+        }
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+        setShowResetConfirm(false);
+      },
+      onError: (err: any) => {
+        setError(err.message || "Gagal mengembalikan konfigurasi media");
+        setShowResetConfirm(false);
+      },
+    });
+  };
+
+  const confirmDeleteMedia = () => {
+    if (!mediaToDelete) return;
+    const items = (form.items || []).filter((i: any) => i.id !== mediaToDelete.id);
+    const updatedForm = { ...form, items };
+    setForm(updatedForm);
+    updateMutation.mutate(updatedForm, {
+      onSuccess: () => {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      },
+    });
+    setMediaToDelete(null);
   };
 
   const openCreateModal = () => {
@@ -84,7 +110,7 @@ export default function MediaCms() {
   const saveMediaItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (!mediaForm.title.trim()) {
-      alert("Judul liputan tidak boleh kosong.");
+      setError("Judul liputan tidak boleh kosong.");
       return;
     }
 
@@ -106,17 +132,6 @@ export default function MediaCms() {
     });
   };
 
-  const deleteMediaItem = (id: any) => {
-    if (window.confirm("Hapus liputan media ini?")) {
-      const items = (form.items || []).filter((i: any) => i.id !== id);
-      const updatedForm = { ...form, items };
-      setForm(updatedForm);
-      updateMutation.mutate(updatedForm, {
-        onSuccess: () => setSaved(true),
-      });
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -135,7 +150,7 @@ export default function MediaCms() {
       isSaved={saved}
       errorMessage={error}
       onSave={handleSave}
-      onReset={handleReset}
+      onReset={() => setShowResetConfirm(true)}
       isResetting={resetMutation.isPending}
     >
       <div className="space-y-6">
@@ -255,7 +270,7 @@ export default function MediaCms() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => deleteMediaItem(item.id)}
+                    onClick={() => setMediaToDelete(item)}
                     className="rounded-lg border border-[#f2d7d3] bg-[#fffbf9] p-2 text-[#ab594d] hover:bg-[#faebe8]"
                   >
                     <Trash2 size={14} />
@@ -420,6 +435,31 @@ export default function MediaCms() {
           </div>
         </div>
       )}
+
+      {/* Delete Media Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={mediaToDelete !== null}
+        title="Hapus Liputan Media"
+        description={`Apakah Anda yakin ingin menghapus liputan "${mediaToDelete?.title || ""}"?`}
+        confirmText="Hapus"
+        cancelText="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteMedia}
+        onCancel={() => setMediaToDelete(null)}
+      />
+
+      {/* Reset Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showResetConfirm}
+        title="Reset Data Liputan Media"
+        description="Kembalikan seluruh daftar liputan media ke pengaturan standar awal?"
+        confirmText="Reset ke Bawaan"
+        cancelText="Batal"
+        variant="warning"
+        isLoading={resetMutation.isPending}
+        onConfirm={handleReset}
+        onCancel={() => setShowResetConfirm(false)}
+      />
     </CmsLayout>
   );
 }

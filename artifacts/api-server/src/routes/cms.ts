@@ -145,9 +145,13 @@ router.put("/cms/:section", requireAdmin, async (req, res) => {
     return;
   }
 
+  const payload = (req.body && typeof req.body === "object" && "data" in req.body && Object.keys(req.body).length === 1 && typeof req.body.data === "object")
+    ? req.body.data
+    : req.body;
+
   const updatedContent = {
     ...current,
-    ...req.body,
+    ...payload,
   };
 
   await saveSectionToDb(section, updatedContent);

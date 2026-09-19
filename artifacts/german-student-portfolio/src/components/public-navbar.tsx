@@ -187,11 +187,49 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
     .sort((a: NavItem, b: NavItem) => (Number(a.order) || 0) - (Number(b.order) || 0));
 
   const getNavText = (id: string | number, defaultLabel: string, defaultSublabel?: string) => {
+    if (language === "id") {
+      return { label: defaultLabel, sublabel: defaultSublabel };
+    }
+
     const itemKey = navTranslationKeys[id];
-    if (!itemKey) return { label: defaultLabel, sublabel: defaultSublabel };
+    let label = itemKey ? t(itemKey.labelKey) : "";
+    let sublabel = itemKey?.subKey ? t(itemKey.subKey) : "";
+
+    // If key not found or returned the key itself, check standard semantic label mappings
+    const cleanLabel = (defaultLabel || "").trim().toLowerCase();
+    if (!label || label === itemKey?.labelKey) {
+      if (cleanLabel.includes("ruangan") || cleanLabel.includes("kelas")) {
+        label = t("nav.classrooms");
+        sublabel = t("nav.classrooms_sub");
+      } else if (cleanLabel.includes("tentang") || cleanLabel.includes("profil lembaga")) {
+        label = t("nav.about");
+        sublabel = t("nav.about_sub");
+      } else if (cleanLabel.includes("kabar") || cleanLabel.includes("referensi")) {
+        label = t("nav.news_ref");
+        sublabel = t("nav.news_ref_sub");
+      } else if (cleanLabel.includes("beranda")) {
+        label = t("nav.home");
+      } else if (cleanLabel.includes("program")) {
+        label = t("nav.programs");
+        sublabel = t("nav.programs_sub");
+      } else if (cleanLabel.includes("siswa") && cleanLabel.includes("kampus")) {
+        label = t("nav.students_campus");
+        sublabel = t("nav.students_campus_sub");
+      } else if (cleanLabel.includes("siswa")) {
+        label = t("nav.students_data");
+        sublabel = t("nav.students_data_sub");
+      } else if (cleanLabel.includes("alumni")) {
+        label = t("nav.alumni_photos");
+        sublabel = t("nav.alumni_photos_sub");
+      } else {
+        label = defaultLabel;
+        sublabel = defaultSublabel;
+      }
+    }
+
     return {
-      label: t(itemKey.labelKey, defaultLabel),
-      sublabel: itemKey.subKey ? t(itemKey.subKey, defaultSublabel || "") : defaultSublabel,
+      label: label || defaultLabel,
+      sublabel: sublabel || defaultSublabel,
     };
   };
 

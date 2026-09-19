@@ -90,6 +90,19 @@ const defaultNavbarData = {
         { id: 42, label: "Kisah Referensi", sublabel: "Kisah Sukses Alumni di Jerman", href: "/referensi", isVisible: true },
       ],
     },
+    {
+      id: 5,
+      label: "Siswa & Kampus",
+      sublabel: "Data, Alumni & Kelas",
+      href: "/siswa",
+      order: 5,
+      isVisible: true,
+      children: [
+        { id: 51, label: "Data Siswa", sublabel: "Direktori & Profil Siswa Aktif", href: "/siswa", isVisible: true },
+        { id: 52, label: "Foto Alumni", sublabel: "Galeri & Kisah Nyata di Jerman", href: "/alumni", isVisible: true },
+        { id: 53, label: "Ruangan Kelas", sublabel: "Fasilitas & Sarana Belajar Medan", href: "/ruangan-kelas", isVisible: true },
+      ],
+    },
   ],
 };
 
@@ -134,6 +147,10 @@ const navTranslationKeys: Record<string | number, { labelKey: string; subKey?: s
   4: { labelKey: "nav.news_ref", subKey: "nav.news_ref_sub" },
   41: { labelKey: "nav.news", subKey: "nav.news_sub" },
   42: { labelKey: "nav.references", subKey: "nav.references_sub" },
+  5: { labelKey: "nav.students_campus", subKey: "nav.students_campus_sub" },
+  51: { labelKey: "nav.students_data", subKey: "nav.students_data_sub" },
+  52: { labelKey: "nav.alumni_photos", subKey: "nav.alumni_photos_sub" },
+  53: { labelKey: "nav.classrooms", subKey: "nav.classrooms_sub" },
 };
 
 export function PublicNavbar({ activeRoute }: PublicNavbarProps) {

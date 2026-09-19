@@ -11,11 +11,51 @@ import {
 import { requireAdmin, serializeStudent } from "./portfolio-utils";
 
 const router: IRouter = Router();
-router.use("/students", requireAdmin);
+
 function normalizePlacement(placement: typeof CreateStudentBody._output["placement"] | typeof UpdateStudentBody._output["placement"]) {
   if (placement === undefined || placement === null) return placement;
   return { ...placement, placedAt: placement.placedAt.toISOString().slice(0, 10) };
 }
+
+// Public API for Data Siswa Showcase
+router.get("/public/students", async (request, response) => {
+  try {
+    const { level, status, cohort, search, program } = request.query as Record<string, string>;
+    const conditions = [];
+    if (level && level !== "all") conditions.push(eq(studentsTable.level, level));
+    if (status && status !== "all") conditions.push(eq(studentsTable.status, status));
+    if (cohort && cohort !== "all") conditions.push(eq(studentsTable.cohort, cohort));
+    if (search && search.trim()) {
+      conditions.push(or(ilike(studentsTable.name, `%${search.trim()}%`), ilike(studentsTable.bio, `%${search.trim()}%`)));
+    }
+    const rows: Student[] = await db.select().from(studentsTable).where(conditions.length ? and(...conditions) : undefined).orderBy(desc(studentsTable.updatedAt), asc(studentsTable.name));
+    response.json(rows.map((row) => serializeStudent(row)));
+  } catch (err: any) {
+    console.error("[Students] Public students fetch error:", err);
+    response.status(500).json({ error: "Gagal memuat data siswa." });
+  }
+});
+
+router.get("/public/students/:id", async (request, response) => {
+  try {
+    const id = parseInt(request.params.id, 10);
+    if (isNaN(id)) {
+      response.status(400).json({ error: "ID siswa tidak valid." });
+      return;
+    }
+    const [student] = await db.select().from(studentsTable).where(eq(studentsTable.id, id)).limit(1);
+    if (!student) {
+      response.status(404).json({ error: "Siswa tidak ditemukan." });
+      return;
+    }
+    response.json(serializeStudent(student));
+  } catch (err) {
+    response.status(500).json({ error: "Gagal memuat profil siswa." });
+  }
+});
+
+// Admin-Protected routes
+router.use("/students", requireAdmin);
 
 router.get("/students", async (request, response) => {
   const filters = ListStudentsQueryParams.parse(request.query);

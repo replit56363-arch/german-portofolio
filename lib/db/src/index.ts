@@ -256,42 +256,197 @@ let siteContentAutoId = 2;
 let adminAutoId = 3;
 let cmsSectionAutoId = 11;
 
-function createMockDb() {
-  return {
-    select: (fields?: any) => ({
-      from: (table: any) => {
-        const getTableName = () => {
-          if (table === adminsTable || table?._?.name === "admins") return "admins";
-          if (table === sessionsTable || table?._?.name === "admin_sessions") return "sessions";
-          if (table === studentsTable || table?._?.name === "students") return "students";
-          if (table === siteContentTable || table?._?.name === "site_content") return "siteContent";
-          if (table === cmsSectionsTable || table?._?.name === "cms_sections") return "cmsSections";
-          return "students";
-        };
+function unwrapParens(cond: any) {
+  if (
+    cond?.queryChunks?.length === 3 &&
+    Array.isArray(cond.queryChunks[0]?.value) &&
+    cond.queryChunks[0].value.join("").trim() === "(" &&
+    Array.isArray(cond.queryChunks[2]?.value) &&
+    cond.queryChunks[2].value.join("").trim() === ")"
+  ) {
+    return cond.queryChunks[1];
+  }
+  return cond;
+}
 
-        const executeQuery = (opts: { whereFilter?: any; orderFn?: any; limitNum?: number; joinTable?: any }) => {
-          const tableName = getTableName();
+function getRowValue(row: any, colName: string): any {
+  if (!row) return undefined;
+  if (row[colName] !== undefined) return row[colName];
+  const camel = colName.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+  if (row[camel] !== undefined) return row[camel];
+  if (row.session) {
+    const s: any = getRowValue(row.session, colName);
+    if (s !== undefined) return s;
+  }
+  if (row.admin) {
+    const a: any = getRowValue(row.admin, colName);
+    if (a !== undefined) return a;
+  }
+  return undefined;
+}
+
+function evaluateSingleCondition(cond: any, row: any): boolean {
+  let colName: string | null = null;
+  let operator = "=";
+  let paramVal: any = undefined;
+  let foundParam = false;
+
+  const walk = (c: any) => {
+    if (!c) return;
+    if (c.queryChunks && Array.isArray(c.queryChunks)) {
+      for (const sub of c.queryChunks) walk(sub);
+      return;
+    }
+    if ("name" in c && c.dataType) {
+      colName = c.name;
+    } else if ("value" in c && !Array.isArray(c.value)) {
+      paramVal = c.value;
+      foundParam = true;
+    } else if ("value" in c && Array.isArray(c.value)) {
+      const opStr = c.value.join("").trim();
+      if (["=", ">", "<", ">=", "<=", "!=", "<>"].includes(opStr)) {
+        operator = opStr;
+      }
+    }
+  };
+
+  walk(cond);
+
+  if (colName && foundParam) {
+    const actualVal = getRowValue(row, colName);
+    if (operator === "=") {
+      return actualVal == paramVal || String(actualVal) === String(paramVal);
+    }
+    if (operator === "!=" || operator === "<>") {
+      return actualVal !== paramVal && String(actualVal) !== String(paramVal);
+    }
+    if (operator === ">") {
+      return actualVal > paramVal;
+    }
+    if (operator === ">=") {
+      return actualVal >= paramVal;
+    }
+    if (operator === "<") {
+      return actualVal < paramVal;
+    }
+    if (operator === "<=") {
+      return actualVal <= paramVal;
+    }
+  }
+  return true;
+}
+
+function evaluateCondition(cond: any, row: any): boolean {
+  if (!cond) return true;
+  if (typeof cond === "function") {
+    try {
+      return cond(row);
+    } catch {
+      return true;
+    }
+  }
+  if (cond.__test) {
+    try {
+      return cond.__test(row);
+    } catch {
+      return true;
+    }
+  }
+
+  const unwrapped = unwrapParens(cond);
+  if (!unwrapped || !unwrapped.queryChunks) return true;
+
+  const subConditions: any[] = [];
+  let currentOp = "and";
+
+  for (const chunk of unwrapped.queryChunks) {
+    if (chunk && chunk.queryChunks) {
+      subConditions.push(chunk);
+    } else if (chunk && Array.isArray(chunk.value)) {
+      const text = chunk.value.join("").toLowerCase();
+      if (text.includes(" or ")) currentOp = "or";
+      else if (text.includes(" and ")) currentOp = "and";
+    }
+  }
+
+  if (subConditions.length > 1) {
+    if (currentOp === "or") {
+      return subConditions.some((sc) => evaluateCondition(sc, row));
+    }
+    return subConditions.every((sc) => evaluateCondition(sc, row));
+  }
+
+  return evaluateSingleCondition(unwrapped, row);
+}
+
+function createOrderComparator(orderItem: any) {
+  if (!orderItem) return () => 0;
+  if (typeof orderItem === "function") return orderItem;
+
+  if (orderItem.queryChunks) {
+    let colName: string | null = null;
+    let isDesc = false;
+
+    for (const chunk of orderItem.queryChunks) {
+      if (chunk && "name" in chunk && chunk.dataType) {
+        colName = chunk.name;
+      } else if (chunk && Array.isArray(chunk.value)) {
+        const str = chunk.value.join("").toLowerCase();
+        if (str.includes("desc")) isDesc = true;
+      }
+    }
+
+    if (colName) {
+      const camel = colName.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+      return (a: any, b: any) => {
+        const valA = a[colName!] ?? a[camel];
+        const valB = b[colName!] ?? b[camel];
+        if (valA === valB) return 0;
+        if (valA > valB) return isDesc ? -1 : 1;
+        return isDesc ? 1 : -1;
+      };
+    }
+  }
+
+  return () => 0;
+}
+
+function createMockDb() {
+  const getTableName = (table: any) => {
+    if (table === adminsTable || table?._?.name === "admins") return "admins";
+    if (table === sessionsTable || table?._?.name === "admin_sessions") return "sessions";
+    if (table === studentsTable || table?._?.name === "students") return "students";
+    if (table === siteContentTable || table?._?.name === "site_content") return "siteContent";
+    if (table === cmsSectionsTable || table?._?.name === "cms_sections") return "cmsSections";
+    return "students";
+  };
+
+  return {
+    select: (_fields?: any) => ({
+      from: (table: any) => {
+        const tableName = getTableName(table);
+
+        const executeQuery = (opts: { whereFilter?: any; orders?: any[]; limitNum?: number; joinTable?: any }) => {
           let data: any[] = (memoryStore as any)[tableName] || [];
 
           if (opts.joinTable && tableName === "sessions") {
-            data = data.map((sess) => {
-              const adm = memoryStore.admins.find((a) => a.id === sess.adminId);
-              return { admin: adm, session: sess };
-            }).filter((item) => item.admin != null);
+            data = data
+              .map((sess) => {
+                const adm = memoryStore.admins.find((a) => a.id === sess.adminId);
+                return { admin: adm, session: sess };
+              })
+              .filter((item) => item.admin != null);
           }
 
           if (opts.whereFilter) {
-            data = data.filter((row) => {
-              try {
-                return opts.whereFilter(row);
-              } catch {
-                return true;
-              }
-            });
+            data = data.filter((row) => evaluateCondition(opts.whereFilter, row));
           }
 
-          if (opts.orderFn) {
-            data = [...data].sort(opts.orderFn);
+          if (opts.orders && opts.orders.length > 0) {
+            for (const orderItem of opts.orders) {
+              const comp = createOrderComparator(orderItem);
+              data = [...data].sort(comp);
+            }
           }
 
           if (typeof opts.limitNum === "number") {
@@ -302,7 +457,7 @@ function createMockDb() {
         };
 
         const queryState: any = {
-          innerJoin: (joinTbl: any, onCondition: any) => {
+          innerJoin: (joinTbl: any, _onCondition: any) => {
             queryState._joinTable = joinTbl;
             return queryState;
           },
@@ -320,22 +475,9 @@ function createMockDb() {
           },
           then: (resolve: any, reject?: any) => {
             try {
-              let filterFn: any = undefined;
-              if (queryState._where) {
-                const cond = queryState._where;
-                if (typeof cond === "function") {
-                  filterFn = cond;
-                } else if (cond?.op === "eq") {
-                  filterFn = (row: any) => {
-                    const val = typeof cond.val === "function" ? cond.val(row) : cond.val;
-                    const fieldVal = cond.field?.name ? (row[cond.field.name] ?? row?.admin?.[cond.field.name] ?? row?.session?.[cond.field.name]) : undefined;
-                    return fieldVal === val;
-                  };
-                }
-              }
-
               const result = executeQuery({
-                whereFilter: filterFn,
+                whereFilter: queryState._where,
+                orders: queryState._orders,
                 limitNum: queryState._limit,
                 joinTable: queryState._joinTable,
               });
@@ -424,57 +566,70 @@ function createMockDb() {
     }),
 
     update: (table: any) => ({
-      set: (updateData: any) => ({
-        where: (condition: any) => ({
-          returning: async () => {
+      set: (updateData: any) => {
+        const tableName = getTableName(table);
+
+        const updateFn = (condition: any) => {
+          const performUpdate = () => {
             const results: any[] = [];
-            if (table === studentsTable || table?._?.name === "students") {
-              memoryStore.students = memoryStore.students.map((student) => {
-                const isMatch = condition?.__test ? condition.__test(student) : true;
-                if (isMatch) {
-                  const updated = { ...student, ...updateData, updatedAt: new Date() };
-                  results.push(updated);
-                  return updated;
-                }
-                return student;
-              });
-            } else if (table === siteContentTable || table?._?.name === "site_content") {
-              memoryStore.siteContent = memoryStore.siteContent.map((content) => {
-                const isMatch = condition?.__test ? condition.__test(content) : true;
-                if (isMatch) {
-                  const updated = { ...content, ...updateData, updatedAt: new Date() };
-                  results.push(updated);
-                  return updated;
-                }
-                return content;
-              });
-            } else if (table === cmsSectionsTable || table?._?.name === "cms_sections") {
-              memoryStore.cmsSections = memoryStore.cmsSections.map((section) => {
-                const isMatch = condition?.__test ? condition.__test(section) : true;
-                if (isMatch) {
-                  const updated = { ...section, ...updateData, updatedAt: new Date() };
-                  results.push(updated);
-                  return updated;
-                }
-                return section;
-              });
-            }
+            let data: any[] = (memoryStore as any)[tableName] || [];
+
+            (memoryStore as any)[tableName] = data.map((item) => {
+              if (evaluateCondition(condition, item)) {
+                const updated = { ...item, ...updateData, updatedAt: new Date() };
+                results.push(updated);
+                return updated;
+              }
+              return item;
+            });
+
             return results.length ? results : [updateData];
-          },
-        }),
-      }),
+          };
+
+          return {
+            returning: async () => performUpdate(),
+            then: (resolve: any, reject?: any) => {
+              try {
+                const res = performUpdate();
+                return Promise.resolve(res).then(resolve, reject);
+              } catch (err) {
+                if (reject) return reject(err);
+                throw err;
+              }
+            },
+          };
+        };
+
+        return {
+          where: updateFn,
+        };
+      },
     }),
 
     delete: (table: any) => ({
-      where: async (condition: any) => {
-        if (table === sessionsTable || table?._?.name === "admin_sessions") {
-          memoryStore.sessions = memoryStore.sessions.filter((sess) => !(condition?.__test ? condition.__test(sess) : true));
-        } else if (table === studentsTable || table?._?.name === "students") {
-          memoryStore.students = memoryStore.students.filter((stud) => !(condition?.__test ? condition.__test(stud) : true));
-        } else if (table === cmsSectionsTable || table?._?.name === "cms_sections") {
-          memoryStore.cmsSections = memoryStore.cmsSections.filter((sec) => !(condition?.__test ? condition.__test(sec) : true));
-        }
-        return [];
+      where: (condition: any) => {
+        const tableName = getTableName(table);
+
+        const performDelete = () => {
+          const initial = (memoryStore as any)[tableName] || [];
+          (memoryStore as any)[tableName] = initial.filter(
+            (item: any) => !evaluateCondition(condition, item)
+          );
+          return [];
+        };
+
+        return {
+          returning: async () => performDelete(),
+          then: (resolve: any, reject?: any) => {
+            try {
+              const res = performDelete();
+              return Promise.resolve(res).then(resolve, reject);
+            } catch (err) {
+              if (reject) return reject(err);
+              throw err;
+            }
+          },
+        };
       },
     }),
   };

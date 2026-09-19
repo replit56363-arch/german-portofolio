@@ -17,6 +17,9 @@ import Placements from "@/pages/placements";
 import ContentEditor from "@/pages/content-editor";
 import CmsOverviewPage from "@/pages/admin-cms/index";
 import HomeCms from "@/pages/admin-cms/home-cms";
+import StudentsCms from "@/pages/admin-cms/students-cms";
+import AlumniCms from "@/pages/admin-cms/alumni-cms";
+import ClassroomsCms from "@/pages/admin-cms/classrooms-cms";
 import NewsCms from "@/pages/admin-cms/news-cms";
 import MediaCms from "@/pages/admin-cms/media-cms";
 import ServicesCms from "@/pages/admin-cms/services-cms";
@@ -26,6 +29,9 @@ import PlacementsCms from "@/pages/admin-cms/placements-cms";
 import PartnerCms from "@/pages/admin-cms/partner-cms";
 import NavbarCms from "@/pages/admin-cms/navbar-cms";
 import FooterCms from "@/pages/admin-cms/footer-cms";
+import StudentsPublic from "@/pages/students-public";
+import AlumniPage from "@/pages/alumni";
+import ClassroomsPage from "@/pages/classrooms";
 import Login from "@/pages/login";
 import NotFound from "@/pages/not-found";
 import Students from "@/pages/students";
@@ -54,6 +60,16 @@ function Router() {
         <Route path="/ag-anfrage" component={EmployerInquiry} />
         <Route path="/referensi" component={References} />
         <Route path="/penempatan-berhasil" component={Placements} />
+        
+        {/* New Public Pages */}
+        <Route path="/siswa" component={StudentsPublic} />
+        <Route path="/data-siswa" component={StudentsPublic} />
+        <Route path="/alumni" component={AlumniPage} />
+        <Route path="/foto-alumni" component={AlumniPage} />
+        <Route path="/ruangan-kelas" component={ClassroomsPage} />
+        <Route path="/kelas" component={ClassroomsPage} />
+        <Route path="/kelas-fasilitas" component={ClassroomsPage} />
+
         <Route path="/dashboard">
           <AppShell><Dashboard /></AppShell>
         </Route>
@@ -65,6 +81,15 @@ function Router() {
         </Route>
         <Route path="/admin/cms/home">
           <AppShell><HomeCms /></AppShell>
+        </Route>
+        <Route path="/admin/cms/students">
+          <AppShell><StudentsCms /></AppShell>
+        </Route>
+        <Route path="/admin/cms/alumni">
+          <AppShell><AlumniCms /></AppShell>
+        </Route>
+        <Route path="/admin/cms/classrooms">
+          <AppShell><ClassroomsCms /></AppShell>
         </Route>
         <Route path="/admin/cms/news">
           <AppShell><NewsCms /></AppShell>

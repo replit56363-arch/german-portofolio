@@ -34,6 +34,9 @@ const mainNavigation = [
 const cmsNavigation = [
   { href: "/admin/cms", label: "Pusat CMS (Overview)", icon: Layers, isHub: true },
   { href: "/admin/cms/home", label: "Halaman Utama", icon: Home },
+  { href: "/admin/cms/students", label: "Data Siswa", icon: Users },
+  { href: "/admin/cms/alumni", label: "Foto Alumni", icon: Trophy },
+  { href: "/admin/cms/classrooms", label: "Ruangan Kelas", icon: Layers },
   { href: "/admin/cms/news", label: "Halaman Berita", icon: Newspaper },
   { href: "/admin/cms/media", label: "Halaman Media & TV", icon: Tv },
   { href: "/admin/cms/services", label: "Halaman Layanan", icon: Briefcase },

@@ -32,6 +32,9 @@ export function CmsLayout({
 
   const publicPagesList = [
     { href: "/admin/cms/home", label: "Utama (Beranda)", icon: "🏠" },
+    { href: "/admin/cms/students", label: "Data Siswa", icon: "🎓" },
+    { href: "/admin/cms/alumni", label: "Foto Alumni", icon: "📸" },
+    { href: "/admin/cms/classrooms", label: "Ruangan Kelas", icon: "🏫" },
     { href: "/admin/cms/news", label: "Berita", icon: "📰" },
     { href: "/admin/cms/media", label: "Media", icon: "📺" },
     { href: "/admin/cms/services", label: "Layanan", icon: "🛠️" },

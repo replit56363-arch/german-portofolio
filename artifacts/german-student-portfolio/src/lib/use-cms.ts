@@ -10,7 +10,9 @@ export type CmsSectionName =
   | "jakarta"
   | "references"
   | "placements"
-  | "partner";
+  | "partner"
+  | "alumni"
+  | "classrooms";
 
 export const CMS_QUERY_KEY = ["/api/cms"];
 export const getCmsSectionQueryKey = (section: string) => ["/api/cms", section];

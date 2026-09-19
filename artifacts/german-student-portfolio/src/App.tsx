@@ -73,6 +73,19 @@ function Router() {
         <Route path="/dashboard">
           <AppShell><Dashboard /></AppShell>
         </Route>
+        <Route path="/admin">
+          <AppShell><CmsOverviewPage /></AppShell>
+        </Route>
+        <Route path="/admin/overview">
+          <AppShell><CmsOverviewPage /></AppShell>
+        </Route>
+        <Route path="/admin/dashboard">
+          <AppShell><Dashboard /></AppShell>
+        </Route>
+        <Route path="/admin/login" component={Login} />
+        <Route path="/admin/siswa">
+          <AppShell><StudentsCms /></AppShell>
+        </Route>
         <Route path="/admin/content">
           <AppShell><HomeCms /></AppShell>
         </Route>

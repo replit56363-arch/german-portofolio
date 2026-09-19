@@ -659,6 +659,11 @@ async function ensurePostgresTables() {
     const client = await pool.connect();
     try {
       await client.query(`
+        CREATE TABLE IF NOT EXISTS system_metadata (
+          key TEXT PRIMARY KEY,
+          value TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
         CREATE TABLE IF NOT EXISTS admins (
           id SERIAL PRIMARY KEY,
           email TEXT NOT NULL UNIQUE,
@@ -775,35 +780,77 @@ export async function seedDevelopmentData() {
       console.warn("[DB] Note on admin isolation:", cleanErr);
     }
 
-    // 2. Seed Students
-    const [existingStudents] = await db.select({ id: studentsTable.id }).from(studentsTable).limit(1);
-    if (!existingStudents) {
-      await db.insert(studentsTable).values(initialStudents);
-    }
-
-    // 3. Seed SiteContent
-    const [existingContent] = await db.select({ id: siteContentTable.id }).from(siteContentTable).limit(1);
-    if (!existingContent) {
-      await db.insert(siteContentTable).values(initialSiteContent);
-    }
-
-    // 4. Seed all CMS sections
-    for (const [key, val] of Object.entries(defaultCmsData)) {
-      const [existingSection] = await db
-        .select({ id: cmsSectionsTable.id })
-        .from(cmsSectionsTable)
-        .where(eq(cmsSectionsTable.sectionKey, key))
-        .limit(1);
-
-      if (!existingSection) {
-        await db.insert(cmsSectionsTable).values({
-          sectionKey: key,
-          content: val,
-          updatedAt: new Date(),
-        });
+    // 2. Check if initial seed has already run
+    let isAlreadySeeded = false;
+    try {
+      if (pool) {
+        const client = await pool.connect();
+        try {
+          const res = await client.query("SELECT value FROM system_metadata WHERE key = 'initial_seed_done' LIMIT 1");
+          if (res.rows && res.rows.length > 0) {
+            isAlreadySeeded = true;
+          }
+        } finally {
+          client.release();
+        }
+      } else {
+        isAlreadySeeded = Boolean((memoryStore as any).seedCompleted);
       }
+    } catch (metaErr) {
+      console.warn("[DB] Note on system_metadata check:", metaErr);
     }
-    console.log("[DB] PostgreSQL / in-memory database initialized and seeded successfully.");
+
+    if (!isAlreadySeeded) {
+      console.log("[DB] Performing initial one-time seed for students and CMS sections...");
+      // Seed Students
+      const [existingStudents] = await db.select({ id: studentsTable.id }).from(studentsTable).limit(1);
+      if (!existingStudents) {
+        await db.insert(studentsTable).values(initialStudents);
+      }
+
+      // Seed SiteContent
+      const [existingContent] = await db.select({ id: siteContentTable.id }).from(siteContentTable).limit(1);
+      if (!existingContent) {
+        await db.insert(siteContentTable).values(initialSiteContent);
+      }
+
+      // Seed all CMS sections
+      for (const [key, val] of Object.entries(defaultCmsData)) {
+        const [existingSection] = await db
+          .select({ id: cmsSectionsTable.id })
+          .from(cmsSectionsTable)
+          .where(eq(cmsSectionsTable.sectionKey, key))
+          .limit(1);
+
+        if (!existingSection) {
+          await db.insert(cmsSectionsTable).values({
+            sectionKey: key,
+            content: val,
+            updatedAt: new Date(),
+          });
+        }
+      }
+
+      // Mark seed as completed so future server boots will NOT re-seed deleted data
+      try {
+        if (pool) {
+          const client = await pool.connect();
+          try {
+            await client.query("INSERT INTO system_metadata (key, value) VALUES ('initial_seed_done', 'true') ON CONFLICT (key) DO NOTHING");
+          } finally {
+            client.release();
+          }
+        } else {
+          (memoryStore as any).seedCompleted = true;
+        }
+      } catch (markErr) {
+        console.warn("[DB] Note on marking seed completion:", markErr);
+      }
+      console.log("[DB] Initial seed completed successfully.");
+    } else {
+      console.log("[DB] Database already seeded previously. Preserving existing records and user deletions.");
+    }
+    console.log("[DB] PostgreSQL / in-memory database initialized successfully.");
   } catch (err) {
     console.warn("[DB] Error seeding data (non-fatal):", err);
   }

@@ -1,16 +1,30 @@
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
 import { ArrowRight, LockKeyhole, Mail, ShieldCheck } from "lucide-react";
-import { useLogin, getGetCurrentAdminQueryKey } from "@workspace/api-client-react";
+import { useLogin, useGetCurrentAdmin, getGetCurrentAdminQueryKey } from "@workspace/api-client-react";
 import { AppMark } from "@/components/app-shell";
 
 export default function Login() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
   const login = useLogin();
+  const { data: currentAdmin } = useGetCurrentAdmin({
+    query: {
+      queryKey: getGetCurrentAdminQueryKey(),
+      retry: false,
+      staleTime: 60_000,
+    },
+  });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // If already logged in, redirect to dashboard automatically
+  useEffect(() => {
+    if (currentAdmin && currentAdmin.id) {
+      setLocation("/dashboard");
+    }
+  }, [currentAdmin, setLocation]);
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -24,8 +38,13 @@ export default function Login() {
             console.error("Storage error:", err);
           }
         }
+        if (result?.admin) {
+          queryClient.setQueryData(getGetCurrentAdminQueryKey(), result.admin);
+        }
         queryClient.invalidateQueries({ queryKey: getGetCurrentAdminQueryKey() });
-        setLocation("/dashboard");
+        setTimeout(() => {
+          setLocation("/dashboard");
+        }, 50);
       },
     });
   };

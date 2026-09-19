@@ -137,7 +137,8 @@ const DEFAULT_STUDENTS_LIST: StudentItem[] = [
 ];
 
 export default function StudentsCms() {
-  const [students, setStudents] = useState<StudentItem[]>(DEFAULT_STUDENTS_LIST);
+  const [students, setStudents] = useState<StudentItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -161,6 +162,7 @@ export default function StudentsCms() {
 
   useEffect(() => {
     async function fetchStudents() {
+      setLoading(true);
       try {
         const res = await fetch("/api/students", {
           credentials: "include",
@@ -168,8 +170,9 @@ export default function StudentsCms() {
         });
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data) && data.length > 0) {
+          if (Array.isArray(data)) {
             setStudents(data);
+            setLoading(false);
             return;
           }
         }
@@ -177,12 +180,18 @@ export default function StudentsCms() {
         const publicRes = await fetch("/api/public/students");
         if (publicRes.ok) {
           const data = await publicRes.json();
-          if (Array.isArray(data) && data.length > 0) {
+          if (Array.isArray(data)) {
             setStudents(data);
+            setLoading(false);
+            return;
           }
         }
+        setStudents([]);
       } catch (err) {
-        console.warn("Could not fetch students, using fallback list", err);
+        console.warn("Could not fetch students", err);
+        setStudents([]);
+      } finally {
+        setLoading(false);
       }
     }
     fetchStudents();

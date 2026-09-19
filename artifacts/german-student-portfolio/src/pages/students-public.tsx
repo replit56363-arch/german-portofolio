@@ -212,7 +212,7 @@ const FALLBACK_STUDENTS: StudentPublicData[] = [
 
 export default function StudentsPublic() {
   const { t } = useLanguage();
-  const [students, setStudents] = useState<StudentPublicData[]>(FALLBACK_STUDENTS);
+  const [students, setStudents] = useState<StudentPublicData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [levelFilter, setLevelFilter] = useState<string>("all");
@@ -226,10 +226,9 @@ export default function StudentsPublic() {
         const res = await fetch("/api/public/students");
         if (res.ok) {
           const data = await res.json();
-          if (mounted && Array.isArray(data) && data.length > 0) {
-            // Map api student data with fallback fields
+          if (mounted && Array.isArray(data)) {
+            // Map api student data
             const enriched = data.map((item: any, idx: number) => {
-              const fallbackItem = FALLBACK_STUDENTS[idx % FALLBACK_STUDENTS.length];
               return {
                 id: item.id || idx + 1,
                 name: item.name,
@@ -237,26 +236,26 @@ export default function StudentsPublic() {
                 level: item.level || "A1",
                 cohort: item.cohort || "Cohort 2024",
                 status: item.status || "training",
-                bio: item.bio || fallbackItem.bio,
-                photoUrl: item.photoUrl || fallbackItem.photoUrl,
-                targetProgram: item.targetProgram || fallbackItem.targetProgram,
-                targetCity: item.placement?.city || fallbackItem.targetCity,
-                startDate: item.startDate || fallbackItem.startDate,
-                speakingScore: fallbackItem.speakingScore,
-                grammarScore: fallbackItem.grammarScore,
-                listeningScore: fallbackItem.listeningScore,
-                readingScore: fallbackItem.readingScore,
-                speakingVideoUrl: fallbackItem.speakingVideoUrl,
-                certificateUrl: fallbackItem.certificateUrl,
-                milestones: fallbackItem.milestones,
-                placement: item.placement || (item.status === "placed" ? fallbackItem.placement : undefined),
+                bio: item.bio || "Peserta program persiapan bahasa & vokasi Jerman Lernpfad Medan.",
+                photoUrl: item.photoUrl || "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=400&q=80",
+                targetProgram: item.targetProgram || "Ausbildung",
+                targetCity: item.placement?.city || item.targetCity || "Jerman",
+                startDate: item.startDate || "2024-01-01",
+                speakingScore: item.speakingScore || 85,
+                grammarScore: item.grammarScore || 85,
+                listeningScore: item.listeningScore || 85,
+                readingScore: item.readingScore || 85,
+                speakingVideoUrl: item.speakingVideoUrl,
+                certificateUrl: item.certificateUrl,
+                milestones: item.milestones || [],
+                placement: item.placement,
               };
             });
             setStudents(enriched);
           }
         }
       } catch (err) {
-        console.error("Failed to load public students API, using fallback data", err);
+        console.error("Failed to load public students API", err);
       } finally {
         if (mounted) setIsLoading(false);
       }

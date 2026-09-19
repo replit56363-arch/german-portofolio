@@ -72,12 +72,22 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [location, setLocation] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { data: admin, isLoading: adminLoading, isError } = useGetCurrentAdmin({
-    query: { queryKey: getGetCurrentAdminQueryKey(), retry: false },
+    query: {
+      queryKey: getGetCurrentAdminQueryKey(),
+      retry: 2,
+      staleTime: 60_000,
+    },
   });
   const logout = useLogout();
 
   useEffect(() => {
-    if (!adminLoading && isError && location !== "/login") setLocation("/login");
+    // Only redirect if genuinely not authenticated (no query data, error, and no stored token)
+    if (!adminLoading && isError && location !== "/login") {
+      const localToken = typeof window !== "undefined" ? localStorage.getItem("admin_session_token") : null;
+      if (!localToken) {
+        setLocation("/login");
+      }
+    }
   }, [adminLoading, isError, location, setLocation]);
 
   const signOut = () => {

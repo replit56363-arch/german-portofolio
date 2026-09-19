@@ -40,7 +40,7 @@ router.post("/auth/login", async (request, response) => {
   }
 
   const sessionId = createSessionId();
-  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
 
   try {
     await db.insert(sessionsTable).values({
@@ -53,13 +53,17 @@ router.post("/auth/login", async (request, response) => {
   }
 
   try {
-    if ((memoryStore as any)?.sessions) {
-      (memoryStore as any).sessions.unshift({
-        id: sessionId,
-        adminId: admin.id,
-        expiresAt: expiresAt,
-        createdAt: new Date(),
-      });
+    if (!(memoryStore as any).sessions) (memoryStore as any).sessions = [];
+    if (!(memoryStore as any).admins) (memoryStore as any).admins = [];
+
+    (memoryStore as any).sessions.unshift({
+      id: sessionId,
+      adminId: admin.id,
+      expiresAt: expiresAt,
+      createdAt: new Date(),
+    });
+    if (!(memoryStore as any).admins.some((a: any) => a.id === admin.id)) {
+      (memoryStore as any).admins.push(admin);
     }
   } catch {}
 
@@ -76,7 +80,7 @@ router.post("/auth/login", async (request, response) => {
       sameSite: isHttps ? "none" : "lax",
       secure: isHttps,
       path: "/",
-      maxAge: 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60 * 24 * 30,
     });
   } catch {}
 

@@ -29,6 +29,7 @@ import { getLocalizedArticle } from "@/lib/news-translations";
 import { SectionEyebrow } from "@/components/portfolio-ui";
 import { PublicNavbar } from "@/components/public-navbar";
 import { PublicFooter } from "@/components/public-footer";
+import { AlumniHero } from "@/components/alumni-hero";
 
 type LucideIcon = typeof UsersRound;
 
@@ -139,40 +140,6 @@ function SectionLabel({ children, light = false }: { children: React.ReactNode; 
     <div className={`flex items-center gap-3 font-mono-ui text-[10px] font-bold uppercase tracking-[0.2em] ${light ? "text-[#a9d5c8]" : "text-[#d35f46]"}`}>
       <span className={`h-px w-8 ${light ? "bg-[#a9d5c8]" : "bg-[#d35f46]"}`} />
       {children}
-    </div>
-  );
-}
-
-function CandidateArt() {
-  return (
-    <div className="relative mx-auto aspect-[0.86] w-full max-w-[455px] rotate-[2deg] rounded-[2rem] bg-[#d86d50] p-3 shadow-[18px_22px_0_#173d3a] transition-transform duration-500 hover:rotate-0">
-      <div className="relative h-full overflow-hidden rounded-[1.45rem] border border-[#f7d5b0]/60 bg-[#df8b67]">
-        <div className="absolute inset-0 opacity-25 [background-image:linear-gradient(#f7d5b0_1px,transparent_1px),linear-gradient(90deg,#f7d5b0_1px,transparent_1px)] [background-size:32px_32px]" />
-        <div className="absolute -right-14 top-10 h-48 w-48 rounded-full border-[22px] border-[#f4c76b]/90" />
-        <div className="absolute -left-16 bottom-12 h-40 w-40 rounded-full bg-[#9ccabc]/80" />
-        <div className="absolute left-7 top-7 flex items-center gap-2 rounded-full border border-[#f7d5b0]/70 bg-[#f6c774]/90 px-3 py-1.5 font-mono-ui text-[9px] font-bold tracking-[0.12em] text-[#173d3a]">
-          <BadgeCheck size={13} /> PROFIL TERVERIFIKASI
-        </div>
-        <div className="absolute inset-x-10 bottom-0 h-[72%]">
-          <div className="absolute bottom-0 left-1/2 h-[67%] w-[74%] -translate-x-1/2 rounded-t-[9rem] bg-[#173d3a]" />
-          <div className="absolute bottom-[42%] left-1/2 h-[29%] w-[34%] -translate-x-1/2 rounded-[48%] bg-[#b87957]" />
-          <div className="absolute bottom-[57%] left-1/2 h-[17%] w-[44%] -translate-x-1/2 rounded-t-[50%] bg-[#302f31]" />
-          <div className="absolute bottom-[53%] left-[31%] h-2 w-2 rounded-full bg-[#173d3a]" />
-          <div className="absolute bottom-[53%] right-[31%] h-2 w-2 rounded-full bg-[#173d3a]" />
-          <div className="absolute bottom-[48%] left-1/2 h-px w-8 -translate-x-1/2 rotate-[6deg] bg-[#7e4b3e]" />
-          <div className="absolute bottom-[40%] left-1/2 h-4 w-14 -translate-x-1/2 rounded-b-[50%] border-b-2 border-[#7e4b3e]" />
-          <div className="absolute bottom-[32%] left-[12%] h-20 w-16 rotate-[18deg] rounded-t-[3rem] bg-[#e7b094]" />
-          <div className="absolute bottom-[32%] right-[12%] h-20 w-16 -rotate-[18deg] rounded-t-[3rem] bg-[#e7b094]" />
-        </div>
-        <div className="absolute bottom-7 left-7 right-7 flex items-end justify-between border-t border-[#f7d5b0]/70 pt-4 text-[#173d3a]">
-          <div><p className="font-['Fraunces'] text-[27px] font-semibold leading-none">Nadira A.</p><p className="mt-1 font-mono-ui text-[9px] font-bold uppercase tracking-[0.14em]">Hospitality · B1</p></div>
-          <ArrowUpRight size={24} />
-        </div>
-      </div>
-      <div className="absolute -bottom-5 left-2 max-w-[calc(100%-1.5rem)] -rotate-[4deg] rounded-xl border-2 border-[#173d3a] bg-[#f5eee3] p-2.5 text-[#173d3a] shadow-[4px_5px_0_#173d3a] sm:-bottom-6 sm:-left-8 sm:w-[180px] sm:-rotate-[8deg] sm:p-3 sm:shadow-[5px_7px_0_#173d3a]">
-        <div className="flex items-center justify-between font-mono-ui text-[8px] font-bold uppercase tracking-[0.14em] text-[#66837c]"><span>Siap berangkat</span><CircleCheck size={13} className="text-[#d35f46]" /></div>
-        <div className="mt-2.5 flex gap-1 sm:mt-3"><span className="h-1.5 w-10 rounded-full bg-[#d35f46]" /><span className="h-1.5 w-6 rounded-full bg-[#f4c76b]" /><span className="h-1.5 w-4 rounded-full bg-[#9ccabc]" /></div>
-      </div>
     </div>
   );
 }
@@ -289,38 +256,7 @@ export default function Landing() {
       <PublicNavbar activeRoute="/" />
 
       <main id="top">
-        <section className="relative mx-auto grid max-w-[1240px] gap-14 px-5 pb-24 pt-16 lg:grid-cols-[.95fr_1.05fr] lg:items-center lg:px-8 lg:pb-32 lg:pt-24">
-          <div className="absolute -left-40 top-32 -z-0 h-80 w-80 rounded-full bg-[#e7d1bd]/55 blur-3xl" />
-          <div className="relative z-10">
-            <div className="landing-rise"><SectionLabel>{eyebrow}</SectionLabel></div>
-            <h1 className="landing-rise-2 mt-7 max-w-2xl font-['Fraunces'] text-[clamp(2.4rem,6vw,6.6rem)] font-medium leading-[0.92] tracking-[-0.075em] text-[#173d3a]" data-testid="text-landing-title">{title}</h1>
-            <p className="landing-rise-3 mt-7 max-w-xl text-[17px] leading-8 text-[#55736b]" data-testid="text-landing-description">{description}</p>
-            <div className="landing-rise-3 mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <a href={primaryCtaHref} target="_blank" rel="noreferrer" className="group inline-flex w-fit items-center gap-3 rounded-full bg-[#d35f46] px-5 py-3.5 font-mono-ui text-[11px] font-bold uppercase tracking-[0.12em] text-[#fff8ee] shadow-[5px_5px_0_#173d3a] transition-all hover:-translate-y-1 hover:shadow-[7px_8px_0_#173d3a]" data-testid="link-landing-primary-cta">
-                {primaryCta} <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
-              <button type="button" onClick={() => navTo("cara-kerja")} className="inline-flex w-fit items-center gap-2 px-3 py-3 font-mono-ui text-[11px] font-bold uppercase tracking-[0.12em] text-[#486961] transition-colors hover:text-[#d35f46]" data-testid="button-landing-secondary-cta">
-                {t("hero.cta_approach", "Kenali pendekatan kami")} <ArrowDownRight size={16} />
-              </button>
-            </div>
-            <div className="mt-12 grid max-w-md grid-cols-3 gap-2 sm:gap-4 border-t border-[#173d3a]/20 pt-5">
-              {stats.map(({ value, label, icon: Icon }) => (
-                <div key={label}>
-                  <div className="flex items-center gap-1.5 sm:gap-2"><Icon size={14} className="text-[#d35f46] shrink-0" /><p className="font-mono-ui text-lg sm:text-xl font-bold text-[#173d3a]">{value}</p></div>
-                  <p className="mt-1 text-[11px] sm:text-xs text-[#6b867e] leading-tight">{label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="landing-drift relative z-10 px-5 pb-8 pt-4 sm:px-12 lg:px-5 lg:pt-8">
-            <CandidateArt />
-            <div className="absolute right-1 top-0 hidden w-[145px] -rotate-[7deg] rounded-xl border-2 border-[#173d3a] bg-[#9ccabc] p-3 text-[#173d3a] shadow-[5px_6px_0_#173d3a] sm:block">
-              <Globe2 size={18} />
-              <p className="mt-4 font-['Fraunces'] text-[19px] font-semibold leading-[1.05]">{t("hero.badge_two_places", "Dua tempat. Satu arah.")}</p>
-              <p className="mt-3 font-mono-ui text-[8px] font-bold uppercase tracking-[0.12em]">ID × DE</p>
-            </div>
-          </div>
-        </section>
+        <AlumniHero onScrollToApproach={() => navTo("cara-kerja")} />
 
         <div className="border-y border-[#173d3a]/15 bg-[#e7f0e9]">
           <div className="mx-auto flex max-w-[1240px] flex-wrap items-center gap-x-8 gap-y-4 px-5 py-5 lg:px-8">

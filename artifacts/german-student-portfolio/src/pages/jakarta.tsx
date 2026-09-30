@@ -255,14 +255,13 @@ export default function Jakarta() {
           <div className="mt-12 grid gap-4 md:grid-cols-2">
             <article className="rounded-[1.4rem] bg-[#f4c76b] p-7">
               <MapPin size={22} className="text-[#d35f46]" />
-              <h3 className="mt-12 font-['Fraunces'] text-3xl font-semibold">ICH LIEBE DEUTSCH MEDAN</h3>
+              <h3 className="mt-12 font-['Fraunces'] text-3xl font-semibold">{cmsData?.officeJakarta?.name || "ICH LIEBE DEUTSCH MEDAN"}</h3>
               <p className="mt-4 max-w-sm text-sm leading-6 text-[#4f6b64]">
-                Jl. Ternak II No. 39, Medan Polonia<br />
-                Kota Medan, Sumatera Utara<br />
+                {cmsData?.officeJakarta?.address || "Jl. Ternak II No. 39, Medan Polonia, Kota Medan, Sumatera Utara"}<br />
                 {t("about_page.legal_status", "Lembaga Kursus Terdaftar & Berizin Resmi (2024)")}
               </p>
-              <a href="tel:082127324453" className="mt-7 inline-flex items-center gap-2 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#173d3a] hover:text-[#d35f46]">
-                <Phone size={14} /> 082127324453
+              <a href={`tel:${cmsData?.officeJakarta?.phone || "082127324453"}`} className="mt-7 inline-flex items-center gap-2 font-mono-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#173d3a] hover:text-[#d35f46]">
+                <Phone size={14} /> {cmsData?.officeJakarta?.phone || "082127324453"}
               </a>
             </article>
             <article className="rounded-[1.4rem] bg-[#e7f0e9] p-7">

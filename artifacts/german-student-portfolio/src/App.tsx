@@ -55,6 +55,7 @@ function Router() {
         <Route path="/berita" component={News} />
         <Route path="/berita/:id" component={NewsDetail} />
         <Route path="/media" component={Media} />
+        <Route path="/medan" component={Jakarta} />
         <Route path="/jakarta" component={Jakarta} />
         <Route path="/layanan" component={Services} />
         <Route path="/ag-anfrage" component={EmployerInquiry} />
@@ -112,6 +113,9 @@ function Router() {
         </Route>
         <Route path="/admin/cms/services">
           <AppShell><ServicesCms /></AppShell>
+        </Route>
+        <Route path="/admin/cms/medan">
+          <AppShell><JakartaCms /></AppShell>
         </Route>
         <Route path="/admin/cms/jakarta">
           <AppShell><JakartaCms /></AppShell>

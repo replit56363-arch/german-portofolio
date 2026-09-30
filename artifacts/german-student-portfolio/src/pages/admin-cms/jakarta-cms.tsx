@@ -3,10 +3,10 @@ import { useCmsSection, useUpdateCmsSection, useResetCms } from "@/lib/use-cms";
 import { CmsLayout } from "./cms-layout";
 import { SectionEyebrow } from "@/components/portfolio-ui";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { Plus, Trash2, Edit2, MapPin, Building, Sparkles } from "lucide-react";
+import { MapPin, Phone, Mail, Clock } from "lucide-react";
 
 export default function JakartaCms() {
-  const { data, isLoading, isError } = useCmsSection("jakarta");
+  const { data, isLoading } = useCmsSection("jakarta");
   const updateMutation = useUpdateCmsSection("jakarta");
   const resetMutation = useResetCms();
 
@@ -16,7 +16,17 @@ export default function JakartaCms() {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   useEffect(() => {
-    if (data) setForm(data);
+    if (data) {
+      const initial = { ...data };
+      delete initial.officeGermany;
+      if (!initial.officeJakarta) {
+        initial.officeJakarta = {};
+      }
+      if (!initial.officeJakarta.address) {
+        initial.officeJakarta.address = "Jl. Ternak II No. 39, Medan Polonia, Kota Medan, Sumatera Utara";
+      }
+      setForm(initial);
+    }
   }, [data]);
 
   const handleHeaderChange = (key: string, value: any) => {
@@ -25,29 +35,31 @@ export default function JakartaCms() {
     setForm((prev: any) => ({ ...prev, [key]: value }));
   };
 
-  const handleOfficeJakartaChange = (key: string, value: any) => {
+  const handleOfficeChange = (key: string, value: any) => {
     setSaved(false);
     setError("");
     setForm((prev: any) => ({
       ...prev,
-      officeJakarta: { ...prev.officeJakarta, [key]: value },
-    }));
-  };
-
-  const handleOfficeGermanyChange = (key: string, value: any) => {
-    setSaved(false);
-    setError("");
-    setForm((prev: any) => ({
-      ...prev,
-      officeGermany: { ...prev.officeGermany, [key]: value },
+      officeJakarta: {
+        ...prev.officeJakarta,
+        [key]: value,
+      },
     }));
   };
 
   const handleSave = () => {
     setError("");
-    updateMutation.mutate(form, {
+    const cleaned = { ...form };
+    delete cleaned.officeGermany;
+    if (!cleaned.officeJakarta?.address) {
+      cleaned.officeJakarta = {
+        ...cleaned.officeJakarta,
+        address: "Jl. Ternak II No. 39, Medan Polonia, Kota Medan, Sumatera Utara",
+      };
+    }
+    updateMutation.mutate(cleaned, {
       onSuccess: () => setSaved(true),
-      onError: (err: any) => setError(err.message || "Gagal menyimpan data Halaman Jakarta"),
+      onError: (err: any) => setError(err.message || "Gagal menyimpan data informasi kantor"),
     });
   };
 
@@ -55,7 +67,9 @@ export default function JakartaCms() {
     resetMutation.mutate("jakarta", {
       onSuccess: (res: any) => {
         if (res?.data) {
-          setForm(res.data);
+          const resetData = { ...res.data };
+          delete resetData.officeGermany;
+          setForm(resetData);
         }
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
@@ -79,9 +93,9 @@ export default function JakartaCms() {
 
   return (
     <CmsLayout
-      title="Kelola Halaman Jakarta (Kantor & Kontak)"
-      subtitle="Manajemen informasi kantor perwakilan German Institut Jakarta, kantor Großpaschleben Jerman, jam buka, kontak, dan 3 pilar asistensi."
-      publicHref="/jakarta"
+      title="Kelola Halaman Medan (Lokasi & Kontak)"
+      subtitle="Manajemen informasi kantor resmi Jl. Ternak II No. 39 Medan Polonia, jam kerja operasional, kontak telepon WhatsApp, email, dan identitas lembaga."
+      publicHref="/medan"
       isSaving={updateMutation.isPending}
       isSaved={saved}
       errorMessage={error}
@@ -94,7 +108,7 @@ export default function JakartaCms() {
         <section className="rounded-2xl border border-[#dce7ef] bg-white p-6 shadow-sm sm:p-7">
           <div className="border-b border-[#eef4f8] pb-4">
             <SectionEyebrow>Tampilan Halaman</SectionEyebrow>
-            <h2 className="text-lg font-bold text-[#233d59]">Header & Banner Jakarta</h2>
+            <h2 className="text-lg font-bold text-[#233d59]">Header & Banner Informasi Lembaga</h2>
           </div>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <div>
@@ -103,6 +117,7 @@ export default function JakartaCms() {
                 type="text"
                 value={form.headerEyebrow || ""}
                 onChange={(e) => handleHeaderChange("headerEyebrow", e.target.value)}
+                placeholder="Tentang Ich Liebe Deutsch Medan"
                 className="field-input mt-1.5"
               />
             </div>
@@ -112,6 +127,7 @@ export default function JakartaCms() {
                 type="text"
                 value={form.headerTitle || ""}
                 onChange={(e) => handleHeaderChange("headerTitle", e.target.value)}
+                placeholder="Mengenal Ich Liebe Deutsch Medan"
                 className="field-input mt-1.5 font-bold"
               />
             </div>
@@ -121,144 +137,115 @@ export default function JakartaCms() {
                 rows={2}
                 value={form.headerSubtitle || ""}
                 onChange={(e) => handleHeaderChange("headerSubtitle", e.target.value)}
+                placeholder="Lembaga kursus bahasa Jerman terdaftar dan memiliki izin operasional sejak tahun 2024 di Kota Medan."
                 className="field-input mt-1.5"
               />
             </div>
           </div>
         </section>
 
-        {/* KANTOR JAKARTA & KANTOR JERMAN */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* KANTOR JAKARTA */}
-          <section className="rounded-2xl border border-[#dce7ef] bg-white p-6 shadow-sm sm:p-7">
-            <div className="flex items-center gap-2 border-b border-[#eef4f8] pb-4">
-              <MapPin className="text-[#d35f46]" size={18} />
-              <h2 className="text-base font-bold text-[#233d59]">1. Kantor Jakarta (Indonesia)</h2>
-            </div>
-            <div className="mt-5 space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-[#45627c]">Nama Institusi / Kantor</label>
-                <input
-                  type="text"
-                  value={form.officeJakarta?.name || ""}
-                  onChange={(e) => handleOfficeJakartaChange("name", e.target.value)}
-                  className="field-input mt-1.5"
-                />
+        {/* KANTOR RESMI MEDAN (Jl. Ternak II No. 39, Medan Polonia) */}
+        <section className="rounded-2xl border border-[#dce7ef] bg-white p-6 shadow-sm sm:p-7">
+          <div className="flex items-center justify-between border-b border-[#eef4f8] pb-4">
+            <div className="flex items-center gap-2">
+              <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#fbeee6] text-[#d35f46]">
+                <MapPin size={18} />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[#45627c]">Gedung / Lokasi</label>
-                <input
-                  type="text"
-                  value={form.officeJakarta?.building || ""}
-                  onChange={(e) => handleOfficeJakartaChange("building", e.target.value)}
-                  className="field-input mt-1.5"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-[#45627c]">Alamat Lengkap</label>
-                <textarea
-                  rows={2}
-                  value={form.officeJakarta?.address || ""}
-                  onChange={(e) => handleOfficeJakartaChange("address", e.target.value)}
-                  className="field-input mt-1.5 text-xs"
-                />
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="block text-xs font-bold text-[#45627c]">Nomor WhatsApp / Telp</label>
-                  <input
-                    type="text"
-                    value={form.officeJakarta?.phone || ""}
-                    onChange={(e) => handleOfficeJakartaChange("phone", e.target.value)}
-                    className="field-input mt-1.5 font-mono text-xs"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-[#45627c]">Email Kontak</label>
-                  <input
-                    type="email"
-                    value={form.officeJakarta?.email || ""}
-                    onChange={(e) => handleOfficeJakartaChange("email", e.target.value)}
-                    className="field-input mt-1.5 font-mono text-xs"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-[#45627c]">Jam Operasional Kantor</label>
-                <input
-                  type="text"
-                  value={form.officeJakarta?.operatingHours || ""}
-                  onChange={(e) => handleOfficeJakartaChange("operatingHours", e.target.value)}
-                  className="field-input mt-1.5 text-xs"
-                />
+                <h2 className="text-base font-bold text-[#233d59]">Kantor Resmi Lembaga (Medan)</h2>
+                <p className="text-xs text-[#63809e]">Jl. Ternak II No. 39, Medan Polonia, Kota Medan, Sumatera Utara</p>
               </div>
             </div>
-          </section>
+            <span className="rounded-full bg-[#f0fbf8] px-3 py-1 text-[11px] font-bold text-[#1a8268]">
+              Kantor Utama & Operasional
+            </span>
+          </div>
 
-          {/* KANTOR JERMAN */}
-          <section className="rounded-2xl border border-[#dce7ef] bg-white p-6 shadow-sm sm:p-7">
-            <div className="flex items-center gap-2 border-b border-[#eef4f8] pb-4">
-              <Building className="text-[#1b5a9f]" size={18} />
-              <h2 className="text-base font-bold text-[#233d59]">2. Kantor Pusat Jerman (AuLiD)</h2>
+          <div className="mt-6 space-y-4 max-w-3xl">
+            <div>
+              <label className="block text-xs font-bold text-[#45627c]">Nama Institusi / Lembaga</label>
+              <input
+                type="text"
+                value={form.officeJakarta?.name || ""}
+                onChange={(e) => handleOfficeChange("name", e.target.value)}
+                placeholder="ICH LIEBE DEUTSCH MEDAN"
+                className="field-input mt-1.5"
+              />
             </div>
-            <div className="mt-5 space-y-4">
+
+            <div>
+              <label className="block text-xs font-bold text-[#45627c]">Wilayah / Gedung Lokasi</label>
+              <input
+                type="text"
+                value={form.officeJakarta?.building || ""}
+                onChange={(e) => handleOfficeChange("building", e.target.value)}
+                placeholder="Medan Polonia"
+                className="field-input mt-1.5"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-[#45627c]">Alamat Lengkap</label>
+              <textarea
+                rows={2}
+                value={form.officeJakarta?.address || ""}
+                onChange={(e) => handleOfficeChange("address", e.target.value)}
+                placeholder="Jl. Ternak II No. 39, Medan Polonia, Kota Medan, Sumatera Utara"
+                className="field-input mt-1.5 font-medium text-xs text-[#173d3a]"
+              />
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-xs font-bold text-[#45627c]">Nama Kantor di Jerman</label>
+                <label className="flex items-center gap-1.5 text-xs font-bold text-[#45627c]">
+                  <Phone size={13} className="text-[#d35f46]" />
+                  Nomor WhatsApp / Telp
+                </label>
                 <input
                   type="text"
-                  value={form.officeGermany?.name || ""}
-                  onChange={(e) => handleOfficeGermanyChange("name", e.target.value)}
-                  className="field-input mt-1.5"
+                  value={form.officeJakarta?.phone || ""}
+                  onChange={(e) => handleOfficeChange("phone", e.target.value)}
+                  placeholder="082127324453"
+                  className="field-input mt-1.5 font-mono text-xs"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[#45627c]">Alamat Lengkap</label>
-                <textarea
-                  rows={2}
-                  value={form.officeGermany?.address || ""}
-                  onChange={(e) => handleOfficeGermanyChange("address", e.target.value)}
-                  className="field-input mt-1.5 text-xs"
-                />
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="block text-xs font-bold text-[#45627c]">Telepon Jerman</label>
-                  <input
-                    type="text"
-                    value={form.officeGermany?.phone || ""}
-                    onChange={(e) => handleOfficeGermanyChange("phone", e.target.value)}
-                    className="field-input mt-1.5 font-mono text-xs"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-[#45627c]">Email Jerman</label>
-                  <input
-                    type="email"
-                    value={form.officeGermany?.email || ""}
-                    onChange={(e) => handleOfficeGermanyChange("email", e.target.value)}
-                    className="field-input mt-1.5 font-mono text-xs"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-[#45627c]">Jam Operasional Jerman</label>
+                <label className="flex items-center gap-1.5 text-xs font-bold text-[#45627c]">
+                  <Mail size={13} className="text-[#d35f46]" />
+                  Email Kontak
+                </label>
                 <input
-                  type="text"
-                  value={form.officeGermany?.operatingHours || ""}
-                  onChange={(e) => handleOfficeGermanyChange("operatingHours", e.target.value)}
-                  className="field-input mt-1.5 text-xs"
+                  type="email"
+                  value={form.officeJakarta?.email || ""}
+                  onChange={(e) => handleOfficeChange("email", e.target.value)}
+                  placeholder="ichliebedtschmedan@gmail.com"
+                  className="field-input mt-1.5 font-mono text-xs"
                 />
               </div>
             </div>
-          </section>
-        </div>
+
+            <div>
+              <label className="flex items-center gap-1.5 text-xs font-bold text-[#45627c]">
+                <Clock size={13} className="text-[#d35f46]" />
+                Jam Operasional Kantor
+              </label>
+              <input
+                type="text"
+                value={form.officeJakarta?.operatingHours || ""}
+                onChange={(e) => handleOfficeChange("operatingHours", e.target.value)}
+                placeholder="Senin – Sabtu: 08:30 – 17:00 WIB"
+                className="field-input mt-1.5 text-xs"
+              />
+            </div>
+          </div>
+        </section>
       </div>
 
       {/* Reset Confirmation Dialog */}
       <ConfirmDialog
         isOpen={showResetConfirm}
-        title="Reset Data Halaman Jakarta"
-        description="Kembalikan informasi kantor Jakarta, kantor Jerman, dan detail kontak ke pengaturan standar awal?"
+        title="Reset Data Informasi Kantor & Kontak"
+        description="Kembalikan informasi kantor resmi Jl. Ternak II No. 39 Medan Polonia dan detail kontak ke pengaturan standar awal?"
         confirmText="Reset ke Bawaan"
         cancelText="Batal"
         variant="warning"

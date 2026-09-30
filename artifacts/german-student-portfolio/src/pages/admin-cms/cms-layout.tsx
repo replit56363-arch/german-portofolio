@@ -38,7 +38,7 @@ export function CmsLayout({
     { href: "/admin/cms/news", label: "Berita", icon: "📰" },
     { href: "/admin/cms/media", label: "Media", icon: "📺" },
     { href: "/admin/cms/services", label: "Layanan", icon: "🛠️" },
-    { href: "/admin/cms/jakarta", label: "Jakarta", icon: "📍" },
+    { href: "/admin/cms/medan", label: "Halaman Medan", icon: "📍" },
     { href: "/admin/cms/references", label: "Referensi", icon: "🏆" },
     { href: "/admin/cms/placements", label: "Penempatan", icon: "🤝" },
     { href: "/admin/cms/partner", label: "Untuk Partner", icon: "🏢" },
@@ -52,7 +52,9 @@ export function CmsLayout({
       <div className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-[#e2ecf5] no-scrollbar">
         <span className="shrink-0 text-xs font-bold text-[#63809e] mr-2">Pilih Halaman CMS:</span>
         {publicPagesList.map((item) => {
-          const isActive = location === item.href;
+          const isActive =
+            location === item.href ||
+            (item.href === "/admin/cms/medan" && (location === "/admin/cms/jakarta" || location === "/admin/cms/medan"));
           return (
             <Link
               key={item.href}

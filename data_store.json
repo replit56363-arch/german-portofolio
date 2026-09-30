@@ -1,0 +1,1277 @@
+{
+  "seedCompleted": true,
+  "admins": [
+    {
+      "id": 1,
+      "email": "admin@co.id",
+      "name": "Admin Utama",
+      "passwordHash": "fd73f70f97e599b3cb39eb4edd964edb:9d7e6cfa8c624c1429a470e61d1c1f28c97b8b88003673cc55b7ee6e1950c21519a3f0d824b18575afa6651d66ebe268012067c2562587c494f51bad450a24ac",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2026-09-30T04:39:52.556Z"
+    }
+  ],
+  "sessions": [],
+  "students": [
+    {
+      "id": 1,
+      "name": "Ahmad Fauzi",
+      "email": "ahmad.fauzi@example.com",
+      "phone": "+6281234567890",
+      "photoUrl": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&q=80",
+      "level": "A2",
+      "status": "ready",
+      "cohort": "2024-Q3",
+      "joinedAt": "2024-06-01",
+      "bio": "Fokus persiapan Ausbildung bidang perhotelan (Hotelfachmann) di Bayern.",
+      "speakingVideoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "certificateName": "Goethe-Zertifikat A2",
+      "certificateUrl": "https://example.com/certificates/ahmad-a2.pdf",
+      "levelHistory": [
+        {
+          "level": "A1",
+          "completedAt": "2024-04-15",
+          "score": 88
+        },
+        {
+          "level": "A2",
+          "completedAt": "2024-07-20",
+          "score": 92
+        }
+      ],
+      "placement": null,
+      "createdAt": "2024-06-01T00:00:00.000Z",
+      "updatedAt": "2024-07-20T00:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "name": "Siti Rahmawati",
+      "email": "siti.rahma@example.com",
+      "phone": "+6281298765432",
+      "photoUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80",
+      "level": "B2",
+      "status": "placed",
+      "cohort": "2024-Q1",
+      "joinedAt": "2024-01-10",
+      "bio": "Lulusan D3 Keperawatan, telah menyelesaikan B2 Pflege dan siap bertugas di klinik Frankfurt.",
+      "speakingVideoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "certificateName": "Goethe-Zertifikat B2",
+      "certificateUrl": "https://example.com/certificates/siti-b2.pdf",
+      "levelHistory": [
+        {
+          "level": "A1",
+          "completedAt": "2024-02-01",
+          "score": 95
+        },
+        {
+          "level": "A2",
+          "completedAt": "2024-04-10",
+          "score": 90
+        },
+        {
+          "level": "B1",
+          "completedAt": "2024-06-15",
+          "score": 85
+        },
+        {
+          "level": "B2",
+          "completedAt": "2024-08-20",
+          "score": 88
+        }
+      ],
+      "placement": {
+        "country": "Jerman",
+        "program": "Ausbildung Keperawatan (Pflegefachfrau)",
+        "company": "Universitätsklinikum Frankfurt",
+        "placedAt": "2024-09-01"
+      },
+      "createdAt": "2024-01-10T00:00:00.000Z",
+      "updatedAt": "2024-09-01T00:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "name": "Budi Santoso",
+      "email": "budi.santoso@example.com",
+      "phone": "+6281355556789",
+      "photoUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
+      "level": "B1",
+      "status": "ready",
+      "cohort": "2024-Q2",
+      "joinedAt": "2024-03-01",
+      "bio": "Latar belakang SMK Otomotif, menargetkan program Mechatroniker di Stuttgart.",
+      "speakingVideoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "certificateName": "Goethe-Zertifikat B1",
+      "certificateUrl": "https://example.com/certificates/budi-b1.pdf",
+      "levelHistory": [
+        {
+          "level": "A1",
+          "completedAt": "2024-04-01",
+          "score": 84
+        },
+        {
+          "level": "A2",
+          "completedAt": "2024-06-01",
+          "score": 86
+        },
+        {
+          "level": "B1",
+          "completedAt": "2024-08-10",
+          "score": 82
+        }
+      ],
+      "placement": null,
+      "createdAt": "2024-03-01T00:00:00.000Z",
+      "updatedAt": "2024-08-10T00:00:00.000Z"
+    },
+    {
+      "id": 4,
+      "name": "Dewi Lestari",
+      "email": "dewi.lestari@example.com",
+      "phone": "+6281987654321",
+      "photoUrl": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&q=80",
+      "level": "A1",
+      "status": "in_progress",
+      "cohort": "2024-Q4",
+      "joinedAt": "2024-08-15",
+      "bio": "Sedang mengikuti kelas bahasa Jerman intensif A1 dengan progres kosakatanya sangat baik.",
+      "speakingVideoUrl": null,
+      "certificateName": null,
+      "certificateUrl": null,
+      "levelHistory": [
+        {
+          "level": "A1",
+          "completedAt": "2024-08-15",
+          "score": null
+        }
+      ],
+      "placement": null,
+      "createdAt": "2024-08-15T00:00:00.000Z",
+      "updatedAt": "2024-08-15T00:00:00.000Z"
+    },
+    {
+      "id": 5,
+      "name": "Reza Pratama",
+      "email": "reza.pratama@example.com",
+      "phone": "+6281765432109",
+      "photoUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80",
+      "level": "B2",
+      "status": "placed",
+      "cohort": "2024-Q1",
+      "joinedAt": "2024-01-15",
+      "bio": "Peserta program FSJ (Freiwilliges Soziales Jahr) di bidang pelayanan lansia di Hamburg.",
+      "speakingVideoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "certificateName": "Goethe-Zertifikat B2",
+      "certificateUrl": "https://example.com/certificates/reza-b2.pdf",
+      "levelHistory": [
+        {
+          "level": "A1",
+          "completedAt": "2024-02-15",
+          "score": 90
+        },
+        {
+          "level": "A2",
+          "completedAt": "2024-04-20",
+          "score": 92
+        },
+        {
+          "level": "B1",
+          "completedAt": "2024-06-30",
+          "score": 88
+        },
+        {
+          "level": "B2",
+          "completedAt": "2024-08-10",
+          "score": 91
+        }
+      ],
+      "placement": {
+        "country": "Jerman",
+        "program": "Freiwilliges Soziales Jahr (FSJ)",
+        "company": "Deutsches Rotes Kreuz Hamburg",
+        "placedAt": "2024-08-15"
+      },
+      "createdAt": "2024-01-15T00:00:00.000Z",
+      "updatedAt": "2024-08-15T00:00:00.000Z"
+    },
+    {
+      "id": 6,
+      "name": "Maya Indah",
+      "email": "maya.indah@example.com",
+      "phone": "+6281543210987",
+      "photoUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80",
+      "level": "B1",
+      "status": "in_progress",
+      "cohort": "2024-Q2",
+      "joinedAt": "2024-04-01",
+      "bio": "Persiapan studi lanjut sarjana teknik di Jerman, fokus memperkuat kemampuan menulis akademik.",
+      "speakingVideoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "certificateName": "Goethe-Zertifikat A2",
+      "certificateUrl": "https://example.com/certificates/maya-a2.pdf",
+      "levelHistory": [
+        {
+          "level": "A1",
+          "completedAt": "2024-05-15",
+          "score": 92
+        },
+        {
+          "level": "A2",
+          "completedAt": "2024-07-15",
+          "score": 89
+        },
+        {
+          "level": "B1",
+          "completedAt": "2024-09-01",
+          "score": null
+        }
+      ],
+      "placement": null,
+      "createdAt": "2024-04-01T00:00:00.000Z",
+      "updatedAt": "2024-09-01T00:00:00.000Z"
+    }
+  ],
+  "siteContent": [
+    {
+      "id": 1,
+      "eyebrow": "Lembaga Kursus Bahasa Jerman Resmi · Medan",
+      "title": "ICH LIEBE DEUTSCH MEDAN",
+      "description": "Belajar bahasa Jerman, memahami kehidupan di Jerman, dan mempersiapkan masa depan dengan lebih baik bersama pendiri lulusan UNIMED yang berpengalaman 6 tahun tinggal di Jerman.",
+      "primaryCta": "Konsultasi WhatsApp",
+      "secondaryCta": "Lihat 5 Program Kursus",
+      "introLabel": "Unsere Vision",
+      "introText": "“Deutsch lernen. Deutschland verstehen. Zukunft gestalten.” — Belajar bahasa Jerman, memahami kehidupan di Jerman, dan mempersiapkan masa depan dengan lebih baik.",
+      "statOneValue": "A1–B2",
+      "statOneLabel": "Kursus Bahasa Jerman",
+      "statTwoValue": "5 Program",
+      "statTwoLabel": "Jalur Ke Jerman",
+      "statThreeValue": "2024",
+      "statThreeLabel": "Terdaftar & Berizin Operasional",
+      "statFourValue": "6 Tahun",
+      "statFourLabel": "Pengalaman Pendiri di DE",
+      "trustTitle": "Kehadiran Kami Berawal Dari Komitmen",
+      "trustText": "Ich Liebe Deutsch Medan siap mendampingi masyarakat Kota Medan dan seluruh Indonesia untuk melangkah, beradaptasi, dan berkembang di Jerman.",
+      "updatedAt": "2026-09-30T04:35:48.223Z"
+    }
+  ],
+  "cmsSections": [
+    {
+      "id": 1,
+      "sectionKey": "navbar",
+      "content": {
+        "brandName": "ICH LIEBE DEUTSCH MEDAN",
+        "brandSubtitle": "Lembaga Kursus Bahasa Jerman Terdaftar",
+        "brandBadge": "ILD",
+        "ctaText": "Hubungi Kami",
+        "ctaHref": "https://wa.me/6282127324453",
+        "ctaEnabled": true,
+        "links": [
+          {
+            "id": 1,
+            "label": "Beranda",
+            "href": "/",
+            "order": 1,
+            "isExternal": false,
+            "isHighlighted": false,
+            "isVisible": true
+          },
+          {
+            "id": 2,
+            "label": "Program Kursus",
+            "sublabel": "5 Jalur Resmi Ke Jerman",
+            "href": "/layanan",
+            "order": 2,
+            "isExternal": false,
+            "isHighlighted": false,
+            "isVisible": true,
+            "children": [
+              {
+                "id": 21,
+                "label": "1. Ausbildung",
+                "sublabel": "Sekolah Kejuruan + Praktik Kerja Bergaji",
+                "href": "/layanan",
+                "isVisible": true
+              },
+              {
+                "id": 22,
+                "label": "2. Au Pair",
+                "sublabel": "Tinggal Bersama Host Family & Kursus",
+                "href": "/layanan",
+                "isVisible": true
+              },
+              {
+                "id": 23,
+                "label": "3. FSJ / BFD",
+                "sublabel": "Program Sukarelawan Sosial 1 Tahun",
+                "href": "/layanan",
+                "isVisible": true
+              },
+              {
+                "id": 24,
+                "label": "4. G to G",
+                "sublabel": "Penempatan Perawat Resmi Pemerintah",
+                "href": "/layanan",
+                "isVisible": true
+              },
+              {
+                "id": 25,
+                "label": "5. Kuliah / Studium",
+                "sublabel": "Persiapan Kuliah Universitas Jerman",
+                "href": "/layanan",
+                "isVisible": true
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "label": "Data Siswa",
+            "sublabel": "Direktori & Level Bahasa",
+            "href": "/siswa",
+            "order": 3,
+            "isExternal": false,
+            "isHighlighted": false,
+            "isVisible": true
+          },
+          {
+            "id": 4,
+            "label": "Foto Alumni",
+            "sublabel": "Galeri Alumni di Jerman",
+            "href": "/alumni",
+            "order": 4,
+            "isExternal": false,
+            "isHighlighted": false,
+            "isVisible": true
+          },
+          {
+            "id": 5,
+            "label": "Ruangan Kelas",
+            "sublabel": "Fasilitas Belajar & Lab",
+            "href": "/ruangan-kelas",
+            "order": 5,
+            "isExternal": false,
+            "isHighlighted": false,
+            "isVisible": true
+          },
+          {
+            "id": 6,
+            "label": "Tentang Kami",
+            "sublabel": "Profil & Pendiri ILD Medan",
+            "href": "/jakarta",
+            "order": 6,
+            "isExternal": false,
+            "isHighlighted": false,
+            "isVisible": true,
+            "children": [
+              {
+                "id": 61,
+                "label": "Profil Lembaga",
+                "sublabel": "Lembaga Terdaftar & Berizin Operasional",
+                "href": "/jakarta",
+                "isVisible": true
+              },
+              {
+                "id": 62,
+                "label": "Alamat & Kontak",
+                "sublabel": "Jl. Ternak II No. 39, Medan Polonia",
+                "href": "/jakarta",
+                "isVisible": true
+              },
+              {
+                "id": 63,
+                "label": "Konsultasi Partner",
+                "sublabel": "Kemitraan & Informasi Program",
+                "href": "/ag-anfrage",
+                "isVisible": true
+              }
+            ]
+          },
+          {
+            "id": 7,
+            "label": "Kabar & Referensi",
+            "sublabel": "Informasi & Prestasi",
+            "href": "/berita",
+            "order": 7,
+            "isExternal": false,
+            "isHighlighted": false,
+            "isVisible": true,
+            "children": [
+              {
+                "id": 71,
+                "label": "Kabar & Berita",
+                "sublabel": "Artikel & Pengumuman Terbaru",
+                "href": "/berita",
+                "isVisible": true
+              },
+              {
+                "id": 72,
+                "label": "Kisah Referensi",
+                "sublabel": "Kisah Sukses Alumni di Jerman",
+                "href": "/referensi",
+                "isVisible": true
+              }
+            ]
+          }
+        ]
+      },
+      "updatedAt": "2026-09-30T04:35:48.223Z"
+    },
+    {
+      "id": 2,
+      "sectionKey": "footer",
+      "content": {
+        "brandName": "ICH LIEBE DEUTSCH MEDAN",
+        "brandSubtitle": "Lembaga Kursus Bahasa Jerman Terdaftar & Izin Operasional",
+        "tagline": "“Deutsch lernen. Deutschland verstehen. Zukunft gestalten.” — Belajar bahasa Jerman, memahami kehidupan di Jerman, dan mempersiapkan masa depan dengan lebih baik.",
+        "copyright": "© 2024–2026 ICH LIEBE DEUTSCH MEDAN. Hak cipta dilindungi undang-undang.",
+        "contactEmail": "ichliebedtschmedan@gmail.com",
+        "contactPhone": "082127324453",
+        "addressJakarta": "Jl. Ternak II No. 39, Medan Polonia, Kota Medan, Sumatera Utara",
+        "addressGermany": "Jerman · Pendampingan Khusus Kandidat Ausbildungsvertrag",
+        "links": [
+          {
+            "id": 1,
+            "label": "Beranda",
+            "href": "/",
+            "category": "Navigasi",
+            "order": 1
+          },
+          {
+            "id": 2,
+            "label": "Program Kursus",
+            "href": "/layanan",
+            "category": "Navigasi",
+            "order": 2
+          },
+          {
+            "id": 3,
+            "label": "Data Siswa",
+            "href": "/siswa",
+            "category": "Navigasi",
+            "order": 3
+          },
+          {
+            "id": 4,
+            "label": "Foto Alumni",
+            "href": "/alumni",
+            "category": "Galeri",
+            "order": 4
+          },
+          {
+            "id": 5,
+            "label": "Ruangan Kelas",
+            "href": "/ruangan-kelas",
+            "category": "Fasilitas",
+            "order": 5
+          },
+          {
+            "id": 6,
+            "label": "Tentang Kami",
+            "href": "/jakarta",
+            "category": "Navigasi",
+            "order": 6
+          },
+          {
+            "id": 7,
+            "label": "Kabar Terbaru",
+            "href": "/berita",
+            "category": "Informasi",
+            "order": 7
+          },
+          {
+            "id": 8,
+            "label": "Kisah Referensi",
+            "href": "/referensi",
+            "category": "Informasi",
+            "order": 8
+          },
+          {
+            "id": 9,
+            "label": "Hubungi WhatsApp",
+            "href": "https://wa.me/6282127324453",
+            "category": "Kontak",
+            "order": 9
+          },
+          {
+            "id": 10,
+            "label": "Portal Admin",
+            "href": "/login",
+            "category": "Kontak",
+            "order": 10
+          }
+        ],
+        "socialLinks": [
+          {
+            "id": 1,
+            "platform": "WhatsApp",
+            "label": "082127324453",
+            "url": "https://wa.me/6282127324453"
+          },
+          {
+            "id": 2,
+            "platform": "Email",
+            "label": "ichliebedtschmedan@gmail.com",
+            "url": "mailto:ichliebedtschmedan@gmail.com"
+          },
+          {
+            "id": 3,
+            "platform": "Instagram",
+            "label": "@ichliebedeutschmedan",
+            "url": "https://instagram.com"
+          }
+        ]
+      },
+      "updatedAt": "2026-09-30T04:35:48.223Z"
+    },
+    {
+      "id": 3,
+      "sectionKey": "home",
+      "content": {
+        "eyebrow": "Lembaga Kursus Bahasa Jerman Resmi · Medan",
+        "title": "ICH LIEBE DEUTSCH MEDAN",
+        "description": "Belajar bahasa Jerman, memahami kehidupan di Jerman, dan mempersiapkan masa depan dengan lebih baik bersama pendiri lulusan UNIMED yang berpengalaman 6 tahun tinggal di Jerman.",
+        "primaryCta": "Konsultasi WhatsApp",
+        "primaryCtaHref": "https://wa.me/6282127324453",
+        "secondaryCta": "Lihat 5 Program Kursus",
+        "secondaryCtaHref": "/layanan",
+        "introLabel": "Unsere Vision",
+        "introTitle": "“Deutsch lernen. Deutschland verstehen. Zukunft gestalten.”",
+        "introText": "Belajar bahasa Jerman, memahami kehidupan di Jerman, dan mempersiapkan masa depan dengan lebih baik. Kami tidak hanya berfokus menyalurkan siswa, tetapi membimbing dan mempersiapkan siswa agar mampu menjalani kehidupan di Jerman secara mandiri dan percaya diri.",
+        "trustedPartners": [
+          "Pendidikan Bahasa Jerman UNIMED",
+          "Ausbildung Alumni 2020",
+          "Mitra Perusahaan Jerman",
+          "Gastronomi & Pflege"
+        ],
+        "stats": [
+          {
+            "id": 1,
+            "number": "01",
+            "value": "A1–B2",
+            "label": "Kursus Bahasa Jerman",
+            "detail": "Kurikulum terarah sesuai persyaratan jurusan"
+          },
+          {
+            "id": 2,
+            "number": "02",
+            "value": "5 Program",
+            "label": "Jalur Ke Jerman",
+            "detail": "Ausbildung, Au Pair, FSJ/BFD, G to G, Kuliah"
+          },
+          {
+            "id": 3,
+            "number": "03",
+            "value": "2024",
+            "label": "Terdaftar & Berizin",
+            "detail": "Izin operasional lembaga pendidikan resmi"
+          },
+          {
+            "id": 4,
+            "number": "04",
+            "value": "6 Tahun",
+            "label": "Pengalaman Pendiri di DE",
+            "detail": "Sarjana UNIMED & Lulusan Ausbildung 2020"
+          }
+        ],
+        "programCards": [
+          {
+            "id": 1,
+            "number": "01",
+            "title": "1. Ausbildung",
+            "text": "Sistem pendidikan & pelatihan kejuruan di Jerman (Sekolah Kejuruan/Berufsschule + Praktik kerja bergaji, durasi 2–3,5 tahun). Tersedia 8 jurusan: 🏥 Perawat/Pflege, 🧑🍳 Gastronomi & perhotelan, 🔧 Teknik, 💻 IT, 🚗 Mekanik kendaraan, 🏢 Administrasi & bisnis, 🧑🔬 Laboratorium, 👶 Pendampingan anak. Syarat: Maks 32 Thn, Lulusan SMA/Sederajat, Level min. B1.",
+            "accent": "sea"
+          },
+          {
+            "id": 2,
+            "number": "02",
+            "title": "2. Au Pair",
+            "text": "Program tinggal bersama keluarga di Jerman (host family) sambil membantu pengasuhan anak & pekerjaan rumah ringan. Mendapatkan tempat tinggal, makanan, uang saku, & kesempatan kursus bahasa Jerman. Syarat: Max 26 Thn, Level bahasa A1 (disarankan min. A2).",
+            "accent": "coral"
+          },
+          {
+            "id": 3,
+            "number": "03",
+            "title": "3. FSJ / BFD (Sukarelawan Sosial)",
+            "text": "Program Tahun Sukarelawan Sosial di Rumah Sakit, Panti Lansia, Fasilitas Disabilitas, atau Lembaga Sosial selama 1 tahun. Mendapat uang saku & fasilitas. Syarat: FSJ max 26 Thn, BFD tanpa batasan umur, Level bahasa A1 minimal.",
+            "accent": "butter"
+          },
+          {
+            "id": 4,
+            "number": "04",
+            "title": "4. G to G (Government to Government)",
+            "text": "Program penempatan atau kerja sama resmi pemerintah Indonesia & Jerman, khususnya penempatan tenaga kesehatan/perawat Indonesia ke Jerman melalui jalur resmi pemerintah.",
+            "accent": "ink"
+          },
+          {
+            "id": 5,
+            "number": "05",
+            "title": "5. Kuliah / Studium",
+            "text": "Program perkuliahan sarjana/pascasarjana di universitas Jerman. Memerlukan bukti kemampuan bahasa Jerman sesuai persyaratan universitas/program studi (biasanya B2 atau C1).",
+            "accent": "lavender"
+          }
+        ],
+        "processSteps": [
+          {
+            "id": 1,
+            "number": "01",
+            "title": "Konsultasi & Penentuan Jalur",
+            "text": "Diskusi awal mengenai pilihan dari 5 program kursus yang paling sesuai dengan latar belakang dan usia."
+          },
+          {
+            "id": 2,
+            "number": "02",
+            "title": "Kursus Bahasa Jerman Intensif",
+            "text": "Pembelajaran bahasa terarah dari level A1 hingga B1/B2 dengan bimbingan pengajar berkualitas."
+          },
+          {
+            "id": 3,
+            "number": "03",
+            "title": "Pendampingan Khusus Ausbildungsvertrag",
+            "text": "Khusus kandidat Ausbildung yang telah mendapat kontrak kerja, diberikan pelatihan kosakata & istilah profesi spesifik."
+          },
+          {
+            "id": 4,
+            "number": "04",
+            "title": "Persiapan Mental & Kemandirian",
+            "text": "Pembekalan budaya, kemandirian hidup sehari-hari, dan kesiapan melangkah di Jerman dengan percaya diri."
+          }
+        ],
+        "quoteText": "Belajar bahasa Jerman bukan sekadar menguasai tata bahasa, melainkan bekal penting untuk berkomunikasi, beradaptasi, dan mandiri di masyarakat Jerman.",
+        "quoteAuthor": "Pendiri Ich Liebe Deutsch Medan (Lulusan UNIMED & Ausbildung 2020)",
+        "trustTitle": "Kehadiran Kami Berawal Dari Komitmen",
+        "trustText": "Ich Liebe Deutsch Medan siap mendampingi masyarakat Kota Medan dan seluruh Indonesia untuk melangkah, beradaptasi, dan berkembang di Jerman.",
+        "ctaTitle": "Siap Melangkah Menuju Jerman?",
+        "ctaSubtitle": "Hubungi tim Ich Liebe Deutsch Medan untuk konsultasi program kursus dan informasi selengkapnya.",
+        "ctaButtonText": "Hubungi WhatsApp 082127324453",
+        "ctaButtonHref": "https://wa.me/6282127324453"
+      },
+      "updatedAt": "2026-09-30T04:35:48.223Z"
+    },
+    {
+      "id": 4,
+      "sectionKey": "news",
+      "content": {
+        "headerEyebrow": "Kabar & Artikel ILD Medan",
+        "headerTitle": "Informasi & Pengumuman Terbaru",
+        "headerSubtitle": "Kabar kegiatan kursus, tips belajar bahasa Jerman, dan panduan persiapan program ke Jerman.",
+        "categories": [
+          "Semua",
+          "Program",
+          "Ausbildung",
+          "Tips Bahasa",
+          "Pengumuman"
+        ],
+        "items": [
+          {
+            "id": 1,
+            "date": "04 SEP 2024",
+            "category": "Program",
+            "title": "Mengenal 5 Program Kursus & Jalur Ke Jerman di Ich Liebe Deutsch Medan",
+            "excerpt": "Panduan lengkap mengenai Ausbildung, Au Pair, FSJ/BFD, G to G, dan Kuliah beserta syarat dan benefitnya.",
+            "content": "Ich Liebe Deutsch Medan membuka pendaftaran kursus intensif bahasa Jerman untuk persiapan program Ausbildung, Au Pair, FSJ/BFD, G to G, dan Kuliah di Jerman. Didirikan oleh alumni UNIMED berpengalaman 6 tahun di Jerman.",
+            "featured": true,
+            "tone": "coral",
+            "author": "Ich Liebe Deutsch Medan",
+            "published": true
+          },
+          {
+            "id": 2,
+            "date": "20 AGU 2024",
+            "category": "Ausbildung",
+            "title": "Pelatihan Khusus Kosakata Profesi bagi Pemegang Kontrak Kerja (Ausbildungsvertrag)",
+            "excerpt": "Bagaimana ILD Medan membekali kandidat Ausbildung dengan istilah teknik, keperawatan, dan perhotelan sebelum berangkat.",
+            "content": "Kandidat Ausbildung yang telah memperoleh Ausbildungsvertrag mendapatkan bimbingan spesifik istilah pekerjaan agar langsung siap berkomunikasi di tempat kerja di Jerman.",
+            "featured": false,
+            "tone": "sea",
+            "author": "Tim Akademik ILD",
+            "published": true
+          }
+        ]
+      },
+      "updatedAt": "2026-09-30T04:35:48.223Z"
+    },
+    {
+      "id": 5,
+      "sectionKey": "media",
+      "content": {
+        "headerEyebrow": "Galeri & Informasi",
+        "headerTitle": "Dokumentasi & Video Suasana Belajar",
+        "headerSubtitle": "Mengenal suasana belajar bahasa Jerman di Ich Liebe Deutsch Medan dan cerita pengalaman di Jerman.",
+        "categories": [
+          "Semua",
+          "Dokumentasi",
+          "Edukasi"
+        ],
+        "items": [
+          {
+            "id": 1,
+            "date": "01 AGU 2024",
+            "category": "Edukasi",
+            "channel": "Ich Liebe Deutsch Medan",
+            "title": "Mengenal Sistem Ausbildung di Jerman: Teori + Praktik Kerja Bergaji",
+            "excerpt": "Penjelasan mengenai sistem sekolah kejuruan Berufsschule dan praktik kerja langsung di perusahaan Jerman.",
+            "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "featured": true,
+            "tone": "coral",
+            "published": true
+          }
+        ]
+      },
+      "updatedAt": "2026-09-30T04:35:48.223Z"
+    },
+    {
+      "id": 6,
+      "sectionKey": "services",
+      "content": {
+        "headerEyebrow": "Program Kursus & Jalur Ke Jerman",
+        "headerTitle": "5 Program Utama di Ich Liebe Deutsch Medan",
+        "headerSubtitle": "Pilih jalur yang sesuai dengan minat, kualifikasi, dan rencana masa depan Anda di Jerman.",
+        "workflowSubtitle": "Setiap program dirancang dengan standar kualitas dan pendampingan terarah.",
+        "stages": [
+          {
+            "id": 1,
+            "number": "01",
+            "title": "1. Program Ausbildung",
+            "shortTitle": "Sekolah Kejuruan + Praktik Bergaji",
+            "description": "Ausbildung adalah sistem pendidikan & pelatihan kejuruan di Jerman yang menggabungkan belajar teori di sekolah kejuruan (Berufsschule) dengan praktik kerja di perusahaan. Durasi 2–3,5 tahun.",
+            "detail": "• Benefit: Belajar teori di Berufsschule, praktik di perusahaan, pengalaman kerja langsung, & gaji pelatihan bulanan.\n• 8 Jurusan Tersedia: 🏥 Perawat/Pflege, 🧑🍳 Gastronomi & perhotelan, 🔧 Teknik, 💻 IT, 🚗 Mekanik kendaraan, 🏢 Administrasi & bisnis, 🧑🔬 Laboratorium, 👶 Pendidikan/pendampingan anak.\n• Syarat: 1) Maksimal 32 Tahun saat mendaftar les | 2) Lulusan SMA/Sederajat | 3) Belajar bahasa Jerman min. B1 (menyesuaikan jurusan).",
+            "tone": "sea",
+            "iconName": "Building2"
+          },
+          {
+            "id": 2,
+            "number": "02",
+            "title": "2. Program Au Pair",
+            "shortTitle": "Tinggal Bersama Host Family & Kursus",
+            "description": "Program di mana anak muda Indonesia tinggal bersama keluarga di Jerman (host family) sambil membantu pengasuhan anak dan pekerjaan rumah ringan.",
+            "detail": "• Benefit: 👨👩👧 Tinggal bersama keluarga Jerman, 🧒 Membantu menjaga anak, 🏠 Membantu pekerjaan rumah ringan, 🗣️ Berinteraksi bahasa Jerman, 💶 Uang saku, 🍽️ Tempat tinggal & makanan gratis, 📚 Kesempatan kursus bahasa.\n• Syarat: 1) Maksimal umur 26 Tahun | 2) Level bahasa A1 (lebih disarankan belajar min. A2).",
+            "tone": "coral",
+            "iconName": "UsersRound"
+          },
+          {
+            "id": 3,
+            "number": "03",
+            "title": "3. Program FSJ / BFD (Sukarelawan Sosial)",
+            "shortTitle": "Tahun Sukarelawan Sosial (1 Tahun)",
+            "description": "Program Tahun Sukarelawan Sosial di Jerman selama 1 tahun di Rumah Sakit, Panti Lansia, Fasilitas Disabilitas, atau Lembaga Sosial.",
+            "detail": "• Benefit: Menjalankan kegiatan sukarela dengan pendampingan, mendapatkan uang saku serta fasilitas tertentu sesuai program.\n• Syarat: 1) FSJ maksimal umur 26 Tahun | 2) BFD tidak ada batasan umur (beberapa perusahaan mensyaratkan) | 3) Level Bahasa A1 minimal.",
+            "tone": "butter",
+            "iconName": "ShieldCheck"
+          },
+          {
+            "id": 4,
+            "number": "04",
+            "title": "4. Program G to G (Government to Government)",
+            "shortTitle": "Penempatan Resmi jalur Pemerintah",
+            "description": "Program penempatan atau kerja sama resmi yang melibatkan pemerintah Indonesia dan pemerintah Jerman.",
+            "detail": "G to G sering digunakan untuk penempatan tenaga kerja resmi Indonesia ke Jerman, khususnya untuk program penempatan tenaga kesehatan / perawat Indonesia ke Jerman melalui kerja sama antar pemerintah.",
+            "tone": "ink",
+            "iconName": "Globe2"
+          },
+          {
+            "id": 5,
+            "number": "05",
+            "title": "5. Program Kuliah / Studium",
+            "shortTitle": "Pendidikan Tinggi Universitas Jerman",
+            "description": "Program perkuliahan di universitas di Jerman bagi calon mahasiswa yang ingin menempuh gelar sarjana atau magister.",
+            "detail": "Calon mahasiswa perlu membuktikan kemampuan bahasa Jerman sesuai persyaratan universitas/program studi (biasanya meminta tingkat B2 atau C1).",
+            "tone": "lavender",
+            "iconName": "ClipboardCheck"
+          }
+        ],
+        "benefits": [
+          {
+            "id": 1,
+            "title": "Lembaga Terdaftar & Berizin",
+            "description": "Izin operasional lembaga pendidikan resmi di Kota Medan sejak 2024.",
+            "icon": "ShieldCheck"
+          },
+          {
+            "id": 2,
+            "title": "Pendiri Lulusan UNIMED & Ausbildung",
+            "description": "6 tahun pengalaman tinggal di Jerman & lulus Ausbildung 2020 predikat sangat memuaskan.",
+            "icon": "Handshake"
+          },
+          {
+            "id": 3,
+            "title": "Pembekalan Spesifik Kontrak",
+            "description": "Pelatihan kosakata & situasi kerja untuk kandidat pemegang Ausbildungsvertrag.",
+            "icon": "FileCheck2"
+          }
+        ]
+      },
+      "updatedAt": "2026-09-30T04:35:48.223Z"
+    },
+    {
+      "id": 7,
+      "sectionKey": "jakarta",
+      "content": {
+        "headerEyebrow": "Tentang Ich Liebe Deutsch Medan",
+        "headerTitle": "Mengenal Ich Liebe Deutsch Medan",
+        "headerSubtitle": "Lembaga kursus bahasa Jerman terdaftar dan memiliki izin operasional sejak tahun 2024 di Kota Medan.",
+        "contactTitle": "Hubungi Kami Untuk Konsultasi",
+        "contactSubtitle": "Silakan hubungi kami melalui WhatsApp, Telepon, Email, atau kunjungi alamat lembaga kami di Medan.",
+        "officeJakarta": {
+          "name": "ICH LIEBE DEUTSCH MEDAN",
+          "building": "Medan Polonia",
+          "address": "Jl. Ternak II No. 39, Medan Polonia, Kota Medan, Sumatera Utara",
+          "phone": "082127324453",
+          "email": "ichliebedtschmedan@gmail.com",
+          "coordinates": "ID · Medan Polonia",
+          "operatingHours": "Senin – Sabtu: 08:30 – 17:00 WIB"
+        },
+        "pillars": [
+          {
+            "id": 1,
+            "number": "01",
+            "title": "Berdiri Sejak 2024",
+            "description": "Lembaga kursus bahasa Jerman terdaftar dengan izin operasional pendidikan resmi di Medan."
+          },
+          {
+            "id": 2,
+            "number": "02",
+            "title": "Pendiri Berpengalaman 6 Tahun di DE",
+            "description": "Sarjana UNIMED yang menjalani & lulus Ausbildung 2020 dengan hasil sangat memuaskan."
+          },
+          {
+            "id": 3,
+            "number": "03",
+            "title": "Pendampingan Khusus Ausbildungsvertrag",
+            "description": "Pembekalan istilah teknis & komunikasi situasi kerja spesifik bidang pekerjaan sebelum berangkat."
+          }
+        ]
+      },
+      "updatedAt": "2026-09-30T04:35:48.223Z"
+    },
+    {
+      "id": 8,
+      "sectionKey": "references",
+      "content": {
+        "headerEyebrow": "Referensi & Testimoni",
+        "headerTitle": "Kisah Alumni & Perjalanan Ke Jerman",
+        "headerSubtitle": "Pengalaman dan kisah inspiratif alumni yang berhasil belajar dan melangkah ke Jerman.",
+        "quoteText": "Belajar bahasa Jerman bukan sekadar menguasai tata bahasa, melainkan bekal penting untuk berkomunikasi, beradaptasi, dan mandiri di masyarakat Jerman.",
+        "stories": [
+          {
+            "id": "pendiri",
+            "eyebrow": "Pengalaman Pendiri",
+            "title": "Lulusan Ausbildung 2020 Hasil Sangat Memuaskan",
+            "description": "Pendiri Ich Liebe Deutsch Medan adalah Sarjana Pendidikan Bahasa Jerman UNIMED yang tinggal 6 tahun di Jerman dan menyelesaikan Ausbildung 2020 dengan hasil sangat memuaskan. Pengalaman ini menjadi fondasi utama sistem pembelajaran di ILD Medan.",
+            "result": "2020",
+            "resultLabel": "Lulus Ausbildung Sangat Memuaskan",
+            "personName": "Pendiri ILD Medan",
+            "company": "Sarjana UNIMED & Alumni Ausbildung",
+            "year": "2020",
+            "tone": "butter",
+            "published": true
+          }
+        ]
+      },
+      "updatedAt": "2026-09-30T04:35:48.223Z"
+    },
+    {
+      "id": 9,
+      "sectionKey": "placements",
+      "content": {
+        "headerEyebrow": "Jalur Penempatan & Pendampingan",
+        "headerTitle": "Langkah Menuju Masa Depan di Jerman",
+        "headerSubtitle": "Proses bimbingan yang transparan dan berorientasi pada kesiapan bahasa serta kemandirian siswa.",
+        "steps": [
+          {
+            "id": 1,
+            "number": "01",
+            "title": "Pendaftaran & Asesmen awal",
+            "description": "Konsultasi pilihan dari 5 program kursus sesuai dengan syarat usia dan latar belakang pendidikan.",
+            "detail": "Materi dan kurikulum disesuaikan dengan target level bahasa (A1, A2, B1, B2).",
+            "tone": "butter",
+            "iconName": "Compass"
+          },
+          {
+            "id": 2,
+            "number": "02",
+            "title": "Kursus Bahasa Jerman Intensif",
+            "description": "Pembelajaran terstruktur tata bahasa, percakapan, dan latihan ujian sertifikasi.",
+            "detail": "Diajar oleh pengajar lulusan pendidikan bahasa Jerman UNIMED.",
+            "tone": "coral",
+            "iconName": "UsersRound"
+          },
+          {
+            "id": 3,
+            "number": "03",
+            "title": "Pelatihan Khusus Ausbildungsvertrag",
+            "description": "Khusus pemegang kontrak kerja Ausbildung, diberikan pembekalan kosakata & istilah profesi spesifik.",
+            "detail": "Pengenalan situasi kerja nyata dan ungkapan teknis bidang pekerjaan.",
+            "tone": "sea",
+            "iconName": "Handshake"
+          },
+          {
+            "id": 4,
+            "number": "04",
+            "title": "Kemandirian Hidup di Jerman",
+            "description": "Pembekalan mental, budaya, dan kesiapan adaptasi di lingkungan masyarakat Jerman.",
+            "detail": "Mempersiapkan siswa agar percaya diri dan mandiri di Jerman.",
+            "tone": "ink",
+            "iconName": "ShieldCheck"
+          }
+        ],
+        "principles": [
+          {
+            "id": 1,
+            "number": "01",
+            "title": "Kualitas & Terdaftar",
+            "description": "Lembaga resmi terdaftar dengan izin operasional di Kota Medan."
+          },
+          {
+            "id": 2,
+            "number": "02",
+            "title": "Pengalaman Nyata",
+            "description": "Pendiri berpengalaman 6 tahun tinggal dan menyelesaikan Ausbildung di Jerman."
+          },
+          {
+            "id": 3,
+            "number": "03",
+            "title": "Pendampingan Komprehensif",
+            "description": "Membimbing bahasa, istilah kerja, hingga mental kemandirian."
+          }
+        ]
+      },
+      "updatedAt": "2026-09-30T04:35:48.223Z"
+    },
+    {
+      "id": 10,
+      "sectionKey": "partner",
+      "content": {
+        "headerEyebrow": "Konsultasi & Informasi",
+        "headerTitle": "Hubungi Ich Liebe Deutsch Medan",
+        "headerSubtitle": "Silakan ajukan pertanyaan atau berkonsultasi mengenai program kursus bahasa Jerman.",
+        "contactPerson": {
+          "name": "ICH LIEBE DEUTSCH MEDAN",
+          "role": "Lembaga Kursus Bahasa Jerman Terdaftar",
+          "location": "Medan Polonia, Kota Medan",
+          "phone": "082127324453",
+          "email": "ichliebedtschmedan@gmail.com",
+          "description": "Konsultasi ramah dan informatif mengenai 5 program kursus ke Jerman."
+        },
+        "benefits": [
+          {
+            "id": 1,
+            "title": "Informasi Jelas & Transparan",
+            "description": "Pahami persyaratan, benefit, dan tahapan setiap program.",
+            "icon": "MessageSquareText"
+          },
+          {
+            "id": 2,
+            "title": "Alamat & Lokasi Resmi",
+            "description": "Jl. Ternak II No. 39, Medan Polonia, Kota Medan.",
+            "icon": "Building2"
+          },
+          {
+            "id": 3,
+            "title": "Respon Cepat via WhatsApp",
+            "description": "Hubungi 082127324453 untuk jadwal kelas & pendaftaran.",
+            "icon": "ShieldCheck"
+          }
+        ],
+        "formTitle": "Kirim Pesan atau Pertanyaan Anda",
+        "formSubtitle": "Isi formulir singkat di bawah ini atau hubungi kami langsung via WhatsApp."
+      },
+      "updatedAt": "2026-09-30T04:35:48.223Z"
+    },
+    {
+      "id": 11,
+      "sectionKey": "alumni",
+      "content": {
+        "headerEyebrow": "Dokumentasi & Galeri Alumni",
+        "headerTitle": "Foto & Kisah Sukses Alumni di Jerman",
+        "headerSubtitle": "Dokumentasi foto nyata dan perjalanan alumni Ich Liebe Deutsch Medan yang telah berhasil mewujudkan cita-cita berkarier, Ausbildung, Au Pair, FSJ, G to G Perawat, dan Kuliah di berbagai kota di Jerman.",
+        "categories": [
+          "Semua",
+          "Ausbildung",
+          "Au Pair",
+          "FSJ / BFD",
+          "G to G Perawat",
+          "Kuliah"
+        ],
+        "stats": [
+          {
+            "id": 1,
+            "number": "01",
+            "value": "100%",
+            "label": "Tingkat Persetujuan Visa",
+            "detail": "Pendampingan dokumen dan verifikasi resmi"
+          },
+          {
+            "id": 2,
+            "number": "02",
+            "value": "25+",
+            "label": "Kota Penempatan di Jerman",
+            "detail": "Frankfurt, München, Berlin, Hamburg, dll."
+          },
+          {
+            "id": 3,
+            "number": "03",
+            "value": "5 Jalur",
+            "label": "Program Resmi Terbukti",
+            "detail": "Ausbildung, Au Pair, FSJ, G to G, Kuliah"
+          },
+          {
+            "id": 4,
+            "number": "04",
+            "value": "1:1",
+            "label": "Konsultasi Mandiri",
+            "detail": "Bimbingan intensif hingga keberangkatan"
+          }
+        ],
+        "items": [
+          {
+            "id": 1,
+            "name": "Siti Rahmawati",
+            "program": "Ausbildung Keperawatan (Pflegefachfrau)",
+            "category": "Ausbildung",
+            "year": "2024",
+            "city": "Frankfurt am Main",
+            "workplace": "Universitätsklinikum Frankfurt",
+            "imageUrl": "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=800&q=80",
+            "quote": "Belajar di ILD Medan dari nol hingga lulus B2 Pflege. Pendiri sangat memahami situasi nyata di Jerman sehingga saya tidak kaget saat adaptasi di rumah sakit Frankfurt.",
+            "fullStory": "Siti memulai perjalanan belajar bahasa Jerman di ILD Medan pada awal 2024. Melalui metode intensif dan bimbingan kosakata khusus keperawatan, Siti berhasil lulus Goethe-Zertifikat B2 dan diterima di Universitätsklinikum Frankfurt.",
+            "verified": true,
+            "featured": true,
+            "order": 1
+          },
+          {
+            "id": 2,
+            "name": "Ahmad Fauzi",
+            "program": "Ausbildung Perhotelan & Gastronomi",
+            "category": "Ausbildung",
+            "year": "2024",
+            "city": "München, Bayern",
+            "workplace": "Boutique Hotel & Resort Bayern",
+            "imageUrl": "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80",
+            "quote": "Materi percakapan sehari-hari dan simulasi wawancara kontrak kerja di ILD Medan sangat membantu saya percaya diri berkomunikasi dengan tim hotel di Munich.",
+            "fullStory": "Ahmad memilih program Ausbildung Hotelfachmann di Bayern. Dengan pembekalan budaya kerja Jerman dan etika profesional, Ahmad langsung beradaptasi dengan ritme kerja dan sekolah Berufsschule.",
+            "verified": true,
+            "featured": true,
+            "order": 2
+          },
+          {
+            "id": 3,
+            "name": "Nadia Anggraini",
+            "program": "Program Au Pair Jerman",
+            "category": "Au Pair",
+            "year": "2023",
+            "city": "Köln, Nordrhein-Westfalen",
+            "workplace": "Host Family Schneider (Köln)",
+            "imageUrl": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=800&q=80",
+            "quote": "Tinggal bersama keluarga Jerman adalah pengalaman luar biasa. Persiapan A2 di Medan membuat saya mudah berkomunikasi dengan anak-anak dan orang tua asuh.",
+            "fullStory": "Nadia berangkat ke Köln melalui program Au Pair setelah menyelesaikan kursus A2 di ILD Medan. Kini Nadia melanjutkan persiapan untuk mendaftar Ausbildung setelah menyelesaikan masa Au Pair.",
+            "verified": true,
+            "featured": true,
+            "order": 3
+          },
+          {
+            "id": 4,
+            "name": "Reza Pratama",
+            "program": "FSJ (Freiwilliges Soziales Jahr)",
+            "category": "FSJ / BFD",
+            "year": "2024",
+            "city": "Hamburg",
+            "workplace": "Seniorenzentrum Hamburg Nord",
+            "imageUrl": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80",
+            "quote": "Program FSJ membuka wawasan saya tentang sistem pelayanan sosial di Jerman. ILD Medan membimbing saya sejak pengurusan dokumen hingga visa di Kedutaan.",
+            "fullStory": "Reza menjalani program FSJ selama 1 tahun di Hamburg. Pengalaman ini memberinya pemahaman mendalam tentang bahasa dan kehidupan Jerman sebelum melanjutkan ke jenjang profesional.",
+            "verified": true,
+            "featured": false,
+            "order": 4
+          },
+          {
+            "id": 5,
+            "name": "Dian Permata",
+            "program": "G to G Penempatan Perawat Resmi",
+            "category": "G to G Perawat",
+            "year": "2023",
+            "city": "Stuttgart, Baden-Württemberg",
+            "workplace": "Klinikum Stuttgart",
+            "imageUrl": "https://images.unsplash.com/photo-1594824813593-455b85efb7cb?w=800&q=80",
+            "quote": "Jalur resmi pemerintah G to G membutuhkan ketelitian dokumen dan kemampuan bahasa yang teruji. Terima kasih ILD Medan atas pembimbingan B2 yang sangat fokus.",
+            "fullStory": "Dian adalah perawat teregistrasi yang sukses melewati seleksi G to G dan penempatan di Klinik Stuttgart dengan penguasaan terminologi medis Jerman yang matang.",
+            "verified": true,
+            "featured": false,
+            "order": 5
+          },
+          {
+            "id": 6,
+            "name": "Budi Santoso",
+            "program": "Studium / Kuliah Teknik Mesin",
+            "category": "Kuliah",
+            "year": "2024",
+            "city": "Aachen",
+            "workplace": "RWTH Aachen University",
+            "imageUrl": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&q=80",
+            "quote": "Bimbingan akademis dan sertifikasi bahasa di ILD Medan membantu saya lulus ujian bahasa untuk masuk persiapan kuliah di Aachen.",
+            "fullStory": "Budi menempuh persiapan studi teknik di Aachen setelah menyelesaikan kelas intensif bahasa Jerman di Medan.",
+            "verified": true,
+            "featured": false,
+            "order": 6
+          }
+        ]
+      },
+      "updatedAt": "2026-09-30T04:35:48.223Z"
+    },
+    {
+      "id": 12,
+      "sectionKey": "classrooms",
+      "content": {
+        "headerEyebrow": "Fasilitas & Kampus ILD Medan",
+        "headerTitle": "Ruangan Kelas & Sarana Belajar Modern",
+        "headerSubtitle": "Fasilitas belajar ber-AC, multimedia audio-visual standar Goethe-Institut, dan perpustakaan literatur Jerman di Jl. Ternak II No. 39 Medan Polonia yang dirancang untuk mendukung 4 keterampilan bahasa: Hören, Lesen, Schreiben, dan Sprechen.",
+        "categories": [
+          "Semua",
+          "Ruang Teori & Grammatik",
+          "Lab Audio-Visual (Hören)",
+          "Ruang Diskusi (Sprechen)",
+          "Pojok Ujian Goethe",
+          "Lounge & Konsultasi"
+        ],
+        "facilityHighlights": [
+          {
+            "id": 1,
+            "title": "Ruangan Ber-AC & Nyaman",
+            "description": "Setiap kelas dilengkapi pendingin udara (AC) berkualitas untuk kenyamanan belajar intensif berjam-jam tanpa distraksi.",
+            "icon": "Wind"
+          },
+          {
+            "id": 2,
+            "title": "Sistem Audio Standar Ujian Goethe",
+            "description": "Speaker Hi-Fi fidelitas tinggi untuk latihan Hörverstehen dengan kejelasan pelafalan dialek Hochdeutsch asli Jerman.",
+            "icon": "Volume2"
+          },
+          {
+            "id": 3,
+            "title": "Smart TV & Presentasi Digital",
+            "description": "Layar pintar interaktif untuk demonstrasi tata bahasa, pemutaran film kebudayaan Jerman, dan latihan soal bersama.",
+            "icon": "Tv"
+          },
+          {
+            "id": 4,
+            "title": "Koleksi Buku Diktat Resmi Jerman",
+            "description": "Buku panduan terbaru (Netzwerk Neu, Aspekte Neu, Fit fürs Goethe-Zertifikat A1-B2) dan kamus lengkap.",
+            "icon": "BookOpen"
+          }
+        ],
+        "items": [
+          {
+            "id": 1,
+            "name": "Ruang Kelas Intensif Berlin (Teori & Grammatik)",
+            "roomCode": "RK-01 (Lantai 1)",
+            "category": "Ruang Teori & Grammatik",
+            "capacity": "12–15 Peserta",
+            "floor": "Lantai 1",
+            "imageUrl": "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&q=80",
+            "description": "Ruangan kelas utama dengan tata meja ergonomis berbentuk U-shape yang memudahkan interaksi langsung antara pengajar dan seluruh siswa.",
+            "amenities": [
+              "AC Daikin Inverter",
+              "Smart Screen 55 Inch",
+              "Whiteboard Magnetik Luas",
+              "Meja Ergonomis",
+              "High-Speed Wi-Fi"
+            ],
+            "gallery": [
+              "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&q=80",
+              "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&q=80"
+            ],
+            "active": true,
+            "order": 1
+          },
+          {
+            "id": 2,
+            "name": "Lab Audio-Visual München (Hörverstehen & Multimedia)",
+            "roomCode": "LAB-02 (Lantai 1)",
+            "category": "Lab Audio-Visual (Hören)",
+            "capacity": "10–12 Peserta",
+            "floor": "Lantai 1",
+            "imageUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80",
+            "description": "Fasilitas audio terisolasi yang didesain khusus untuk simulasi ujian mendengar (Hören) sertifikat Goethe-Institut A1 hingga B2.",
+            "amenities": [
+              "Sound System Akustik",
+              "Headphone Monitoring",
+              "Smart TV 4K",
+              "Proyektor HD",
+              "Bahan Ujian Audio Goethe"
+            ],
+            "gallery": [
+              "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80",
+              "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80"
+            ],
+            "active": true,
+            "order": 2
+          },
+          {
+            "id": 3,
+            "name": "Ruang Diskusi & Simulasi Wawancara Hamburg (Sprechen)",
+            "roomCode": "RD-03 (Lantai 2)",
+            "category": "Ruang Diskusi (Sprechen)",
+            "capacity": "8–10 Peserta",
+            "floor": "Lantai 2",
+            "imageUrl": "https://images.unsplash.com/photo-1577495508048-b635879837f1?w=800&q=80",
+            "description": "Ruang interaktif untuk latihan percakapan kelompok kecil, simulasi wawancara kontrak kerja (Vorstellungsgespräch), dan presentasi siswa.",
+            "amenities": [
+              "Meja Bundar Diskusi",
+              "Kamera Video Rekam Latihan",
+              "AC",
+              "Papan Kosa Kata Interaktif"
+            ],
+            "gallery": [
+              "https://images.unsplash.com/photo-1577495508048-b635879837f1?w=800&q=80"
+            ],
+            "active": true,
+            "order": 3
+          },
+          {
+            "id": 4,
+            "name": "Perpustakaan & Pojok Goethe Frankfurt",
+            "roomCode": "LIB-04 (Lantai 2)",
+            "category": "Pojok Ujian Goethe",
+            "capacity": "10 Peserta",
+            "floor": "Lantai 2",
+            "imageUrl": "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&q=80",
+            "description": "Area belajar hening dengan koleksi buku referensi tata bahasa, kamus Jerman-Indonesia, modul latihan Goethe-Zertifikat, serta majalah budaya Jerman.",
+            "amenities": [
+              "Koleksi 200+ Buku Jerman",
+              "Meja Belajar Mandiri",
+              "Pencahayaan Baca Hangat",
+              "Sofa Santai",
+              "Wi-Fi Perpustakaan"
+            ],
+            "gallery": [
+              "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&q=80"
+            ],
+            "active": true,
+            "order": 4
+          },
+          {
+            "id": 5,
+            "name": "Lounge Siswa & Ruang Konsultasi Köln",
+            "roomCode": "LNG-05 (Lantai 1)",
+            "category": "Lounge & Konsultasi",
+            "capacity": "15 Peserta",
+            "floor": "Lantai 1",
+            "imageUrl": "https://images.unsplash.com/photo-1517502884422-41eaead166d4?w=800&q=80",
+            "description": "Ruang nyaman untuk beristirahat antar sesi kelas, berdiskusi santai dalam bahasa Jerman bersama rekan seangkatan, dan konsultasi 1-on-1 bersama pengajar.",
+            "amenities": [
+              "Coffee & Tea Corner",
+              "Sofa & Bean Bags",
+              "Papan Pengumuman Info Jerman",
+              "AC"
+            ],
+            "gallery": [
+              "https://images.unsplash.com/photo-1517502884422-41eaead166d4?w=800&q=80"
+            ],
+            "active": true,
+            "order": 5
+          }
+        ]
+      },
+      "updatedAt": "2026-09-30T04:35:48.223Z"
+    }
+  ],
+  "studentAutoId": 7,
+  "siteContentAutoId": 2,
+  "adminAutoId": 3,
+  "cmsSectionAutoId": 11
+}

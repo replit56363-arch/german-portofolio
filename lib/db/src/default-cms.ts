@@ -321,14 +321,6 @@ export const defaultCmsData = {
       coordinates: "ID · Medan Polonia",
       operatingHours: "Senin – Sabtu: 08:30 – 17:00 WIB",
     },
-    officeGermany: {
-      name: "Pendampingan Alumni & Mitra Jerman",
-      address: "Pelatihan Kosakata Profesi & Persiapan Ausbildungsvertrag",
-      phone: "082127324453",
-      email: "ichliebedtschmedan@gmail.com",
-      coordinates: "DE · Alumni Ausbildung 2020",
-      operatingHours: "Senin – Sabtu: 09:00 – 17:00 CET",
-    },
     pillars: [
       { id: 1, number: "01", title: "Berdiri Sejak 2024", description: "Lembaga kursus bahasa Jerman terdaftar dengan izin operasional pendidikan resmi di Medan." },
       { id: 2, number: "02", title: "Pendiri Berpengalaman 6 Tahun di DE", description: "Sarjana UNIMED yang menjalani & lulus Ausbildung 2020 dengan hasil sangat memuaskan." },

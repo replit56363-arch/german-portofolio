@@ -40,7 +40,7 @@ const cmsNavigation = [
   { href: "/admin/cms/news", label: "Halaman Berita", icon: Newspaper },
   { href: "/admin/cms/media", label: "Halaman Media & TV", icon: Tv },
   { href: "/admin/cms/services", label: "Halaman Layanan", icon: Briefcase },
-  { href: "/admin/cms/jakarta", label: "Halaman Jakarta", icon: MapPin },
+  { href: "/admin/cms/medan", label: "Halaman Medan", icon: MapPin },
   { href: "/admin/cms/references", label: "Halaman Referensi", icon: Trophy },
   { href: "/admin/cms/placements", label: "Penempatan Berhasil", icon: CheckCircle2 },
   { href: "/admin/cms/partner", label: "Halaman Partner (AG)", icon: UserCheck },
@@ -169,7 +169,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
             <nav className="mt-2 space-y-0.5" aria-label="Navigasi CMS">
               {cmsNavigation.map(({ href, label, icon: Icon, isHub }) => {
-                const isActive = location === href;
+                const isActive =
+                  location === href ||
+                  (href === "/admin/cms/medan" && (location === "/admin/cms/jakarta" || location === "/admin/cms/medan"));
                 return (
                   <Link
                     key={href}
@@ -198,7 +200,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
           <div className="border-t border-[#284465] pt-4">
             <p className="px-3 text-[10px] font-bold uppercase tracking-[.18em] text-[#7190b5]">
-              Pintasan & Website
+              Pintasan & Web
             </p>
             <div className="mt-2 space-y-1">
               <Link

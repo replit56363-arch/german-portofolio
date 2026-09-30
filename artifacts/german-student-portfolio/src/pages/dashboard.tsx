@@ -51,7 +51,7 @@ export default function Dashboard() {
           { label: "Halaman Berita", desc: "Kabar & artikel terkini", href: "/admin/cms/news", tone: "bg-[#feece8] text-[#c04b34]" },
           { label: "Halaman Media", desc: "Liputan TV & dokumenter", href: "/admin/cms/media", tone: "bg-[#e2f7f3] text-[#1c7866]" },
           { label: "Halaman Layanan", desc: "Alur kerja 7 tahap", href: "/admin/cms/services", tone: "bg-[#fdf4db] text-[#936b0d]" },
-          { label: "Halaman Jakarta", desc: "Kantor & jam operasional", href: "/admin/cms/jakarta", tone: "bg-[#fbeee6] text-[#b4532c]" },
+          { label: "Halaman Medan", desc: "Jl. Ternak II No. 39 Medan", href: "/admin/cms/medan", tone: "bg-[#fbeee6] text-[#b4532c]" },
           { label: "Referensi Prestasi", desc: "Kisah sukses & juara", href: "/admin/cms/references", tone: "bg-[#fbf4d9] text-[#8e6810]" },
           { label: "Penempatan", desc: "4 pilar jaminan karier", href: "/admin/cms/placements", tone: "bg-[#eaf4eb] text-[#2c753b]" },
           { label: "Untuk Partner", desc: "Kontak B2B di Jerman", href: "/admin/cms/partner", tone: "bg-[#fdf2f8] text-[#9d174d]" },

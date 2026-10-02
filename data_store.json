@@ -5,9 +5,9 @@
       "id": 1,
       "email": "admin@co.id",
       "name": "Admin Utama",
-      "passwordHash": "78dedb97a19f7b573147b6d1ca4854c7:d17b4ade7ab8f272e8a8986f861a7e2a53efb99b2650c13a4521f5dd4282b3e9086265026517683ce203f40d26061fcb7cee18b85d19704fc4e11a833797832c",
+      "passwordHash": "f7d3b8f87d478c70101953ac452fe345:ab8b7110beac71d4b42ca4c2e7077ce283de8bb9fd1954fce4458381d0384cbb25734c5a92370e666e6bd10bf2e505b230654e417c61ffdcf8b87ff166c2253a",
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2026-10-02T04:48:15.382Z"
+      "updatedAt": "2026-10-02T05:03:33.207Z"
     }
   ],
   "sessions": [],
@@ -1278,82 +1278,10 @@
         "speedSeconds": 28,
         "pauseOnHover": true,
         "showNames": true,
-        "items": [
-          {
-            "id": "logo-1",
-            "name": "Pendidikan Bahasa Jerman UNIMED",
-            "category": "Universitas",
-            "imageUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNDAgNjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiPjxyZWN0IHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2YwZjdmMyIvPjxjaXJjbGUgY3g9IjM0IiBjeT0iMzAiIHI9IjE4IiBmaWxsPSIjMWU2YTNkIi8+PHBvbHlnb24gcG9pbnRzPSIzNCwxNiA0MiwzMiAyNiwzMiIgZmlsbD0iI2Y1YzUxOCIvPjxjaXJjbGUgY3g9IjM0IiBjeT0iMjciIHI9IjQiIGZpbGw9IiMxZTZhM2QiLz48dGV4dCB4PSI2MiIgeT0iMjgiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzE1NGQyYyI+VU5JTUVEPC90ZXh0Pjx0ZXh0IHg9IjYyIiB5PSI0NCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOSIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iIzJlN2Q0ZCI+UGVuZGlkaWthbiBCYWhhc2EgSmVybWFuPC90ZXh0Pjwvc3ZnPg==",
-            "linkUrl": "https://unimed.ac.id",
-            "active": true,
-            "order": 1
-          },
-          {
-            "id": "logo-2",
-            "name": "Ausbildung Alumni 2020",
-            "category": "Alumni Jerman",
-            "imageUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNDAgNjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiPjxyZWN0IHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2Y5ZjZmMCIvPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE4LCAxNCkiPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIzMiIgaGVpZ2h0PSIxMCIgZmlsbD0iIzExMTExMSIgcng9IjIiLz48cmVjdCB4PSIwIiB5PSIxMSIgd2lkdGg9IjMyIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZDkyYjJiIiByeD0iMiIvPjxyZWN0IHg9IjAiIHk9IjIyIiB3aWR0aD0iMzIiIGhlaWdodD0iMTAiIGZpbGw9IiNlYWIzMDgiIHJ4PSIyIi8+PC9nPjx0ZXh0IHg9IjYyIiB5PSIyNyIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMWYyOTM3Ij5BVVNCSUxEVU5HIDIwMjA8L3RleHQ+PHRleHQgeD0iNjIiIHk9IjQzIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBmb250LXdlaWdodD0iNjAwIiBmaWxsPSIjNzgzNTBmIj5BbHVtbmkgTmV0endlcmsgRGV1dHNjaGxhbmQ8L3RleHQ+PC9zdmc=",
-            "linkUrl": "",
-            "active": true,
-            "order": 2
-          },
-          {
-            "id": "logo-3",
-            "name": "Mitra Perusahaan Jerman",
-            "category": "Perusahaan Jerman",
-            "imageUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNDAgNjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiPjxyZWN0IHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2VlZjNmOCIvPjxjaXJjbGUgY3g9IjM0IiBjeT0iMzAiIHI9IjE4IiBmaWxsPSIjMTczZDNhIi8+PHBhdGggZD0iTTI2LDMwIEwzMiwyNCBMNDIsMzQgTTM0LDIyIEwzNCwzNiIgc3Ryb2tlPSIjZTdmMGU5IiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBmaWxsPSJub25lIi8+PHRleHQgeD0iNjIiIHk9IjI3IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMxNzNkM2EiPk1JVFJBIEpFUk1BTjwvdGV4dD48dGV4dCB4PSI2MiIgeT0iNDMiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjkiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiMzMTVjNTQiPk5ldHp3ZXJrIEFyYmVpdGdlYmVyIEFHPC90ZXh0Pjwvc3ZnPg==",
-            "linkUrl": "/ag-anfrage",
-            "active": true,
-            "order": 3
-          },
-          {
-            "id": "logo-4",
-            "name": "Gastronomi & Pflege",
-            "category": "Klinik & Hotel",
-            "imageUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNDAgNjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiPjxyZWN0IHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2ZiZjJlZCIvPjxjaXJjbGUgY3g9IjM0IiBjeT0iMzAiIHI9IjE4IiBmaWxsPSIjZDM1ZjQ2Ii8+PHBhdGggZD0iTTM0LDIwIEwzNCw0MCBNMjQsMzAgTDQ0LDMwIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMy41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48dGV4dCB4PSI2MiIgeT0iMjciIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzljMzQxZSI+R0FTVFJPTk9NSSAmYW1wOyBQRkxFR0U8L3RleHQ+PHRleHQgeD0iNjIiIHk9IjQzIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBmb250LXdlaWdodD0iNjAwIiBmaWxsPSIjYzI1MjM5Ij5LbGluaWtlbiAmYW1wOyBIb3RlbGxlcmllPC90ZXh0Pjwvc3ZnPg==",
-            "linkUrl": "/layanan",
-            "active": true,
-            "order": 4
-          },
-          {
-            "id": "logo-5",
-            "name": "Goethe-Institut Partner",
-            "category": "Standar Kurikulum",
-            "imageUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNDAgNjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiPjxyZWN0IHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2U2ZjRlYSIvPjxyZWN0IHg9IjE4IiB5PSIxNCIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzAwNDg0MCIvPjx0ZXh0IHg9IjI2IiB5PSIzNyIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNiYmY3ZDAiPkc8L3RleHQ+PHRleHQgeD0iNjIiIHk9IjI3IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMwMDQ4NDAiPkdPRVRIRS1JTlNUSVRVVDwvdGV4dD48dGV4dCB4PSI2MiIgeT0iNDMiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjkiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiMxNjY1MzQiPlByw7xmdW5nc3ZvcmJlcmVpdHVuZzwvdGV4dD48L3N2Zz4=",
-            "linkUrl": "https://www.goethe.de",
-            "active": true,
-            "order": 5
-          },
-          {
-            "id": "logo-6",
-            "name": "AWO Bundesverband",
-            "category": "Mitra FSJ & Pflege",
-            "imageUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNDAgNjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiPjxyZWN0IHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2ZlZTJlMiIvPjxjaXJjbGUgY3g9IjM0IiBjeT0iMzAiIHI9IjE4IiBmaWxsPSIjZGMyNjI2Ii8+PHBhdGggZD0iTTI2LDMwIFEzNCwyMCA0MiwzMCBRMzQsNDAgMjYsMzAgWiIgZmlsbD0iI2ZmZmZmZiIvPjx0ZXh0IHg9IjYyIiB5PSIyNyIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTUiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiM5OTFiMWIiPkFXTzwvdGV4dD48dGV4dCB4PSI2MiIgeT0iNDMiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjkiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiNiOTFjMWMiPkJ1bmRlc3ZlcmJhbmQgUGZsZWdlPC90ZXh0Pjwvc3ZnPg==",
-            "linkUrl": "https://www.awo.org",
-            "active": true,
-            "order": 6
-          },
-          {
-            "id": "logo-7",
-            "name": "Helios Kliniken",
-            "category": "Klinik & Rumah Sakit",
-            "imageUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNDAgNjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiPjxyZWN0IHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2UwZjJmZSIvPjxyZWN0IHg9IjE4IiB5PSIxNCIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzAyODRjNyIvPjxwYXRoIGQ9Ik0zNCwyMiBMMzQsMzggTTI2LDMwIEw0MiwzMCIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjx0ZXh0IHg9IjYyIiB5PSIyNyIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMDM2OWExIj5IRUxJT1M8L3RleHQ+PHRleHQgeD0iNjIiIHk9IjQzIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBmb250LXdlaWdodD0iNjAwIiBmaWxsPSIjMDc1OTg1Ij5LbGluaWtlbiBHcnVwcGUgRGV1dHNjaGxhbmQ8L3RleHQ+PC9zdmc=",
-            "linkUrl": "https://www.helios-gesundheit.de",
-            "active": true,
-            "order": 7
-          },
-          {
-            "id": "logo-8",
-            "name": "Steigenberger Hotels & Resorts",
-            "category": "Hotellerie & Gastronomie",
-            "imageUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNDAgNjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiPjxyZWN0IHdpZHRoPSIyNDAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2ZlZjljMyIvPjxjaXJjbGUgY3g9IjM0IiBjeT0iMzAiIHI9IjE4IiBmaWxsPSIjODU0ZDBlIi8+PHBvbHlnb24gcG9pbnRzPSIyNywzMyAzMCwyNCAzNCwyOSAzOCwyNCA0MSwzMyIgZmlsbD0iI2ZlZjA4YSIvPjx0ZXh0IHg9IjYyIiB5PSIyNyIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjNzEzZjEyIj5TVEVJR0VOQkVSR0VSPC90ZXh0Pjx0ZXh0IHg9IjYyIiB5PSI0MyIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOSIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iIzg1NGQwZSI+SG90ZWxzICZhbXA7IEdhc3Ryb25vbWllPC90ZXh0Pjwvc3ZnPg==",
-            "linkUrl": "https://hrewards.com/de/steigenberger-hotels-resorts",
-            "active": true,
-            "order": 8
-          }
-        ]
+        "items": [],
+        "updatedAt": "2026-10-02T05:19:13.891Z"
       },
-      "updatedAt": "2026-10-02T04:53:35.469Z"
+      "updatedAt": "2026-10-02T05:19:13.895Z"
     }
   ],
   "studentAutoId": 7,

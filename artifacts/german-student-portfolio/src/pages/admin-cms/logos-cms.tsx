@@ -154,6 +154,7 @@ export default function LogosCms() {
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
       },
+      onError: (err: any) => setError(err.message || "Gagal menyimpan perubahan logo"),
     });
   };
 
@@ -169,6 +170,7 @@ export default function LogosCms() {
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
       },
+      onError: (err: any) => setError(err.message || "Gagal menghapus logo"),
     });
     setDeleteIndex(null);
   };
@@ -190,6 +192,7 @@ export default function LogosCms() {
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
       },
+      onError: (err: any) => setError(err.message || "Gagal mengubah urutan logo"),
     });
   };
 
@@ -206,6 +209,7 @@ export default function LogosCms() {
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
       },
+      onError: (err: any) => setError(err.message || "Gagal mengubah status aktif logo"),
     });
   };
 
@@ -309,7 +313,12 @@ export default function LogosCms() {
                 </div>
               ))}
               {(!form.items || form.items.filter((i) => i.active !== false).length === 0) && (
-                <p className="text-xs text-[#718c83] italic py-2">Belum ada logo aktif untuk ditampilkan.</p>
+                <div className="py-2.5 px-3 rounded-xl bg-white/70 border border-[#173d3a]/10 text-xs text-[#52756b]">
+                  <p className="font-semibold text-[#173d3a]">Belum ada logo aktif untuk ditampilkan.</p>
+                  <p className="text-[11px] text-[#55736b] mt-0.5">
+                    Komponen Infinite Logo Slider otomatis disembunyikan di halaman utama website publik agar tampilan selalu rapi dan tersinkronisasi.
+                  </p>
+                </div>
               )}
             </div>
           </div>

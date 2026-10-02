@@ -86,6 +86,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "hero.cta_programs": "Lihat 5 Program Kursus",
     "hero.badge_two_places": "Dua tempat. Satu arah.",
     "hero.trusted_by": "Dipercaya untuk membuka jalan oleh",
+    "logos.section_label": "Dipercaya untuk membuka jalan oleh",
+    "logos.section_title": "Jaringan Klien, Partner & Rekanan Resmi",
 
     // Stats
     "stats.students": "profil dalam bimbingan",
@@ -556,6 +558,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "hero.cta_programs": "5 Kursprogramme ansehen",
     "hero.badge_two_places": "Zwei Welten. Ein gemeinsamer Weg.",
     "hero.trusted_by": "Geschätzt und vertraut von",
+    "logos.section_label": "Geschätzt und vertraut von",
+    "logos.section_title": "Offizielle Partner-, Klinik- & Hochschulnetzwerke",
 
     // Stats
     "stats.students": "Teilnehmende in Vorbereitung",
@@ -1026,6 +1030,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "hero.cta_programs": "Explore 5 Programs",
     "hero.badge_two_places": "Two places. One shared journey.",
     "hero.trusted_by": "Trusted to lead the way by",
+    "logos.section_label": "Trusted to lead the way by",
+    "logos.section_title": "Official Partner, Healthcare & University Network",
 
     // Stats
     "stats.students": "students in preparation",

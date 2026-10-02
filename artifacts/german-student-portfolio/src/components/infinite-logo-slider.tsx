@@ -110,20 +110,28 @@ export function InfiniteLogoSlider() {
   const { language, t } = useLanguage();
 
   const activeItems = useMemo(() => {
-    const rawItems = cmsData?.items && Array.isArray(cmsData.items) && cmsData.items.length > 0
-      ? cmsData.items
-      : defaultLogos;
+    // If cmsData is loaded from backend, strictly respect admin configuration
+    if (cmsData) {
+      if (!Array.isArray(cmsData.items) || cmsData.items.length === 0) {
+        return [];
+      }
+      return cmsData.items
+        .filter((item) => item.active !== false)
+        .sort((a, b) => (a.order || 0) - (b.order || 0));
+    }
 
-    const filtered = rawItems
-      .filter((item) => item.active !== false)
-      .sort((a, b) => (a.order || 0) - (b.order || 0));
-
-    return filtered.length > 0 ? filtered : defaultLogos;
+    // Fallback only while cmsData is still undefined / fetching initial state
+    return defaultLogos;
   }, [cmsData]);
 
-  // Duplicate items twice to ensure completely seamless continuous loop
+  // Duplicate items sufficiently to ensure completely seamless continuous loop
   const duplicatedItems = useMemo(() => {
-    return [...activeItems, ...activeItems];
+    if (activeItems.length === 0) return [];
+    let list = [...activeItems];
+    while (list.length < 10) {
+      list = [...list, ...activeItems];
+    }
+    return [...list, ...list];
   }, [activeItems]);
 
   const speedSeconds = cmsData?.speedSeconds || 28;
@@ -132,23 +140,23 @@ export function InfiniteLogoSlider() {
 
   const label = useMemo(() => {
     if (language === "de") {
-      return "Geschätzt und vertraut von";
+      return t("logos.section_label", "Geschätzt und vertraut von");
     }
     if (language === "en") {
-      return "Trusted to lead the way by";
+      return t("logos.section_label", "Trusted to lead the way by");
     }
-    return cmsData?.sectionLabel || "Dipercaya untuk membuka jalan oleh";
-  }, [language, cmsData?.sectionLabel]);
+    return cmsData?.sectionLabel || t("logos.section_label", "Dipercaya untuk membuka jalan oleh");
+  }, [language, cmsData?.sectionLabel, t]);
 
   const sectionTitle = useMemo(() => {
     if (language === "de") {
-      return "Offizielle Partner-, Klinik- & Hochschulnetzwerke";
+      return t("logos.section_title", "Offizielle Partner-, Klinik- & Hochschulnetzwerke");
     }
     if (language === "en") {
-      return "Official Partner, Healthcare & University Network";
+      return t("logos.section_title", "Official Partner, Healthcare & University Network");
     }
-    return cmsData?.sectionTitle || "Jaringan Klien, Partner & Rekanan Resmi";
-  }, [language, cmsData?.sectionTitle]);
+    return cmsData?.sectionTitle || t("logos.section_title", "Jaringan Klien, Partner & Rekanan Resmi");
+  }, [language, cmsData?.sectionTitle, t]);
 
   const getLocalizedItem = (item: LogoItem) => {
     if (language === "id") {
@@ -181,14 +189,22 @@ export function InfiniteLogoSlider() {
     }
 
     // Name translations for generic partner labels
-    if (cleanName === "mitra perusahaan jerman") {
-      name = language === "de" ? "Deutsche Partnerunternehmen" : "German Partner Companies";
-    } else if (cleanName === "gastronomi & pflege") {
-      name = language === "de" ? "Gastronomie & Pflege" : "Gastronomy & Healthcare";
+    if (cleanName.includes("pendidikan bahasa jerman unimed") || cleanName.includes("unimed")) {
+      name = language === "de" ? "UNIMED Deutsche Abteilung" : (language === "en" ? "UNIMED German Department" : item.name);
+    } else if (cleanName === "mitra perusahaan jerman" || cleanName.includes("perusahaan jerman")) {
+      name = language === "de" ? "Deutsche Partnerunternehmen" : (language === "en" ? "German Partner Companies" : item.name);
+    } else if (cleanName === "gastronomi & pflege" || cleanName.includes("gastronomi")) {
+      name = language === "de" ? "Gastronomie & Pflege" : (language === "en" ? "Gastronomy & Healthcare" : item.name);
     }
 
     return { name, category };
   };
+
+  // If there are no active logos, do NOT render the slider section on public page
+  // (Placed after all hooks to strictly adhere to the Rules of Hooks)
+  if (activeItems.length === 0) {
+    return null;
+  }
 
   return (
     <div className="relative border-y border-[#173d3a]/15 bg-[#e7f0e9]/95 overflow-hidden py-4 sm:py-5">

@@ -30,6 +30,7 @@ import { SectionEyebrow } from "@/components/portfolio-ui";
 import { PublicNavbar } from "@/components/public-navbar";
 import { PublicFooter } from "@/components/public-footer";
 import { AlumniHero } from "@/components/alumni-hero";
+import { InfiniteLogoSlider } from "@/components/infinite-logo-slider";
 
 type LucideIcon = typeof UsersRound;
 
@@ -258,14 +259,7 @@ export default function Landing() {
       <main id="top">
         <AlumniHero onScrollToApproach={() => navTo("cara-kerja")} />
 
-        <div className="border-y border-[#173d3a]/15 bg-[#e7f0e9]">
-          <div className="mx-auto flex max-w-[1240px] flex-wrap items-center gap-x-8 gap-y-4 px-5 py-5 lg:px-8">
-            <p className="mr-2 font-mono-ui text-[9px] font-bold uppercase tracking-[0.17em] text-[#6b867e]">{t("hero.trusted_by", "Dipercaya untuk membuka jalan oleh")}</p>
-            {trustedPartners.map((name: string, index: number) => (
-              <div key={name} className={`font-['Fraunces'] text-lg font-semibold tracking-[-0.04em] ${index % 2 === 0 ? "text-[#315c54]" : "text-[#66817a]"}`}>{name}</div>
-            ))}
-          </div>
-        </div>
+        <InfiniteLogoSlider />
 
         <section id="cara-kerja" className="mx-auto grid max-w-[1240px] gap-14 px-5 py-24 lg:grid-cols-[.8fr_1.2fr] lg:px-8 lg:py-32">
           <div>

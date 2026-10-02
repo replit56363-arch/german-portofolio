@@ -12,7 +12,8 @@ export type CmsSectionName =
   | "placements"
   | "partner"
   | "alumni"
-  | "classrooms";
+  | "classrooms"
+  | "logos";
 
 export const CMS_QUERY_KEY = ["/api/cms"];
 export const getCmsSectionQueryKey = (section: string) => ["/api/cms", section];

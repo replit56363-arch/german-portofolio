@@ -55,6 +55,7 @@ export default function Dashboard() {
           { label: "Referensi Prestasi", desc: "Kisah sukses & juara", href: "/admin/cms/references", tone: "bg-[#fbf4d9] text-[#8e6810]" },
           { label: "Penempatan", desc: "4 pilar jaminan karier", href: "/admin/cms/placements", tone: "bg-[#eaf4eb] text-[#2c753b]" },
           { label: "Untuk Partner", desc: "Kontak B2B di Jerman", href: "/admin/cms/partner", tone: "bg-[#fdf2f8] text-[#9d174d]" },
+          { label: "Logo Slider", desc: "Infinite logo partner", href: "/admin/cms/logos", tone: "bg-[#eaf5f0] text-[#1c6a46]" },
           { label: "Navbar & Footer", desc: "Menu navigasi & kontak", href: "/admin/cms/navbar", tone: "bg-[#eaf2f9] text-[#1f568c]" },
         ].map((item) => (
           <Link

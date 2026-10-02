@@ -63,6 +63,34 @@ export function PublicFooter() {
 
   const categories = ["Navigasi", "Layanan", "Informasi", "Kontak"];
 
+  const getCategoryTitle = (cat: string) => {
+    if (language === "id") return cat;
+    if (cat === "Navigasi") return language === "de" ? "Navigation" : "Navigation";
+    if (cat === "Layanan") return language === "de" ? "Angebote" : "Services";
+    if (cat === "Informasi") return language === "de" ? "Informationen" : "Information";
+    if (cat === "Kontak") return language === "de" ? "Kontakt" : "Contact";
+    return cat;
+  };
+
+  const getFooterLinkLabel = (label: string, href: string) => {
+    if (language === "id") return label;
+    const cleanLabel = (label || "").toLowerCase();
+    const cleanHref = (href || "").toLowerCase();
+
+    if (cleanHref === "/" || cleanLabel.includes("beranda")) return t("nav.home", "Startseite");
+    if (cleanHref === "/layanan" || cleanLabel.includes("program")) return t("nav.programs", "Kursprogramme");
+    if (cleanHref === "/jakarta" || cleanHref === "/medan" || cleanLabel.includes("tentang")) return t("nav.about", "Über Uns");
+    if (cleanHref === "/siswa" || cleanLabel.includes("siswa")) return t("nav.students", "Schülerdaten");
+    if (cleanHref === "/alumni" || cleanLabel.includes("alumni")) return t("nav.alumni", "Alumni-Fotos");
+    if (cleanHref === "/ruangan-kelas" || cleanLabel.includes("kelas") || cleanLabel.includes("ruangan")) return t("nav.classrooms", "Klassenzimmer");
+    if (cleanHref === "/berita" || cleanLabel.includes("kabar") || cleanLabel.includes("berita")) return t("nav.news", "Nachrichten");
+    if (cleanHref === "/referensi" || cleanLabel.includes("referensi")) return t("nav.references", "Erfolgsgeschichten");
+    if (cleanLabel.includes("whatsapp")) return language === "de" ? "WhatsApp-Kontakt" : "WhatsApp Contact";
+    if (cleanLabel.includes("portal")) return language === "de" ? "Admin-Portal" : "Admin Portal";
+
+    return label;
+  };
+
   return (
     <footer className="border-t border-[#173d3a]/15 bg-[#eef4f0] text-[#173d3a]">
       <div className="mx-auto max-w-[1240px] px-5 py-14 lg:px-8">
@@ -131,7 +159,7 @@ export function PublicFooter() {
               return (
                 <div key={cat}>
                   <p className="font-mono-ui text-[10px] font-bold uppercase tracking-[0.16em] text-[#78938d] border-b border-[#173d3a]/10 pb-2">
-                    {cat}
+                    {getCategoryTitle(cat)}
                   </p>
                   <ul className="mt-3.5 space-y-2.5">
                     {catLinks.map((link: any) => {
@@ -139,6 +167,7 @@ export function PublicFooter() {
                         link.href.startsWith("http") ||
                         link.href.startsWith("mailto:") ||
                         link.href.startsWith("tel:");
+                      const displayLabel = getFooterLinkLabel(link.label, link.href);
                       return (
                         <li key={link.id || link.label}>
                           {isExternal ? (
@@ -148,7 +177,7 @@ export function PublicFooter() {
                               rel={link.href.startsWith("http") ? "noreferrer" : undefined}
                               className="font-mono-ui text-[11px] font-bold uppercase tracking-[0.08em] text-[#3d5d56] transition-colors hover:text-[#d35f46] inline-flex items-center gap-1"
                             >
-                              <span>{link.label}</span>
+                              <span>{displayLabel}</span>
                               {link.href.startsWith("http") && <ArrowUpRight size={11} className="text-[#89a39b]" />}
                             </a>
                           ) : (
@@ -156,7 +185,7 @@ export function PublicFooter() {
                               href={link.href}
                               className="font-mono-ui text-[11px] font-bold uppercase tracking-[0.08em] text-[#3d5d56] transition-colors hover:text-[#d35f46]"
                             >
-                              {link.label}
+                              {displayLabel}
                             </Link>
                           )}
                         </li>

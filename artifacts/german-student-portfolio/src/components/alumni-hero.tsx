@@ -273,10 +273,12 @@ export function AlumniHero({ onScrollToApproach }: AlumniHeroProps) {
           <div>
             <div className="flex items-center gap-1.5">
               <ShieldCheck size={15} className="text-[#d35f46] shrink-0" />
-              <p className="font-mono-ui text-lg sm:text-xl font-bold text-[#173d3a]">5 Jalur</p>
+              <p className="font-mono-ui text-lg sm:text-xl font-bold text-[#173d3a]">
+                {language === "de" ? "5 Wege" : language === "en" ? "5 Pathways" : "5 Jalur"}
+              </p>
             </div>
             <p className="mt-1 text-[11px] sm:text-xs text-[#6b867e] leading-tight">
-              {language !== "id" ? "Offizielle Wege" : "Program Resmi"}
+              {language === "de" ? "Offizielle Programme" : language === "en" ? "Official Pathways" : "Program Resmi"}
             </p>
           </div>
         </div>

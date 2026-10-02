@@ -42,6 +42,7 @@ export function CmsLayout({
     { href: "/admin/cms/references", label: "Referensi", icon: "🏆" },
     { href: "/admin/cms/placements", label: "Penempatan", icon: "🤝" },
     { href: "/admin/cms/partner", label: "Untuk Partner", icon: "🏢" },
+    { href: "/admin/cms/logos", label: "Logo Slider", icon: "🎞️" },
     { href: "/admin/cms/navbar", label: "Navbar", icon: "🧭" },
     { href: "/admin/cms/footer", label: "Footer", icon: "🦶" },
   ];

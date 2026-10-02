@@ -27,6 +27,7 @@ import JakartaCms from "@/pages/admin-cms/jakarta-cms";
 import ReferencesCms from "@/pages/admin-cms/references-cms";
 import PlacementsCms from "@/pages/admin-cms/placements-cms";
 import PartnerCms from "@/pages/admin-cms/partner-cms";
+import LogosCms from "@/pages/admin-cms/logos-cms";
 import NavbarCms from "@/pages/admin-cms/navbar-cms";
 import FooterCms from "@/pages/admin-cms/footer-cms";
 import StudentsPublic from "@/pages/students-public";
@@ -128,6 +129,9 @@ function Router() {
         </Route>
         <Route path="/admin/cms/partner">
           <AppShell><PartnerCms /></AppShell>
+        </Route>
+        <Route path="/admin/cms/logos">
+          <AppShell><LogosCms /></AppShell>
         </Route>
         <Route path="/admin/cms/navbar">
           <AppShell><NavbarCms /></AppShell>

@@ -24,6 +24,7 @@ import {
   Layers,
   ChevronRight,
   ExternalLink,
+  SlidersHorizontal,
 } from "lucide-react";
 
 const mainNavigation = [
@@ -44,6 +45,7 @@ const cmsNavigation = [
   { href: "/admin/cms/references", label: "Halaman Referensi", icon: Trophy },
   { href: "/admin/cms/placements", label: "Penempatan Berhasil", icon: CheckCircle2 },
   { href: "/admin/cms/partner", label: "Halaman Partner (AG)", icon: UserCheck },
+  { href: "/admin/cms/logos", label: "Logo Slider (Partner)", icon: SlidersHorizontal },
   { href: "/admin/cms/navbar", label: "Navbar Header", icon: Compass },
   { href: "/admin/cms/footer", label: "Footer", icon: LayoutTemplate },
 ];

@@ -17,6 +17,7 @@ import {
   Sparkles,
   Layers,
   ArrowRight,
+  SlidersHorizontal,
 } from "lucide-react";
 
 export default function CmsOverviewPage() {
@@ -143,6 +144,17 @@ export default function CmsOverviewPage() {
       color: "bg-[#edf1f8] text-[#345885] border-[#cbd8eb]",
       badge: "Kemitraan",
       count: "Perwakilan & B2B Inquiry",
+    },
+    {
+      id: "logos",
+      title: "Infinite Logo Slider (Partner)",
+      description: "Upload logo mitra/klien/sponsor dari perangkat, atur kecepatan gerak otomatis deretan logo di beranda.",
+      path: "/admin/cms/logos",
+      publicPath: "/",
+      icon: SlidersHorizontal,
+      color: "bg-[#eaf5f0] text-[#1c6a46] border-[#bce2d0]",
+      badge: "Slider Otomatis",
+      count: `${cmsData?.logos?.items?.length || 8} Logo Partner`,
     },
     {
       id: "navbar",

@@ -140,14 +140,22 @@ const navTranslationKeys: Record<string | number, { labelKey: string; subKey?: s
   23: { labelKey: "nav.fsj", subKey: "nav.fsj_sub" },
   24: { labelKey: "nav.gtog", subKey: "nav.gtog_sub" },
   25: { labelKey: "nav.studium", subKey: "nav.studium_sub" },
-  3: { labelKey: "nav.about", subKey: "nav.about_sub" },
+  3: { labelKey: "nav.students", subKey: "nav.students_sub" },
+  4: { labelKey: "nav.alumni", subKey: "nav.alumni_sub" },
+  5: { labelKey: "nav.classrooms", subKey: "nav.classrooms_sub" },
+  6: { labelKey: "nav.about", subKey: "nav.about_sub" },
+  61: { labelKey: "nav.about_profile", subKey: "nav.about_profile_sub" },
+  62: { labelKey: "nav.about_contact", subKey: "nav.about_contact_sub" },
+  63: { labelKey: "nav.about_partner", subKey: "nav.about_partner_sub" },
+  7: { labelKey: "nav.news_ref", subKey: "nav.news_ref_sub" },
+  71: { labelKey: "nav.news", subKey: "nav.news_sub" },
+  72: { labelKey: "nav.references", subKey: "nav.references_sub" },
+  // Compatibility with alternate IDs:
   31: { labelKey: "nav.about_profile", subKey: "nav.about_profile_sub" },
   32: { labelKey: "nav.about_contact", subKey: "nav.about_contact_sub" },
   33: { labelKey: "nav.about_partner", subKey: "nav.about_partner_sub" },
-  4: { labelKey: "nav.news_ref", subKey: "nav.news_ref_sub" },
   41: { labelKey: "nav.news", subKey: "nav.news_sub" },
   42: { labelKey: "nav.references", subKey: "nav.references_sub" },
-  5: { labelKey: "nav.students_campus", subKey: "nav.students_campus_sub" },
   51: { labelKey: "nav.students_data", subKey: "nav.students_data_sub" },
   52: { labelKey: "nav.alumni_photos", subKey: "nav.alumni_photos_sub" },
   53: { labelKey: "nav.classrooms", subKey: "nav.classrooms_sub" },
@@ -186,44 +194,117 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
     .filter((l: NavItem) => l.isVisible !== false)
     .sort((a: NavItem, b: NavItem) => (Number(a.order) || 0) - (Number(b.order) || 0));
 
-  const getNavText = (id: string | number, defaultLabel: string, defaultSublabel?: string) => {
+  const getNavText = (
+    id: string | number,
+    defaultLabel: string,
+    defaultSublabel?: string,
+    href?: string
+  ) => {
     if (language === "id") {
       return { label: defaultLabel, sublabel: defaultSublabel };
     }
 
-    const itemKey = navTranslationKeys[id];
-    let label = itemKey ? t(itemKey.labelKey) : "";
-    let sublabel = itemKey?.subKey ? t(itemKey.subKey) : "";
-
-    // If key not found or returned the key itself, check standard semantic label mappings
     const cleanLabel = (defaultLabel || "").trim().toLowerCase();
-    if (!label || label === itemKey?.labelKey) {
-      if (cleanLabel.includes("ruangan") || cleanLabel.includes("kelas")) {
-        label = t("nav.classrooms");
-        sublabel = t("nav.classrooms_sub");
-      } else if (cleanLabel.includes("tentang") || cleanLabel.includes("profil lembaga")) {
-        label = t("nav.about");
-        sublabel = t("nav.about_sub");
-      } else if (cleanLabel.includes("kabar") || cleanLabel.includes("referensi")) {
-        label = t("nav.news_ref");
-        sublabel = t("nav.news_ref_sub");
+    const cleanHref = (href || "").trim().toLowerCase();
+
+    let label = "";
+    let sublabel = "";
+
+    // 1. Precise URL-based matching
+    if (cleanHref === "/" && (cleanLabel.includes("beranda") || cleanLabel.includes("home"))) {
+      label = t("nav.home", "Startseite");
+    } else if (cleanHref === "/layanan" && (cleanLabel.includes("program") || cleanLabel.includes("kursus"))) {
+      label = t("nav.programs", "Kursprogramme");
+      sublabel = t("nav.programs_sub", "5 offizielle Wege nach Deutschland");
+    } else if (cleanHref === "/siswa" || cleanHref === "/data-siswa") {
+      label = t("nav.students", "Schülerdaten");
+      sublabel = t("nav.students_sub", "Verzeichnis & Sprachniveaus");
+    } else if (cleanHref === "/alumni" || cleanHref === "/foto-alumni") {
+      label = t("nav.alumni", "Alumni-Fotos");
+      sublabel = t("nav.alumni_sub", "Erfolgsgalerie in Deutschland");
+    } else if (cleanHref === "/ruangan-kelas" || cleanHref === "/kelas") {
+      label = t("nav.classrooms", "Klassenzimmer");
+      sublabel = t("nav.classrooms_sub", "Lernräume & Sprachlabore");
+    } else if (
+      (cleanHref === "/jakarta" || cleanHref === "/medan") &&
+      (cleanLabel.includes("tentang") || cleanLabel.includes("profil") || cleanLabel.includes("about"))
+    ) {
+      label = t("nav.about", "Über Uns");
+      sublabel = t("nav.about_sub", "Profil & Standort");
+    } else if (cleanHref === "/berita" && (cleanLabel.includes("kabar") || cleanLabel.includes("referensi") || cleanLabel.includes("artikel"))) {
+      label = t("nav.news_ref", "Aktuelles & Referenzen");
+      sublabel = t("nav.news_ref_sub", "Informationen & Erfolge");
+    } else if (cleanHref === "/ag-anfrage") {
+      label = t("nav.about_partner", "Partnerberatung");
+      sublabel = t("nav.about_partner_sub", "Kooperationen & Programminfos");
+    } else if (cleanHref === "/referensi") {
+      label = t("nav.references", "Erfolgsgeschichten");
+      sublabel = t("nav.references_sub", "Alumni-Erfahrungen in Deutschland");
+    } else if (cleanHref === "/penempatan-berhasil") {
+      label = language === "de" ? "Erfolgreiche Vermittlungen" : "Successful Placements";
+      sublabel = language === "de" ? "Garantierte Karrierechancen" : "Guaranteed Career Paths";
+    }
+
+    // 2. Semantic label keyword matching
+    if (!label) {
+      if (cleanLabel.includes("ausbildung")) {
+        label = t("nav.ausbildung", "1. Ausbildung");
+        sublabel = t("nav.ausbildung_sub", "Berufsschule & bezahlte Praxis");
+      } else if (cleanLabel.includes("au pair")) {
+        label = t("nav.aupair", "2. Au Pair");
+        sublabel = t("nav.aupair_sub", "Leben bei Gastfamilie & Sprachkurs");
+      } else if (cleanLabel.includes("fsj") || cleanLabel.includes("bfd")) {
+        label = t("nav.fsj", "3. FSJ / BFD");
+        sublabel = t("nav.fsj_sub", "1-jähriger Freiwilligendienst");
+      } else if (cleanLabel.includes("g to g")) {
+        label = t("nav.gtog", "4. G to G");
+        sublabel = t("nav.gtog_sub", "Staatliche Vermittlung von Pflegefachkräften");
+      } else if (cleanLabel.includes("kuliah") || cleanLabel.includes("studium")) {
+        label = t("nav.studium", "5. Studium");
+        sublabel = t("nav.studium_sub", "Universitätsvorbereitung Deutschland");
+      } else if (cleanLabel.includes("profil lembaga")) {
+        label = t("nav.about_profile", "Institutsprofil");
+        sublabel = t("nav.about_profile_sub", "Registriert & staatlich lizenziert");
+      } else if (cleanLabel.includes("alamat & kontak") || cleanLabel.includes("alamat") || cleanLabel.includes("kontak")) {
+        label = t("nav.about_contact", "Adresse & Kontakt");
+        sublabel = t("nav.about_contact_sub", "Jl. Ternak II Nr. 39, Medan Polonia");
+      } else if (cleanLabel.includes("partner") || cleanLabel.includes("kemitraan") || cleanLabel.includes("anfrage")) {
+        label = t("nav.about_partner", "Partnerberatung");
+        sublabel = t("nav.about_partner_sub", "Kooperationen & Programminfos");
+      } else if (cleanLabel.includes("kabar & berita") || cleanLabel.includes("berita") || cleanLabel.includes("artikel")) {
+        label = t("nav.news", "Nachrichten & Artikel");
+        sublabel = t("nav.news_sub", "Neueste Berichte & Ankündigungen");
+      } else if (cleanLabel.includes("kisah referensi") || cleanLabel.includes("referensi") || cleanLabel.includes("kisah sukses")) {
+        label = t("nav.references", "Erfolgsgeschichten");
+        sublabel = t("nav.references_sub", "Alumni-Erfahrungen in Deutschland");
+      } else if (cleanLabel.includes("ruangan") || cleanLabel.includes("kelas") || cleanLabel.includes("fasilitas")) {
+        label = t("nav.classrooms", "Klassenzimmer");
+        sublabel = t("nav.classrooms_sub", "Lernräume & Sprachlabore");
+      } else if (cleanLabel.includes("foto alumni") || cleanLabel.includes("alumni")) {
+        label = t("nav.alumni", "Alumni-Fotos");
+        sublabel = t("nav.alumni_sub", "Erfolgsgalerie in Deutschland");
+      } else if (cleanLabel.includes("data siswa") || cleanLabel.includes("siswa")) {
+        label = t("nav.students", "Schülerdaten");
+        sublabel = t("nav.students_sub", "Verzeichnis & Sprachniveaus");
+      } else if (cleanLabel.includes("tentang kami") || cleanLabel.includes("tentang")) {
+        label = t("nav.about", "Über Uns");
+        sublabel = t("nav.about_sub", "Profil & Standort");
       } else if (cleanLabel.includes("beranda")) {
-        label = t("nav.home");
+        label = t("nav.home", "Startseite");
       } else if (cleanLabel.includes("program")) {
-        label = t("nav.programs");
-        sublabel = t("nav.programs_sub");
-      } else if (cleanLabel.includes("siswa") && cleanLabel.includes("kampus")) {
-        label = t("nav.students_campus");
-        sublabel = t("nav.students_campus_sub");
-      } else if (cleanLabel.includes("siswa")) {
-        label = t("nav.students_data");
-        sublabel = t("nav.students_data_sub");
-      } else if (cleanLabel.includes("alumni")) {
-        label = t("nav.alumni_photos");
-        sublabel = t("nav.alumni_photos_sub");
-      } else {
-        label = defaultLabel;
-        sublabel = defaultSublabel;
+        label = t("nav.programs", "Kursprogramme");
+        sublabel = t("nav.programs_sub", "5 offizielle Wege nach Deutschland");
+      }
+    }
+
+    // 3. Fallback to dictionary key by ID
+    if (!label) {
+      const itemKey = navTranslationKeys[id];
+      if (itemKey) {
+        label = t(itemKey.labelKey, defaultLabel);
+        if (itemKey.subKey) {
+          sublabel = t(itemKey.subKey, defaultSublabel);
+        }
       }
     }
 
@@ -278,7 +359,7 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
             const hasChildren = Array.isArray(item.children) && item.children.length > 0;
             const active = isItemActive(item);
             const isOpen = activeHoverMenu === item.id;
-            const itemText = getNavText(item.id, item.label, item.sublabel);
+            const itemText = getNavText(item.id, item.label, item.sublabel, item.href);
 
             if (!hasChildren) {
               return (
@@ -340,7 +421,7 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
                       <div className="space-y-0.5">
                         {item.children?.map((child) => {
                           const isChildActive = activePath === child.href;
-                          const childText = getNavText(child.id, child.label, child.sublabel);
+                          const childText = getNavText(child.id, child.label, child.sublabel, child.href);
                           return (
                             <Link
                               key={child.id}
@@ -542,7 +623,7 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
             const hasChildren = Array.isArray(item.children) && item.children.length > 0;
             const isExpanded = !!expandedMobileMenus[item.id];
             const active = isItemActive(item);
-            const itemText = getNavText(item.id, item.label, item.sublabel);
+            const itemText = getNavText(item.id, item.label, item.sublabel, item.href);
 
             if (!hasChildren) {
               return (
@@ -577,7 +658,7 @@ export function PublicNavbar({ activeRoute }: PublicNavbarProps) {
                   <div className="mt-1 space-y-1 border-t border-[#173d3a]/10 pt-1.5 pl-2">
                     {item.children?.map((child) => {
                       const isChildActive = activePath === child.href;
-                      const childText = getNavText(child.id, child.label, child.sublabel);
+                      const childText = getNavText(child.id, child.label, child.sublabel, child.href);
                       return (
                         <Link
                           key={child.id}
